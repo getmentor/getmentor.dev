@@ -85,12 +85,11 @@ export default function Home(props) {
           name="description"
           content="GetMentor – это открытое комьюнити IT-наставников, готовых делиться своими опытом и знаниями. Наша задача – помогать людям находить ответы на свои вопросы в работе или жизни через прямой доступ к экспертизе в разговоре 1-на-1."
         />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <NavHeader />
 
-      <section className="banner banner--default" data-section="header">
+      <section className="banner banner--default bg-primary-100" data-section="header">
         <div className="container">
           <div className="banner__inner">
             <div className="row">
@@ -103,7 +102,7 @@ export default function Home(props) {
                   доступ к экспертизе в разговоре 1-на-1.
                 </p>
                 <div className="pt-6">
-                  <a className="button" href="#list">Найти ментора</a>
+                  <a className="button bg-primary-900" href="#list">Найти ментора</a>
                 </div>
               </div>
             </div>
@@ -241,7 +240,7 @@ export default function Home(props) {
         </div>
       </section>
 
-      <section className="section" data-section="support">
+      <section className="section bg-gray-100" data-section="support">
         <a name="support"></a>
 
         <div className="container">
@@ -290,7 +289,7 @@ export default function Home(props) {
 
       <MentorsBlock allMentors={allMentors} />
 
-      <section className="section" data-section="sponsors">
+      <section className="section bg-gray-100" data-section="sponsors">
         <a name="sponsors"></a>
 
         <div className="container">
@@ -325,6 +324,7 @@ export default function Home(props) {
 
       <section className="section" data-section="donate">
         <a name="donate"></a>
+
         <div className="container">
           <h2 className="section__title">🍩 Донат</h2>
           <div className="section__description text-center">
@@ -352,7 +352,7 @@ export default function Home(props) {
             <div className="text-center element-center">
               <div className="section__cta">
                 <Link href="/donate">
-                  <a className="button">Поблагодарить</a>
+                  <a className="button bg-primary-900">Поблагодарить</a>
                 </Link>
               </div>
             </div>
@@ -360,7 +360,7 @@ export default function Home(props) {
         </div>
       </section>
 
-      <section className="section" data-section="addyourown">
+      <section className="section bg-gray-100" data-section="addyourown">
         <a name="addyourown"></a>
 
         <div className="container">
@@ -378,7 +378,7 @@ export default function Home(props) {
             <div className="text-center element-center">
               <div className="section__cta">
                 <Link href="/bementor">
-                  <a className="button">Оставить заявку</a>
+                  <a className="button bg-primary-900">Оставить заявку</a>
                 </Link>
               </div>
             </div>
@@ -391,14 +391,14 @@ export default function Home(props) {
         <div className="container">
           <h2 className="section__title">FAQ</h2>
           <div className="section__description">
-            <h4 className="text-xl font-medium mt-10">❓&nbsp;Зачем всё это?</h4>
+            <h4 className="text-xl font-semibold mt-10">❓&nbsp;Зачем всё это?</h4>
             <p>Мы видим огромную потребность у современных специалистов в
               наставниках, которые помогали бы им преодолевать трудности и научили бы тонкостям и
               тайным знаниям. Этот сервис&nbsp;— попытка построить коммьюнити наставников и
               учеников, чтобы облегчить им поиск друг друга.
             </p>
 
-            <h4 className="text-xl font-medium mt-10">📅&nbsp;Я записался к ментору. Что теперь?</h4>
+            <h4 className="text-xl font-semibold mt-10">📅&nbsp;Я записался к ментору. Что теперь?</h4>
             <p>Отлично! Сразу после того, как ты оставил заявку на
               менторство, мы передаём её выбранному эксперту. Он или она рассмотрят её в течение
               пары дней. Если ментор решит, что готов помочь по этой заявке, то он сам свяжется с
@@ -410,7 +410,7 @@ export default function Home(props) {
               отказе, чтобы ты мог найти себе другого специалиста.
             </p>
 
-            <h4 className="text-xl font-medium mt-10">💶&nbsp;Сколько это стоит?</h4>
+            <h4 className="text-xl font-semibold mt-10">💶&nbsp;Сколько это стоит?</h4>
             <p>Мы хотим построить сообщество, поэтому не хотим приплетать в
               процесс деньги. Однако мы понимаем, что время эксперта может чего-то стоить. Поэтому у
               нас каждый ментор сам назначает стоимость своей консультации, которую мы затем
@@ -422,18 +422,18 @@ export default function Home(props) {
               можете <Link href="/donate">сделать нам донат</Link>.
             </p>
 
-            <h4 className="text-xl font-medium mt-10">🚫&nbsp;Я не нашёл ментора. Что делать?</h4>
+            <h4 className="text-xl font-semibold mt-10">🚫&nbsp;Я не нашёл ментора. Что делать?</h4>
             <p>Так бывает, но не нужно расстраиваться. Ты можешь поделиться
               ссылкой на этот сайт в своих сетях, чтобы больше людей узнало о площадке и пришло сюда
               в качестве экспертов.
             </p>
 
-            <h4 className="text-xl font-medium mt-10">🙋‍♀️&nbsp;Как мне стать ментором?</h4>
+            <h4 className="text-xl font-semibold mt-10">🙋‍♀️&nbsp;Как мне стать ментором?</h4>
             <p>Очень просто. Достаточно <Link href="/bementor">оставить заявку</Link>, и мы обязательно вас
               добавим.
             </p>
 
-            <h4 className="text-xl font-medium mt-10">👋&nbsp;У меня есть идеи. Куда писать?</h4>
+            <h4 className="text-xl font-semibold mt-10">👋&nbsp;У меня есть идеи. Куда писать?</h4>
             <p>Пишите <a href="mailto:hello@getmentor.dev">нам на почту</a>,
               мы с радостью почитаем и ответим.
             </p>

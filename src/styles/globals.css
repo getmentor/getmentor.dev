@@ -12,7 +12,7 @@
   }
 
   h2 {
-    @apply text-4xl font-medium mb-7;
+    @apply text-4xl font-semibold mb-7;
   }
 
   p {
@@ -23,12 +23,17 @@
     border-bottom: 2px solid;
     text-decoration: none;
   }
+}
 
+@layer utilities {
   .text-primary {
     color: #ff6a3d;
   }
 
-  .bg-primary {
+  .bg-primary-900 {
     background-color: #ff6a3d;
+  }
+  .bg-primary-100 {
+    background-color: #fcf8f2;
   }
 }

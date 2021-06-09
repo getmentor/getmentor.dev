@@ -48,7 +48,7 @@ export default function Donate() {
 
       <NavHeader />
 
-      <section data-section="header" className="banner banner--default">
+      <section className="banner banner--default bg-primary-100" data-section="header" >
         <div className="container">
           <div className="banner__inner">
             <div className="row">
@@ -120,7 +120,7 @@ export default function Donate() {
         </div>
       </section>
 
-      <section className="section" data-section="patrons">
+      <section className="section bg-gray-100" data-section="patrons">
         <a name="patrons"></a>
 
         <div className="container">

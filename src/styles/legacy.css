@@ -194,9 +194,10 @@ section.banner--image_stick_bottom {
 }
 
 .button {
+  color: white;
   padding: .87em 1.7em;
   border-radius: 4px;
-  background: #fff;
+  background: #1A2238;
   text-decoration: none;
   box-sizing: border-box;
   transition: transform .3s cubic-bezier(.374, .019, .035, 1.861), -webkit-transform .3s cubic-bezier(.374, .019, .035, 1.861);
@@ -204,12 +205,6 @@ section.banner--image_stick_bottom {
   border: none;
   cursor: pointer;
   outline: 0
-}
-
-button[type=submit],
-.button {
-  color: white;
-  background: #1A2238;
 }
 
 .button:hover {
@@ -569,11 +564,6 @@ button[type=submit],
   background: rgba(0, 0, 0, .25)
 }
 
-footer {
-  padding: 30px 0;
-  font-size: 85% !important
-}
-
 .filter__item {
   border: 2px solid #1A2238;
 }
@@ -582,23 +572,3 @@ footer {
   background: #1A2238;
   color: white;
 }
-
-[data-section="header"],
-[data-section="footer"] {
-  background-color: #fcf8f2;
-}
-
-[data-section="support"],
-[data-section="sponsors"],
-[data-section="addyourown"],
-[data-section="patrons"] {
-  @apply bg-gray-100;
-}
-
-[data-section="header"] .button,
-[data-section="donate"] .button,
-[data-section="addyourown"] .button {
-  background: #FF6A3D;
-}
-
-

@@ -31,7 +31,7 @@ export default function Mentor(props) {
 
       <NavHeader />
 
-      <section data-section="header" className="banner banner--default">
+      <section className="banner banner--default bg-primary-100" data-section="header" >
         <div className="container">
           <div className="banner__inner">
             <div className="row">

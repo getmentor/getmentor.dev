@@ -1,5 +1,5 @@
-import '../styles/globals.css'
 import '../styles/legacy.css'
+import '../styles/globals.css'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
 /* eslint-disable react/prop-types */

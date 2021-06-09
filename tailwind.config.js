@@ -10,6 +10,10 @@ module.exports = {
       padding: '2rem',
     },
 
+    fontFamily: {
+      sans: ['Open Sans', 'Segoe UI', 'sans-serif'],
+    },
+
     extend: {},
   },
   variants: {

@@ -2,8 +2,8 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer data-section="footer">
-      <div className="text-center">
+    <footer className="bg-primary-100" data-section="footer">
+      <div className="py-8 text-center text-sm">
         <p>
           <a href="https://t.me/getmentor_dev" target="_blank" rel="noreferrer">Telegram</a>
           {' | '}
