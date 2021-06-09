@@ -5,12 +5,14 @@ module.exports = {
   ],
 
   parserOptions: {
+    ecmaVersion: 11,
     sourceType: 'module',
   },
 
   env: {
     browser: true,
     es6: true,
+    node: true,
   },
 
   plugins: [

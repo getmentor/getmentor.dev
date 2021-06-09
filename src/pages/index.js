@@ -1,73 +1,52 @@
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
-import styles from '../styles/Home.module.css'
+import MentorsFilters from '../components/MentorsFilters'
+import MentorsList from '../components/MentorsList'
 import { getMentors } from '../server/cached-mentors'
+import styles from '../styles/Home.module.css'
 
 export async function getServerSideProps() {
-  const mentors = await getMentors()
+  const allMentors = await getMentors()
 
   return {
     props: {
-      mentors,
-    }
+      allMentors,
+    },
   }
 }
 
-export function Mentors(props) {
-  const { mentors } = props
+export function MentorsBlock(props) {
+  const { allMentors } = props
 
-  const filters = {
-    tags: [
-      'All',
-      'Backend',
-      'Frontend',
-      'Code Review',
-      'System Design',
-      'UX/UI/Design',
-      'iOS',
-      'Android',
-      'QA',
-      'Marketing',
-      'Content/Copy',
-      'Databases',
-      'Data Science/ML',
-      'Аналитика',
-      'Network',
-      'Cloud',
-      'DevOps/SRE',
-      'Agile',
-      'Team Lead/Management',
-      'Project Management',
-      'Product Management',
-      'Entrepreneurship',
-      'DevRel',
-      'HR',
-      'Карьера',
-      'Собеседования',
-      'Другое',
-    ],
-    price: [
-      '✅ Бесплатно',
-      '1000 руб',
-      '2000 руб',
-      '3000 руб',
-      '4000 руб',
-      '5000 руб',
-      '6000 руб',
-      '7000 руб',
-      '8000 руб',
-      '9000 руб',
-      '🤝 По договоренности',
-    ],
-    experience: [
-      '<2 лет',
-      '😎 2-5 лет',
-      '😎 5-10 лет',
-      '🌟 10+ лет',
-    ],
+  const [selectedTags, setSelectedTags] = useState([])
+  const [mentorsCount, setMentorsCount] = useState(48)
+
+  // reset pagination on filters change
+  useEffect(() => {
+    setMentorsCount(48)
+  }, [selectedTags])
+
+  const showMoreMentors = () => {
+    setMentorsCount(mentorsCount + 48)
   }
+
+  const hasAllTags = (mentorTags, selectedTags) => {
+    for (const selectedTag of selectedTags) {
+      if (!mentorTags.includes(selectedTag)) {
+        return false
+      }
+    }
+    return true
+  }
+  const filteredMentors = (selectedTags.length)
+    ? allMentors.filter(mentor => hasAllTags(mentor.tags, selectedTags))
+    : allMentors
+
+  const mentors = filteredMentors.slice(0, mentorsCount)
+  const hasMoreMentors = (filteredMentors.length > mentorsCount)
 
   return (
     <section className="section" data-section="list">
@@ -77,82 +56,16 @@ export function Mentors(props) {
         <h2 className="section__title text-center">Наши менторы</h2>
 
         <div className="section__content">
-          <div>
-            <div className="text-center">
-              <ul className="filters list-unstyled list-inline">
-                {filters.tags.map(tag => (
-                  <li className="filter__item" key={tag}>{tag}</li>
-                ))}
-              </ul>
+          <MentorsFilters
+            tags={selectedTags}
+            onChange={newTags => setSelectedTags(newTags)}
+          />
 
-              <ul className="filters list-unstyled list-inline">
-                {filters.price.map(price => (
-                  <li className="filter__item" key={price}>{price}</li>
-                ))}
-              </ul>
-
-              <ul className="filters list-unstyled list-inline">
-                {filters.experience.map(experience => (
-                  <li className="filter__item" key={experience}>{experience}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="cards__wrapper per-row--4">
-              {mentors.slice(0, 48).map(mentor => (
-                <div className="card card__image-only has_hover" key={mentor.id}>
-                  <div className="card__inner">
-                    <div
-                      className="card__header"
-                      style={{ backgroundImage: 'url(' + mentor.photo.thumbnails.large.url + ')' }}
-                    >
-                      <div className="card__extras">
-                        <div>{mentor.experience}</div>
-                        <div>{'✅ ' + mentor.menteeCount}</div>
-                        <div>{mentor.price}</div>
-                        <div>➡️</div>
-                      </div>
-                      <div className="card__content">
-                        <h4 className="card__title">{mentor.name}</h4>
-                        <p className="card__description">{mentor.job}</p>
-                      </div>
-                      <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.3)' }}></div>
-                    </div>
-
-                    <Link href={'/mentors/' + mentor.slug}>
-                      <a className="card__link"></a>
-                    </Link>
-
-                    <div id={'popup_' + mentor.id} className="lity-popup lity-hide">
-                      <h3>{mentor.name}</h3>
-                      <p><b><em>{mentor.job}</em></b></p>
-                      <p>{mentor.description}</p>
-                      <p>
-                        <Link
-                          href={'/mentors/' + mentor.slug}
-                          target="_blank"
-                          rel="noreferrer"
-                        >{'/mentors/' + mentor.slug}</Link>
-                      </p>
-
-                      <p className="text-center">
-                        <a
-                          className="button"
-                          href="https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=recGuJKR7nuAy7STG"
-                          target="_blank"
-                          rel="noreferrer"
-                        >Оставить заявку</a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="more" style={{ display: 'none' }}>
-              <a className="button btn__load_more" href="#">Посмотреть ещё</a>
-            </div>
-          </div>
+          <MentorsList
+            mentors={mentors}
+            hasMore={hasMoreMentors}
+            onClickMore={() => showMoreMentors()}
+          />
         </div>
       </div>
     </section>
@@ -160,7 +73,7 @@ export function Mentors(props) {
 }
 
 export default function Home(props) {
-  const { mentors } = props
+  const { allMentors } = props
 
   return (
     <div className={styles.container}>
@@ -347,7 +260,7 @@ export default function Home(props) {
         </div>
       </section>
 
-      <Mentors mentors={mentors} />
+      <MentorsBlock allMentors={allMentors} />
 
       <section className="section" data-section="sponsors">
         <a name="sponsors"></a>

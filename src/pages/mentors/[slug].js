@@ -1,10 +1,17 @@
 import Head from 'next/head'
 import NavHeader from '../../components/NavHeader'
 import Footer from '../../components/Footer'
-import { getMentor } from '../../server/cached-mentors'
+import { getMentors } from '../../server/cached-mentors'
 
 export async function getServerSideProps(context) {
-  const mentor = await getMentor(context.params.slug)
+  const allMentors = await getMentors()
+  const mentor = allMentors.find(mentor => mentor.slug === context.params.slug)
+
+  if (!mentor) {
+    return {
+      notFound: true,
+    }
+  }
 
   return {
     props: {
@@ -20,7 +27,6 @@ export default function Mentor(props) {
     <div>
       <Head>
         <title>{mentor.name} | GetMentor – открытое сообщество IT-наставников</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <NavHeader />

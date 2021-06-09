@@ -17,12 +17,3 @@ export async function getMentors() {
 
   return mentors
 }
-
-/**
- * @param {string} slug
- * @returns {Promise<Mentor>}
- */
-export async function getMentor(slug) {
-  const mentors = await getMentors()
-  return mentors.find(mentor => mentor.slug === slug)
-}
