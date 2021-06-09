@@ -1,3 +1,4 @@
+import Link from 'next/link'
 
 export default function Footer() {
   return (
@@ -11,10 +12,10 @@ export default function Footer() {
           <a href="mailto:hello@getmentor.dev">Email</a>
         </p>
         <p>
-          <a href="/privacy">Политика в отношении персональных данных</a>
+          <Link href="/privacy">Политика в отношении персональных данных</Link>
         </p>
         <p>
-          <a href="/disclaimer">Отказ от ответственности</a>
+          <Link href="/disclaimer">Отказ от ответственности</Link>
         </p>
       </div>
     </footer>

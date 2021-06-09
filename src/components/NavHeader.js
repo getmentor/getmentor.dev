@@ -1,3 +1,15 @@
+import Link from 'next/link'
+
+function Nav() {
+  return (
+    <ul>
+      <li><Link href="/#list">🎓 Все менторы</Link></li>
+      <li><Link href="/bementor">➕ Стать ментором</Link></li>
+      <li><Link href="https://blog.getmentor.dev">📝 Наш блог</Link></li>
+      <li><Link href="/donate">🍩 Донат</Link></li>
+    </ul>
+  )
+}
 
 export default function NavHeader() {
   return (
@@ -17,21 +29,11 @@ export default function NavHeader() {
         </div>
         <div className="nav__toggle">☰</div>
         <div className="nav__mobile">
-          <ul>
-            <li><a href="/#list">🎓 Все менторы</a></li>
-            <li><a href="/bementor">➕ Стать ментором</a></li>
-            <li><a href="https://blog.getmentor.dev">📝 Наш блог</a></li>
-            <li><a href="/donate">🍩 Донат</a></li>
-          </ul>
+          <Nav />
         </div>
         <div className="nav__backdrop"></div>
         <nav className="nav">
-          <ul>
-            <li><a href="/#list">🎓 Все менторы</a></li>
-            <li><a href="/bementor">➕ Стать ментором</a></li>
-            <li><a href="https://blog.getmentor.dev">📝 Наш блог</a></li>
-            <li><a href="/donate">🍩 Донат</a></li>
-          </ul>
+          <Nav />
         </nav>
       </div>
     </div>
