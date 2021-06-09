@@ -3,8 +3,166 @@ import Link from 'next/link'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import styles from '../styles/Home.module.css'
+import { getMentors } from '../lib/mentors'
 
-export default function Home() {
+export async function getServerSideProps() {
+  const mentors = await getMentors()
+
+  return {
+    props: {
+      mentors,
+    }
+  }
+}
+
+export function Mentors(props) {
+  const { mentors } = props
+
+  const filters = {
+    tags: [
+      'All',
+      'Backend',
+      'Frontend',
+      'Code Review',
+      'System Design',
+      'UX/UI/Design',
+      'iOS',
+      'Android',
+      'QA',
+      'Marketing',
+      'Content/Copy',
+      'Databases',
+      'Data Science/ML',
+      'Аналитика',
+      'Network',
+      'Cloud',
+      'DevOps/SRE',
+      'Agile',
+      'Team Lead/Management',
+      'Project Management',
+      'Product Management',
+      'Entrepreneurship',
+      'DevRel',
+      'HR',
+      'Карьера',
+      'Собеседования',
+      'Другое',
+    ],
+    price: [
+      '✅ Бесплатно',
+      '1000 руб',
+      '2000 руб',
+      '3000 руб',
+      '4000 руб',
+      '5000 руб',
+      '6000 руб',
+      '7000 руб',
+      '8000 руб',
+      '9000 руб',
+      '🤝 По договоренности',
+    ],
+    experience: [
+      '<2 лет',
+      '😎 2-5 лет',
+      '😎 5-10 лет',
+      '🌟 10+ лет',
+    ],
+  }
+
+  return (
+    <section className="section" data-section="list">
+      <a name="list"></a>
+
+      <div className="container">
+        <h2 className="section__title text-center">Наши менторы</h2>
+
+        <div className="section__content">
+          <div>
+            <div className="text-center">
+              <ul className="filters list-unstyled list-inline">
+                {filters.tags.map(tag => (
+                  <li className="filter__item" key={tag}>{tag}</li>
+                ))}
+              </ul>
+
+              <ul className="filters list-unstyled list-inline">
+                {filters.price.map(price => (
+                  <li className="filter__item" key={price}>{price}</li>
+                ))}
+              </ul>
+
+              <ul className="filters list-unstyled list-inline">
+                {filters.experience.map(experience => (
+                  <li className="filter__item" key={experience}>{experience}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="loading__overlay" style={{ display: 'none' }}></div>
+            <div className="cards__wrapper per-row--4">
+              {mentors.map(mentor => (
+                <div className="card card__image-only has_hover" key={mentor.id}>
+                  <div className="card__inner">
+                    <div
+                      className="card__header"
+                      style={{ backgroundImage: 'url(' + mentor.photo.thumbnails.large.url + ')' }}
+                    >
+                      <div className="card__extras">
+                        <div>{mentor.experience}</div>
+                        <div>{'✅ ' + mentor.menteeCount}</div>
+                        <div>{mentor.price}</div>
+                        <div>➡️</div>
+                      </div>
+                      <div className="card__content">
+                        <h4 className="card__title">{mentor.name}</h4>
+                        <p className="card__description">{mentor.job}</p>
+                      </div>
+                      <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.3)' }}></div>
+                    </div>
+
+                    <Link href={'/mentors/' + mentor.id}>
+                      <a className="card__link"></a>
+                    </Link>
+
+                    <div id={'popup_' + mentor.id} className="lity-popup lity-hide">
+                      <h3>{mentor.name}</h3>
+                      <p><b><em>{mentor.job}</em></b></p>
+                      <p>{mentor.description}</p>
+                      <p>
+                        <Link
+                          href={'/mentors/' + mentor.id}
+                          target="_blank"
+                          rel="noreferrer"
+                        >{'/mentors/' + mentor.id}</Link>
+                      </p>
+
+                      <p className="text-center">
+                        <a
+                          className="button"
+                          href="https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=recGuJKR7nuAy7STG"
+                          target="_blank"
+                          rel="noreferrer"
+                        >Оставить заявку</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="more" style={{ display: 'none' }}>
+              <a className="button btn__load_more" href="#">Посмотреть ещё</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default function Home(props) {
+  const { mentors } = props
+
   return (
     <div className={styles.container}>
       <Head>
@@ -190,284 +348,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section" data-section="list">
-        <a name="list"></a>
-
-        <div className="container">
-          <h2 className="section__title text-center">Наши менторы</h2>
-
-          <div className="section__content">
-
-            <div className="cards" data-filter-type="select multiple" data-sheet="MentorsView"
-              data-view="SiteView" data-template="tpl_list" data-has-filters="true">
-              <div className="text-center">
-                <ul className="filters list-unstyled list-inline" data-filter-row="0">
-                  <li className="filter__item active" data-tag="all">
-                    All
-                  </li>
-                  <li className="filter__item" data-tag="Backend">
-                    Backend
-                  </li>
-                  <li className="filter__item" data-tag="Frontend">
-                    Frontend
-                  </li>
-                  <li className="filter__item" data-tag="Code Review">
-                    Code Review
-                  </li>
-                  <li className="filter__item" data-tag="System Design">
-                    System Design
-                  </li>
-                </ul>
-                <ul className="filters list-unstyled list-inline" data-filter-row="1">
-                  <li className="filter__item" data-tag="UX/UI/Design">
-                    UX/UI/Design
-                  </li>
-                  <li className="filter__item" data-tag="iOS">
-                    iOS
-                  </li>
-                  <li className="filter__item" data-tag="Android">
-                    Android
-                  </li>
-                  <li className="filter__item" data-tag="QA">
-                    QA
-                  </li>
-                  <li className="filter__item" data-tag="Marketing">
-                    Marketing
-                  </li>
-                  <li className="filter__item" data-tag="Content/Copy">
-                    Content/Copy
-                  </li>
-                </ul>
-                <ul className="filters list-unstyled list-inline" data-filter-row="2">
-                  <li className="filter__item" data-tag="Databases">
-                    Databases
-                  </li>
-                  <li className="filter__item" data-tag="Data Science/ML">
-                    Data Science/ML
-                  </li>
-                  <li className="filter__item" data-tag="Аналитика">
-                    Аналитика
-                  </li>
-                  <li className="filter__item" data-tag="Network">
-                    Network
-                  </li>
-                  <li className="filter__item" data-tag="Cloud">
-                    Cloud
-                  </li>
-                  <li className="filter__item" data-tag="DevOps/SRE">
-                    DevOps/SRE
-                  </li>
-                </ul>
-                <ul className="filters list-unstyled list-inline" data-filter-row="3">
-                  <li className="filter__item" data-tag="Agile">
-                    Agile
-                  </li>
-                  <li className="filter__item" data-tag="Team Lead/Management">
-                    Team Lead/Management
-                  </li>
-                  <li className="filter__item" data-tag="Project Management">
-                    Project Management
-                  </li>
-                  <li className="filter__item" data-tag="Product Management">
-                    Product Management
-                  </li>
-                  <li className="filter__item" data-tag="Entrepreneurship">
-                    Entrepreneurship
-                  </li>
-                </ul>
-                <ul className="filters list-unstyled list-inline" data-filter-row="4">
-                  <li className="filter__item" data-tag="DevRel">
-                    DevRel
-                  </li>
-                  <li className="filter__item" data-tag="HR">
-                    HR
-                  </li>
-                  <li className="filter__item" data-tag="Карьера">
-                    Карьера
-                  </li>
-                  <li className="filter__item" data-tag="Собеседования">
-                    Собеседования
-                  </li>
-                  <li className="filter__item" data-tag="Другое">
-                    Другое
-                  </li>
-                </ul>
-                <ul className="filters list-unstyled list-inline" data-filter-row="5">
-                  <li className="filter__item" data-tag="✅Бесплатно">
-                    ✅Бесплатно
-                  </li>
-                  <li className="filter__item" data-tag="1000 руб">
-                    1000 руб
-                  </li>
-                  <li className="filter__item" data-tag="2000 руб">
-                    2000 руб
-                  </li>
-                  <li className="filter__item" data-tag="3000 руб">
-                    3000 руб
-                  </li>
-                  <li className="filter__item" data-tag="4000 руб">
-                    4000 руб
-                  </li>
-                  <li className="filter__item" data-tag="5000 руб">
-                    5000 руб
-                  </li>
-                  <li className="filter__item" data-tag="6000 руб">
-                    6000 руб
-                  </li>
-                  <li className="filter__item" data-tag="7000 руб">
-                    7000 руб
-                  </li>
-                  <li className="filter__item" data-tag="8000 руб">
-                    8000 руб
-                  </li>
-                  <li className="filter__item" data-tag="9000 руб">
-                    9000 руб
-                  </li>
-                  <li className="filter__item" data-tag="🤝По договоренности">
-                    🤝По договоренности
-                  </li>
-                </ul>
-                <ul className="filters list-unstyled list-inline" data-filter-row="6">
-                  <li className="filter__item" data-tag="<2 лет">
-                    &lt;2 лет
-                  </li>
-                  <li className="filter__item" data-tag="😎2-5 лет">
-                    😎2-5 лет
-                  </li>
-                  <li className="filter__item" data-tag="😎5-10 лет">
-                    😎5-10 лет
-                  </li>
-                  <li className="filter__item" data-tag="🌟10+ лет">
-                    🌟10+ лет
-                  </li>
-                </ul>
-                <ul className="filters list-unstyled list-inline" data-filter-row="7">
-                  <li className="filter__item" data-tag="Эксперт Авито">
-                    Эксперт Авито
-                  </li>
-                </ul>
-              </div>
-              <div className="loading__overlay" style={{ display: 'none' }}></div>
-              <div className="cards__wrapper per-row--4">
-                <div className="card card__image-only has_hover">
-                  <div className="card__inner">
-                    <div
-                      className="card__header"
-                      style={{ backgroundImage: 'url(https://dl.airtable.com/.attachments/2b9b86c296b4ef0b5140c44f8223361f/71e59aca/155143691_2963706400525450_7487303371103625435_o.jpg)' }}
-                    >
-                      <div className="card__extras">
-                        <div>🌟10+ лет</div>
-                        <div>✅ 3</div>
-                        <div>✅Бесплатно</div>
-                        <div>➡️</div>
-                      </div>
-                      <div className="card__content">
-                        <h4 className="card__title"> Кузнецов Даниил </h4>
-                        <p className="card__description"> CTO @ сеть городских порталов Shkulev
-                          Media Holding</p>
-                      </div>
-                      <div className="card__header_overlay"
-                        style={{ background: 'rgba(0,0,0,0.3)' }}></div>
-                    </div>
-
-                    <a href="#popup_rec782oK6ONnNmqiQ" data-lity="" className="card__link"></a>
-                    <div id="popup_rec782oK6ONnNmqiQ" className="lity-popup lity-hide">
-                      <h3>Кузнецов Даниил</h3>
-                      <p><b><em>CTO @ сеть городских порталов Shkulev Media Holding</em></b></p>
-                      <p>10 лет в коммерческой веб разработке. Прошел весь путь от младшего
-                        разработчика до СТО продуктовой компании. Делаю нагруженные приложения на
-                        php. Сейчас СТО в Сети городских порталов Shkulev Media Holding. Это
-                        крупнейшая в России сеть городских онлайн-медиа. В команде разработки
-                        порядка 40 человек - be, fe, devops, qa.<br />
-                        Могу помочь c построением:
-                      </p>
-                      <p>- архитектуры web-приложения<br />
-                        - backend’a на php/go (сервисы и их взаимодействие, мониторинг, метрики,
-                        отказоустойчивость)<br />
-                        - карьеры backend разработчика, ипр, 1:1<br />
-                        - процессов разработки<br />
-                        - фот и его оптимизацией
-                      </p>
-                      <p>Плотно работаю с тимлидами, много знаю про их боли.</p>
-                      <p>
-                        <a
-                          href="https://getmentor.dev/kuznecov-daniil-178"
-                          target="_blank"
-                          rel="noreferrer"
-                        >https://getmentor.dev/kuznecov-daniil-178</a>
-                      </p>
-
-                      <p className="text-center">
-                        <a
-                          className="button"
-                          href="https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=recGuJKR7nuAy7STG"
-                          target="_blank"
-                          rel="noreferrer"
-                        >Оставить заявку</a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="card card__image-only has_hover">
-                  <div className="card__inner">
-                    <div
-                      className="card__header"
-                      style={{ backgroundImage: 'url(https://dl.airtable.com/.attachments/9c25743621b421993623b81e451a6399/15527687/07E1CFD5-29A7-4781-8FBF-50758A3DA96D_1_105_c.jpeg)' }}
-                    >
-                      <div className="card__extras">
-                        <div>🌟10+ лет</div>
-                        <div>✅ 0</div>
-                        <div>✅Бесплатно</div>
-                        <div>➡️</div>
-                      </div>
-                      <div className="card__content">
-                        <h4 className="card__title"> Кирилл Жмуров </h4>
-                        <p className="card__description">TeamLead @ IntOne</p>
-                      </div>
-                      <div className="card__header_overlay"
-                        style={{ background: 'rgba(0,0,0,0.3)' }}></div>
-                    </div>
-
-                    <a href="#popup_recNG1edRP1by682B" data-lity="" className="card__link"></a>
-                    <div id="popup_recNG1edRP1by682B" className="lity-popup lity-hide">
-                      <h3>Кирилл Жмуров</h3>
-                      <p><b><em>TeamLead @ IntOne</em></b>
-                      </p><p>За 15 лет в ИТ был на разных позициях - разработчик &gt; старший
-                      разработчик &gt; техлид &gt; тимлид.
-                      </p><p>В моем портфеле множество успешных кейсов: масштабирование продуктов,
-                      переход к микросервисам, оптимизация расходов на окружение и разработку.
-                      </p><p>С удовольствием помогу в вопросах построения, управления команд и
-                      проектов. Могу провести аудит процессов в команде и архитектуры проекта,
-                      дать рекомендации, курировать проект и команду.
-                      </p>
-                      <p>
-                        <a
-                          href="https://getmentor.dev/kirill-zhmurov-226"
-                          target="_blank"
-                          rel="noreferrer"
-                        >https://getmentor.dev/kirill-zhmurov-226</a>
-                      </p>
-                      <p className="text-center">
-                        <a
-                          className="button"
-                          href="https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=recpI43IyklvjDPM9"
-                          target="_blank"
-                          rel="noreferrer"
-                        >Оставить заявку</a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="more">
-                <a className="button btn__load_more" href="#">Посмотреть ещё </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Mentors mentors={mentors} />
 
       <section className="section" data-section="sponsors">
         <a name="sponsors"></a>
