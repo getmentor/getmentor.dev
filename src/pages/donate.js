@@ -120,8 +120,9 @@ export default function Donate() {
         </div>
       </section>
 
-      <section className="section" data-section="types">
-        <a name="types"></a>
+      <section className="section" data-section="patrons">
+        <a name="patrons"></a>
+
         <div className="container">
           <h2 className="section__title">Нас поддерживают</h2>
           <div className="section__description text-center">
@@ -132,7 +133,7 @@ export default function Donate() {
               <div className="list_items__wrapper">
                 {supporters.map(supporter => (
                   <div className="list_item" key={supporter.name}>
-                    <div className="list_item__inner">
+                    <div className="list_item__inner bg-white">
                       <div className="list_item__row">
                         <div className="list_item__content">
                           <h5 className="list_item__title text-lg">{supporter.name}</h5>

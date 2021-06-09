@@ -181,26 +181,6 @@ section.banner--image_stick_bottom {
   padding-top: 10px
 }
 
-i.size--default, span.size--default {
-  font-size: 21px
-}
-
-i.size--medium, span.size--medium {
-  font-size: 30px
-}
-
-i.size--large, span.size--large {
-  font-size: 40px
-}
-
-i.size--xl, span.size--xl {
-  font-size: 60px
-}
-
-i.size--xxl, span.size--xxl {
-  font-size: 85px
-}
-
 @media all and (max-width: 850px) {
   div.icon_box {
     width: 50% !important
@@ -604,9 +584,15 @@ footer {
 }
 
 [data-section="header"],
-[data-section="donate"],
 [data-section="footer"] {
   background-color: #fcf8f2;
+}
+
+[data-section="support"],
+[data-section="sponsors"],
+[data-section="addyourown"],
+[data-section="patrons"] {
+  @apply bg-gray-100;
 }
 
 [data-section="header"] .button,

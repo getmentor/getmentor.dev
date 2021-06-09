@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faIdBadge, faInfo, faPaperPlane, faComments, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import MentorsFilters from '../components/MentorsFilters'
@@ -121,7 +123,12 @@ export default function Home(props) {
             <div className="features__wrapper features--3">
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className="size--large fas fab fa-fas fa-id-badge text-primary"></i>
+                  <FontAwesomeIcon
+                    className="text-primary"
+                    icon={faIdBadge}
+                    size="2x"
+                    fixedWidth
+                  />
                 </div>
 
                 <div className="icon_box__content">
@@ -135,7 +142,12 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className="size--large fas fab fa-fas fa-info text-primary"></i>
+                  <FontAwesomeIcon
+                    className="text-primary"
+                    icon={faInfo}
+                    size="2x"
+                    fixedWidth
+                  />
                 </div>
 
                 <div className="icon_box__content">
@@ -153,7 +165,12 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className="size--large fas fab fa-fas fa-edit text-primary"></i>
+                  <FontAwesomeIcon
+                    className="text-primary"
+                    icon={faEdit}
+                    size="2x"
+                    fixedWidth
+                  />
                 </div>
 
                 <div className="icon_box__content">
@@ -167,7 +184,12 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className="size--large fas fab fa-fas fa-paper-plane text-primary"></i>
+                  <FontAwesomeIcon
+                    className="text-primary"
+                    icon={faPaperPlane}
+                    size="2x"
+                    fixedWidth
+                  />
                 </div>
 
                 <div className="icon_box__content">
@@ -179,7 +201,12 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className="size--large fas fab fa-fas fa-comments text-primary"></i>
+                  <FontAwesomeIcon
+                    className="text-primary"
+                    icon={faComments}
+                    size="2x"
+                    fixedWidth
+                  />
                 </div>
 
                 <div className="icon_box__content">
@@ -193,7 +220,12 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className="size--large fas fab fa-fas fa-search text-primary"></i>
+                  <FontAwesomeIcon
+                    className="text-primary"
+                    icon={faSearch}
+                    size="2x"
+                    fixedWidth
+                  />
                 </div>
 
                 <div className="icon_box__content">
