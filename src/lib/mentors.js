@@ -4,7 +4,10 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process
 const mentors = base('Mentors')
 
 export async function getMentors() {
-  const items = await mentors.select().all()
+  const items = await mentors.select({
+    sort: [{ field: 'Sort Order', direction: 'asc' }],
+  }).all()
+
   return items.map(item => formatRecord(item))
 }
 
@@ -21,7 +24,7 @@ function formatRecord(item) {
     description: item.fields['Описание'],
     experience: item.fields['Опыт'],
     price: item.fields['Цена'],
-    menteeCount: item.fields['Ментии'],
+    menteeCount: item.fields['Проведено сессий'],
     photo: item.fields['Фото'][0],
     tags: item.fields['Теги'],
   }

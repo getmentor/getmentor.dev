@@ -98,9 +98,8 @@ export function Mentors(props) {
               </ul>
             </div>
 
-            <div className="loading__overlay" style={{ display: 'none' }}></div>
             <div className="cards__wrapper per-row--4">
-              {mentors.map(mentor => (
+              {mentors.slice(0, 48).map(mentor => (
                 <div className="card card__image-only has_hover" key={mentor.id}>
                   <div className="card__inner">
                     <div
