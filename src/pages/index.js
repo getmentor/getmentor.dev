@@ -3,7 +3,7 @@ import Link from 'next/link'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import styles from '../styles/Home.module.css'
-import { getMentors } from '../lib/mentors'
+import { getMentors } from '../server/cached-mentors'
 
 export async function getServerSideProps() {
   const mentors = await getMentors()
@@ -119,7 +119,7 @@ export function Mentors(props) {
                       <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.3)' }}></div>
                     </div>
 
-                    <Link href={'/mentors/' + mentor.id}>
+                    <Link href={'/mentors/' + mentor.slug}>
                       <a className="card__link"></a>
                     </Link>
 
@@ -129,10 +129,10 @@ export function Mentors(props) {
                       <p>{mentor.description}</p>
                       <p>
                         <Link
-                          href={'/mentors/' + mentor.id}
+                          href={'/mentors/' + mentor.slug}
                           target="_blank"
                           rel="noreferrer"
-                        >{'/mentors/' + mentor.id}</Link>
+                        >{'/mentors/' + mentor.slug}</Link>
                       </p>
 
                       <p className="text-center">

@@ -1,10 +1,10 @@
-import { getMentor } from '../../lib/mentors'
-import Head from "next/head";
+import Head from 'next/head'
 import NavHeader from '../../components/NavHeader'
 import Footer from '../../components/Footer'
+import { getMentor } from '../../server/cached-mentors'
 
 export async function getServerSideProps(context) {
-  const mentor = await getMentor(context.params.id)
+  const mentor = await getMentor(context.params.slug)
 
   return {
     props: {
