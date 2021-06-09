@@ -20,12 +20,14 @@ export default function NavHeader() {
     >
       <div className="container">
         <div className="nav__brand">
-          <a style={{ border: 'none', opacity: 1 }} href="/">
-            <img
-              src="https://dl.airtable.com/.attachments/ce89f2fb2d12814c5ff6340be243793d/5ccb3ce5/dp1zHE.png"
-              style={{ width: '120px' }}
-            />
-          </a>
+          <Link href="/">
+            <a style={{ border: 'none', opacity: 1 }}>
+              <img
+                src="https://dl.airtable.com/.attachments/ce89f2fb2d12814c5ff6340be243793d/5ccb3ce5/dp1zHE.png"
+                style={{ width: '120px' }}
+              />
+            </a>
+          </Link>
         </div>
         <div className="nav__toggle">☰</div>
         <div className="nav__mobile">
