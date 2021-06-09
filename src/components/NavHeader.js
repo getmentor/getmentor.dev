@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import styles from  './NavHeader.module.css'
 
 function Nav() {
   return (
@@ -14,12 +15,12 @@ function Nav() {
 export default function NavHeader() {
   return (
     <div
-      className="nav__container"
+      className={styles.container}
       style={{ background: '#fcf8f2', position: 'relative' }}
       data-nav-id="header"
     >
-      <div className="container">
-        <div className="nav__brand">
+      <div className="container flex">
+        <div className={styles.brand}>
           <Link href="/">
             <a style={{ border: 'none', opacity: 1 }}>
               <img
@@ -29,12 +30,12 @@ export default function NavHeader() {
             </a>
           </Link>
         </div>
-        <div className="nav__toggle">☰</div>
-        <div className="nav__mobile">
+        <div className={styles.toggle}>☰</div>
+        <div className={styles.mobile}>
           <Nav />
         </div>
-        <div className="nav__backdrop"></div>
-        <nav className="nav">
+        <div className={styles.backdrop}></div>
+        <nav className={styles.desktop}>
           <Nav />
         </nav>
       </div>

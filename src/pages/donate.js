@@ -42,11 +42,7 @@ export default function Donate() {
   return (
     <div>
       <Head>
-        <title>GetMentor – открытое сообщество IT-наставников</title>
-        <meta
-          name="description"
-          content="GetMentor – это открытое комьюнити IT-наставников, готовых делиться своими опытом и знаниями. Наша задача – помогать людям находить ответы на свои вопросы в работе или жизни через прямой доступ к экспертизе в разговоре 1-на-1."
-        />
+        <title>Донат | GetMentor – открытое сообщество IT-наставников</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -63,7 +59,9 @@ export default function Donate() {
                   Эта площадка полностью бесплатна для менторов и учеников.
                   Мы не берём коммиссий, взносов, обязательных платежей – ничего, что могло бы
                   отвлекать людей от общения.
-                  <br/>
+                </p>
+
+                <p>
                   Но это также значит, что поддержка сайта держится на энтузиазме и наших личных
                   финансах. Чтобы этот энтузиазм и финансы не иссякали, ты можешь поблагодарить нас
                   небольшим донатом. Из этих денег мы оплатим хостинги, подписки на всякие SaaS и
@@ -81,8 +79,8 @@ export default function Donate() {
       <section className="section" data-section="list">
         <a name="list"></a>
         <div className="container">
-          <h2 className="section__title text-center">Как донатить</h2>
-          <div className="text-center section__description">
+          <h2 className="section__title">Как донатить</h2>
+          <div className="section__description text-center">
             <p>
               Три простых способа – Patreon, перевод на карту или PayPal. Выбирай тот, который тебе
               удобнее. Или можно на карту напрямую: 5536 9139 2661 4781.<br/>
@@ -102,7 +100,7 @@ export default function Donate() {
                         style={{ backgroundImage: 'url(' + donate.imageUrl + ')' }}
                       >
                         <div className="card__content">
-                          <h4 className="card__title">{donate.name}</h4>
+                          <h4 className="card__title text-xl">{donate.name}</h4>
                           <p className="card__description">{donate.description}</p>
                         </div>
                         <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.4)' }}></div>
@@ -125,8 +123,8 @@ export default function Donate() {
       <section className="section" data-section="types">
         <a name="types"></a>
         <div className="container">
-          <h2 className="section__title text-center">Нас поддерживают</h2>
-          <div className="text-center section__description">
+          <h2 className="section__title">Нас поддерживают</h2>
+          <div className="section__description text-center">
             <p>Эти люди поддержали нас через Patreon или вручную. Спасибо им!</p>
           </div>
           <div className="section__content">
@@ -137,7 +135,7 @@ export default function Donate() {
                     <div className="list_item__inner">
                       <div className="list_item__row">
                         <div className="list_item__content">
-                          <h5 className="list_item__title">{supporter.name}</h5>
+                          <h5 className="list_item__title text-lg">{supporter.name}</h5>
 
                           {(supporter.level === 3) && (
                             <p className="list_item__description">Меценат 👑</p>
@@ -165,8 +163,8 @@ export default function Donate() {
         <a name="list2"></a>
 
         <div className="container">
-          <h2 className="section__title text-center">❗Это важно</h2>
-          <div className="text-center section__description">
+          <h2 className="section__title">❗Это важно</h2>
+          <div className="section__description text-center">
             <p>
               Проект держится исключительно на энтузиазме и доброй воле, а ими, как известно, счета
               не оплатишь.<br/>Поэтому твоя помощь очень важна для нас!
@@ -184,7 +182,7 @@ export default function Donate() {
                         style={{ backgroundImage: 'url(' + donate.imageUrl + ')' }}
                       >
                         <div className="card__content">
-                          <h4 className="card__title">{donate.name}</h4>
+                          <h4 className="card__title text-xl">{donate.name}</h4>
                           <p className="card__description">{donate.description}</p>
                         </div>
                         <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.4)' }}></div>

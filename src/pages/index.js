@@ -53,7 +53,7 @@ export function MentorsBlock(props) {
       <a name="list"></a>
 
       <div className="container">
-        <h2 className="section__title text-center">Наши менторы</h2>
+        <h2 className="section__title">Наши менторы</h2>
 
         <div className="section__content">
           <MentorsFilters
@@ -100,8 +100,8 @@ export default function Home(props) {
                   жизни через прямой
                   доступ к экспертизе в разговоре 1-на-1.
                 </p>
-                <div className="banner__cta">
-                  <a className="button" target="_self" href="#list">Найти ментора</a>
+                <div className="pt-6">
+                  <a className="button" href="#list">Найти ментора</a>
                 </div>
               </div>
             </div>
@@ -113,14 +113,15 @@ export default function Home(props) {
         <a name="howitworks"></a>
 
         <div className="container">
-          <h2 className="section__title text-center"><span style={{ color: '#FF6A3D' }}>Как это работает</span>
+          <h2 className="section__title text-primary">
+            Как это работает
           </h2>
+
           <div className="section__content">
             <div className="features__wrapper features--3">
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className=" size--large fas fab fa-fas fa-id-badge"
-                    style={{ color: '#FF6A3D' }}></i>
+                  <i className="size--large fas fab fa-fas fa-id-badge text-primary"></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -134,7 +135,7 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className=" size--large fas fab fa-fas fa-info" style={{ color: '#FF6A3D' }}></i>
+                  <i className="size--large fas fab fa-fas fa-info text-primary"></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -152,7 +153,7 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className=" size--large fas fab fa-fas fa-edit" style={{ color: '#FF6A3D' }}></i>
+                  <i className="size--large fas fab fa-fas fa-edit text-primary"></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -166,8 +167,7 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className=" size--large fas fab fa-fas fa-paper-plane"
-                    style={{ color: '#FF6A3D' }}></i>
+                  <i className="size--large fas fab fa-fas fa-paper-plane text-primary"></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -178,10 +178,8 @@ export default function Home(props) {
               </div>
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
-
                 <div className="icon_box__icon">
-                  <i className=" size--large fas fab fa-fas fa-comments"
-                    style={{ color: '#FF6A3D' }}></i>
+                  <i className="size--large fas fab fa-fas fa-comments text-primary"></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -195,8 +193,7 @@ export default function Home(props) {
 
               <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className=" size--large fas fab fa-fas fa-search"
-                    style={{ color: '#FF6A3D' }}></i>
+                  <i className="size--large fas fab fa-fas fa-search text-primary"></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -214,48 +211,47 @@ export default function Home(props) {
 
       <section className="section" data-section="support">
         <a name="support"></a>
+
         <div className="container">
-          <h2 className="section__title text-center">Поддержать проект</h2>
-          <div className="text-center section__description">
-            <p>
+          <h2 className="section__title">Поддержать проект</h2>
+          <div className="section__description text-center">
+            <div className="flex justify-center items-center">
               <a
+                className="border-0 px-4"
                 href="https://www.patreon.com/getmentor"
                 target="_blank"
                 rel="noreferrer"
-                style={{ borderBottom: 'none' }}
               >
                 <img
                   src="https://dl.airtable.com/.attachments/459c122afbca675d1172b0a198c176ab/d7bfca46/Digital-Patreon-Wordmark_FieryCoral.png"
                   width="200px"
-                  style={{ paddingRight: '20px' }}
                 />
               </a>
 
               <a
+                className="border-0 px-4"
                 href="https://www.tinkoff.ru/rm/mogelashvili.georgiy1/llaLa45003"
                 target="_blank"
                 rel="noreferrer"
-                style={{ borderBottom: 'none' }}
               >
                 <img
                   src="https://dl.airtable.com/.attachments/39cd6946259ab35a8d8f8ecec995c325/f523c45c/tinkoff.png"
                   width="200px"
-                  style={{ paddingRight: '20px' }}
                 />
               </a>
 
               <a
+                className="border-0 px-4"
                 href="https://paypal.me/glamcoder"
                 target="_blank"
                 rel="noreferrer"
-                style={{ borderBottom: 'none' }}
               >
                 <img
                   src="https://dl.airtable.com/.attachments/d671166bc047b43a9d897b5cbda5c336/fa2e91fe/paypal.png"
                   width="200px"
                 />
               </a>
-            </p>
+            </div>
           </div>
         </div>
       </section>
@@ -266,33 +262,31 @@ export default function Home(props) {
         <a name="sponsors"></a>
 
         <div className="container">
-          <h2 className="section__title text-center">Нас поддерживают</h2>
-          <div className="text-center section__description">
-            <p>
+          <h2 className="section__title">Нас поддерживают</h2>
+          <div className="section__description text-center">
+            <div className="flex justify-center items-center">
               <a
+                className="border-0 px-4"
                 href="https://avito.tech"
                 target="_blank"
                 rel="noreferrer"
-                style={{ borderBottom: 'none' }}
               >
                 <img
                   src="https://dl.airtable.com/.attachments/19f21846f5925e28a11e9447b286223c/db62e445/v2.png"
                   width="300px"
-                  style={{ paddingRight: '20px' }}
                 />
               </a>
+            </div>
 
-              <br />
-              <br />
+            <br />
 
-              <a
-                href="https://www.notion.so/GetMentor-dev-1c6b882718154fc0961be132cab354a4"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Стать нашим спонсором
-              </a>
-            </p>
+            <a
+              href="https://www.notion.so/GetMentor-dev-1c6b882718154fc0961be132cab354a4"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Стать нашим спонсором
+            </a>
           </div>
         </div>
       </section>
@@ -300,8 +294,8 @@ export default function Home(props) {
       <section className="section" data-section="donate">
         <a name="donate"></a>
         <div className="container">
-          <h2 className="section__title text-center">🍩 Донат</h2>
-          <div className="text-center section__description">
+          <h2 className="section__title">🍩 Донат</h2>
+          <div className="section__description text-center">
             <p>Поиск наставника&nbsp;— сложный процесс. Как минимум потому, что не понятно, а где же
               его надо искать. Абсолютно такой же сложный процесс&nbsp;— поиск учеников, если ты
               эксперт. Этот сайт был задуман как место, где люди, которым нужна помощь ментора, и
@@ -310,7 +304,7 @@ export default function Home(props) {
 
             <p>Наша главная задача&nbsp;— соединять людей и развивать коммьюнити за счёт новых
               знакомств и передачи знаний.<br/>
-            <strong style={{ color: '#FF6A3D' }}>За свою работу мы не берём никакой комиссии, оплаты за
+            <strong className="text-primary">За свою работу мы не берём никакой комиссии, оплаты за
                 участие и прочих обязательных взносов и вознаграждений ни от менторов, ни от
                 менти.</strong><br/>
               Мы верим в то, что если эта площадка приносит пользу людям, то они сами захотят
@@ -325,7 +319,9 @@ export default function Home(props) {
           <div className="section__content">
             <div className="text-center element-center">
               <div className="section__cta">
-                <Link className="button" href="/donate">Поблагодарить</Link>
+                <Link href="/donate">
+                  <a className="button">Поблагодарить</a>
+                </Link>
               </div>
             </div>
           </div>
@@ -334,11 +330,14 @@ export default function Home(props) {
 
       <section className="section" data-section="addyourown">
         <a name="addyourown"></a>
+
         <div className="container">
-          <h2 className="section__title text-center">Стать ментором</h2>
-          <div className="text-center section__description">
-            <p>У тебя есть опыт и ты хочешь делиться своими знаниями и помогать другим? <strong>Присоединяйся
-              к нашей команде менторов!</strong>
+          <h2 className="section__title">Стать ментором</h2>
+
+          <div className="section__description text-center">
+            <p>У тебя есть опыт и ты хочешь делиться своими знаниями и помогать другим?
+              {' '}
+              <strong>Присоединяйся к нашей команде менторов!</strong>
             </p>
             <p>Заполни анкету и мы обязательно добавим тебя на сайт.</p>
           </div>
@@ -346,7 +345,9 @@ export default function Home(props) {
           <div className="section__content">
             <div className="text-center element-center">
               <div className="section__cta">
-                <Link className="button" href="/bementor">Оставить заявку</Link>
+                <Link href="/bementor">
+                  <a className="button">Оставить заявку</a>
+                </Link>
               </div>
             </div>
           </div>
@@ -356,16 +357,16 @@ export default function Home(props) {
       <section className="section" data-section="faq">
         <a name="faq"></a>
         <div className="container">
-          <h2 className="section__title text-center">FAQ</h2>
+          <h2 className="section__title">FAQ</h2>
           <div className="section__description">
-            <h4>❓&nbsp;Зачем всё это?</h4>
+            <h4 className="text-xl font-medium mt-10">❓&nbsp;Зачем всё это?</h4>
             <p>Мы видим огромную потребность у современных специалистов в
               наставниках, которые помогали бы им преодолевать трудности и научили бы тонкостям и
               тайным знаниям. Этот сервис&nbsp;— попытка построить коммьюнити наставников и
               учеников, чтобы облегчить им поиск друг друга.
             </p>
 
-            <h4>📅&nbsp;Я записался к ментору. Что теперь?</h4>
+            <h4 className="text-xl font-medium mt-10">📅&nbsp;Я записался к ментору. Что теперь?</h4>
             <p>Отлично! Сразу после того, как ты оставил заявку на
               менторство, мы передаём её выбранному эксперту. Он или она рассмотрят её в течение
               пары дней. Если ментор решит, что готов помочь по этой заявке, то он сам свяжется с
@@ -377,7 +378,7 @@ export default function Home(props) {
               отказе, чтобы ты мог найти себе другого специалиста.
             </p>
 
-            <h4>💶&nbsp;Сколько это стоит?</h4>
+            <h4 className="text-xl font-medium mt-10">💶&nbsp;Сколько это стоит?</h4>
             <p>Мы хотим построить сообщество, поэтому не хотим приплетать в
               процесс деньги. Однако мы понимаем, что время эксперта может чего-то стоить. Поэтому у
               нас каждый ментор сам назначает стоимость своей консультации, которую мы затем
@@ -385,22 +386,22 @@ export default function Home(props) {
               с экспертом напрямую.
             </p>
             <p>При этом наша площадка абсолютно ничего не берёт себе из
-              этой цены. Если вы хотите поддержать проект и отблагодарить нас за работу, вы можете
-            <Link href="/donate">сделать нам донат</Link>.
+              этой цены. Если вы хотите поддержать проект и отблагодарить нас за работу, вы
+              можете <Link href="/donate">сделать нам донат</Link>.
             </p>
 
-            <h4>🚫&nbsp;Я не нашёл ментора. Что делать?</h4>
+            <h4 className="text-xl font-medium mt-10">🚫&nbsp;Я не нашёл ментора. Что делать?</h4>
             <p>Так бывает, но не нужно расстраиваться. Ты можешь поделиться
               ссылкой на этот сайт в своих сетях, чтобы больше людей узнало о площадке и пришло сюда
               в качестве экспертов.
             </p>
 
-            <h4>🙋‍♀️&nbsp;Как мне стать ментором?</h4>
+            <h4 className="text-xl font-medium mt-10">🙋‍♀️&nbsp;Как мне стать ментором?</h4>
             <p>Очень просто. Достаточно <Link href="/bementor">оставить заявку</Link>, и мы обязательно вас
               добавим.
             </p>
 
-            <h4>👋&nbsp;У меня есть идеи. Куда писать?</h4>
+            <h4 className="text-xl font-medium mt-10">👋&nbsp;У меня есть идеи. Куда писать?</h4>
             <p>Пишите <a href="mailto:hello@getmentor.dev">нам на почту</a>,
               мы с радостью почитаем и ответим.
             </p>

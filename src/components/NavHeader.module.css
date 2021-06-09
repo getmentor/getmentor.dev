@@ -1,0 +1,118 @@
+
+.container[data-nav-id="header"] nav li a,
+.nav_toggle {
+  color: #1A2238;
+}
+
+.toggle {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 10px;
+  font-size: 24px;
+  font-family: sans-serif;
+  cursor: pointer;
+  display: none;
+  z-index: 2;
+  line-height: 1
+}
+
+@media all and (max-width: 768px) {
+  .toggle {
+    display: block
+  }
+
+  nav.nav {
+    display: none
+  }
+}
+
+.mobile {
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-width: 270px;
+  width: 90%;
+  bottom: 0;
+  z-index: 1;
+  transform: translateX(-100%)
+}
+
+.mobile.active {
+  transition: .12s;
+  transform: translateX(0)
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, .3);
+  z-index: 0;
+  display: none
+}
+
+.mobile ul {
+  padding: 25px;
+  list-style: none
+}
+
+.container .mobile li a {
+  color: #222;
+  padding: 5px 0;
+  display: block;
+  border: none
+}
+
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 13px 0
+}
+
+.container .container {
+  display: flex;
+  align-items: center
+}
+
+.brand {
+  float: left
+}
+
+.brand img {
+  width: 45px;
+  vertical-align: middle
+}
+
+.desktop {
+  margin-left: auto;
+  top: 0
+}
+
+.desktop ul {
+  list-style-type: none
+}
+
+.desktop ul li {
+  display: inline-block
+}
+
+.desktop li a {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 1rem;
+  opacity: .7;
+  margin: 0 1em;
+  transition: all .175s ease-in-out;
+  border: none;
+}
+
+.desktop li a:hover {
+  opacity: 1
+}
