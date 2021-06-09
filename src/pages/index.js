@@ -43,14 +43,14 @@ export default function Home() {
         <a name="howitworks"></a>
 
         <div className="container">
-          <h2 className="section__title text-center"><span style={{color: '#FF6A3D'}}>Как это работает</span>
+          <h2 className="section__title text-center"><span style={{ color: '#FF6A3D' }}>Как это работает</span>
           </h2>
           <div className="section__content">
             <div className="features__wrapper features--3">
-              <div className="icon_box style--icon_left" style={{width: '33.33%'}}>
+              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
                   <i className=" size--large fas fab fa-fas fa-id-badge"
-                     style={{color: '#FF6A3D'}}></i>
+                    style={{ color: '#FF6A3D' }}></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -62,9 +62,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="icon_box style--icon_left" style={{width: '33.33%'}}>
+              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className=" size--large fas fab fa-fas fa-info" style={{color: '#FF6A3D'}}></i>
+                  <i className=" size--large fas fab fa-fas fa-info" style={{ color: '#FF6A3D' }}></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -80,9 +80,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="icon_box style--icon_left" style={{width: '33.33%'}}>
+              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
-                  <i className=" size--large fas fab fa-fas fa-edit" style={{color: '#FF6A3D'}}></i>
+                  <i className=" size--large fas fab fa-fas fa-edit" style={{ color: '#FF6A3D' }}></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -94,10 +94,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="icon_box style--icon_left" style={{width: '33.33%'}}>
+              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
                   <i className=" size--large fas fab fa-fas fa-paper-plane"
-                     style={{color: '#FF6A3D'}}></i>
+                    style={{ color: '#FF6A3D' }}></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -107,11 +107,11 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="icon_box style--icon_left" style={{width: '33.33%'}}>
+              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
 
                 <div className="icon_box__icon">
                   <i className=" size--large fas fab fa-fas fa-comments"
-                     style={{color: '#FF6A3D'}}></i>
+                    style={{ color: '#FF6A3D' }}></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -123,10 +123,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="icon_box style--icon_left" style={{width: '33.33%'}}>
+              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
                 <div className="icon_box__icon">
                   <i className=" size--large fas fab fa-fas fa-search"
-                     style={{color: '#FF6A3D'}}></i>
+                    style={{ color: '#FF6A3D' }}></i>
                 </div>
 
                 <div className="icon_box__content">
@@ -151,31 +151,34 @@ export default function Home() {
               <a
                 href="https://www.patreon.com/getmentor"
                 target="_blank"
-                style={{borderBottom: 'none'}}
+                rel="noreferrer"
+                style={{ borderBottom: 'none' }}
               >
                 <img
                   src="https://dl.airtable.com/.attachments/459c122afbca675d1172b0a198c176ab/d7bfca46/Digital-Patreon-Wordmark_FieryCoral.png"
                   width="200px"
-                  style={{paddingRight: '20px'}}
+                  style={{ paddingRight: '20px' }}
                 />
               </a>
 
               <a
                 href="https://www.tinkoff.ru/rm/mogelashvili.georgiy1/llaLa45003"
                 target="_blank"
-                style={{borderBottom: 'none'}}
+                rel="noreferrer"
+                style={{ borderBottom: 'none' }}
               >
                 <img
                   src="https://dl.airtable.com/.attachments/39cd6946259ab35a8d8f8ecec995c325/f523c45c/tinkoff.png"
                   width="200px"
-                  style={{paddingRight: '20px'}}
+                  style={{ paddingRight: '20px' }}
                 />
               </a>
 
               <a
                 href="https://paypal.me/glamcoder"
                 target="_blank"
-                style={{borderBottom: 'none'}}
+                rel="noreferrer"
+                style={{ borderBottom: 'none' }}
               >
                 <img
                   src="https://dl.airtable.com/.attachments/d671166bc047b43a9d897b5cbda5c336/fa2e91fe/paypal.png"
@@ -196,7 +199,7 @@ export default function Home() {
           <div className="section__content">
 
             <div className="cards" data-filter-type="select multiple" data-sheet="MentorsView"
-                 data-view="SiteView" data-template="tpl_list" data-has-filters="true">
+              data-view="SiteView" data-template="tpl_list" data-has-filters="true">
               <div className="text-center">
                 <ul className="filters list-unstyled list-inline" data-filter-row="0">
                   <li className="filter__item active" data-tag="all">
@@ -344,13 +347,13 @@ export default function Home() {
                   </li>
                 </ul>
               </div>
-              <div className="loading__overlay" style={{display: 'none'}}></div>
+              <div className="loading__overlay" style={{ display: 'none' }}></div>
               <div className="cards__wrapper per-row--4">
                 <div className="card card__image-only has_hover">
                   <div className="card__inner">
                     <div
                       className="card__header"
-                      style={{backgroundImage: 'url(https://dl.airtable.com/.attachments/2b9b86c296b4ef0b5140c44f8223361f/71e59aca/155143691_2963706400525450_7487303371103625435_o.jpg)'}}
+                      style={{ backgroundImage: 'url(https://dl.airtable.com/.attachments/2b9b86c296b4ef0b5140c44f8223361f/71e59aca/155143691_2963706400525450_7487303371103625435_o.jpg)' }}
                     >
                       <div className="card__extras">
                         <div>🌟10+ лет</div>
@@ -364,7 +367,7 @@ export default function Home() {
                           Media Holding</p>
                       </div>
                       <div className="card__header_overlay"
-                           style={{background: 'rgba(0,0,0,0.3)'}}></div>
+                        style={{ background: 'rgba(0,0,0,0.3)' }}></div>
                     </div>
 
                     <a href="#popup_rec782oK6ONnNmqiQ" data-lity="" className="card__link"></a>
@@ -387,22 +390,30 @@ export default function Home() {
                       </p>
                       <p>Плотно работаю с тимлидами, много знаю про их боли.</p>
                       <p>
-                        <a href="https://getmentor.dev/kuznecov-daniil-178"
-                           target="_blank">https://getmentor.dev/kuznecov-daniil-178</a>
+                        <a
+                          href="https://getmentor.dev/kuznecov-daniil-178"
+                          target="_blank"
+                          rel="noreferrer"
+                        >https://getmentor.dev/kuznecov-daniil-178</a>
                       </p>
+
                       <p className="text-center">
-                        <a target="_blank" className="button"
-                           href="https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=recGuJKR7nuAy7STG">Оставить
-                          заявку</a>
+                        <a
+                          className="button"
+                          href="https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=recGuJKR7nuAy7STG"
+                          target="_blank"
+                          rel="noreferrer"
+                        >Оставить заявку</a>
                       </p>
                     </div>
                   </div>
                 </div>
+
                 <div className="card card__image-only has_hover">
                   <div className="card__inner">
                     <div
                       className="card__header"
-                      style={{backgroundImage: 'url(https://dl.airtable.com/.attachments/9c25743621b421993623b81e451a6399/15527687/07E1CFD5-29A7-4781-8FBF-50758A3DA96D_1_105_c.jpeg)'}}
+                      style={{ backgroundImage: 'url(https://dl.airtable.com/.attachments/9c25743621b421993623b81e451a6399/15527687/07E1CFD5-29A7-4781-8FBF-50758A3DA96D_1_105_c.jpeg)' }}
                     >
                       <div className="card__extras">
                         <div>🌟10+ лет</div>
@@ -415,7 +426,7 @@ export default function Home() {
                         <p className="card__description">TeamLead @ IntOne</p>
                       </div>
                       <div className="card__header_overlay"
-                           style={{background: 'rgba(0,0,0,0.3)'}}></div>
+                        style={{ background: 'rgba(0,0,0,0.3)' }}></div>
                     </div>
 
                     <a href="#popup_recNG1edRP1by682B" data-lity="" className="card__link"></a>
@@ -424,20 +435,26 @@ export default function Home() {
                       <p><b><em>TeamLead @ IntOne</em></b>
                       </p><p>За 15 лет в ИТ был на разных позициях - разработчик &gt; старший
                       разработчик &gt; техлид &gt; тимлид.
-                    </p><p>В моем портфеле множество успешных кейсов: масштабирование продуктов,
+                      </p><p>В моем портфеле множество успешных кейсов: масштабирование продуктов,
                       переход к микросервисам, оптимизация расходов на окружение и разработку.
-                    </p><p>С удовольствием помогу в вопросах построения, управления команд и
+                      </p><p>С удовольствием помогу в вопросах построения, управления команд и
                       проектов. Могу провести аудит процессов в команде и архитектуры проекта,
                       дать рекомендации, курировать проект и команду.
-                    </p>
+                      </p>
                       <p>
-                        <a href="https://getmentor.dev/kirill-zhmurov-226"
-                           target="_blank">https://getmentor.dev/kirill-zhmurov-226</a>
+                        <a
+                          href="https://getmentor.dev/kirill-zhmurov-226"
+                          target="_blank"
+                          rel="noreferrer"
+                        >https://getmentor.dev/kirill-zhmurov-226</a>
                       </p>
                       <p className="text-center">
-                        <a target="_blank" className="button"
-                           href="https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=recpI43IyklvjDPM9">Оставить
-                          заявку</a>
+                        <a
+                          className="button"
+                          href="https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=recpI43IyklvjDPM9"
+                          target="_blank"
+                          rel="noreferrer"
+                        >Оставить заявку</a>
                       </p>
                     </div>
                   </div>
@@ -459,19 +476,27 @@ export default function Home() {
           <h2 className="section__title text-center">Нас поддерживают</h2>
           <div className="text-center section__description">
             <p>
-              <a href="https://avito.tech" target="_blank" style={{borderBottom: 'none'}}>
+              <a
+                href="https://avito.tech"
+                target="_blank"
+                rel="noreferrer"
+                style={{ borderBottom: 'none' }}
+              >
                 <img
                   src="https://dl.airtable.com/.attachments/19f21846f5925e28a11e9447b286223c/db62e445/v2.png"
                   width="300px"
-                  style={{paddingRight: '20px'}}
+                  style={{ paddingRight: '20px' }}
                 />
               </a>
 
               <br />
               <br />
 
-              <a href="https://www.notion.so/GetMentor-dev-1c6b882718154fc0961be132cab354a4"
-                 target="_blank">
+              <a
+                href="https://www.notion.so/GetMentor-dev-1c6b882718154fc0961be132cab354a4"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Стать нашим спонсором
               </a>
             </p>
@@ -492,7 +517,7 @@ export default function Home() {
 
             <p>Наша главная задача&nbsp;— соединять людей и развивать коммьюнити за счёт новых
               знакомств и передачи знаний.<br/>
-              <strong style={{ color: '#FF6A3D' }}>За свою работу мы не берём никакой комиссии, оплаты за
+            <strong style={{ color: '#FF6A3D' }}>За свою работу мы не берём никакой комиссии, оплаты за
                 участие и прочих обязательных взносов и вознаграждений ни от менторов, ни от
                 менти.</strong><br/>
               Мы верим в то, что если эта площадка приносит пользу людям, то они сами захотят
@@ -568,7 +593,7 @@ export default function Home() {
             </p>
             <p>При этом наша площадка абсолютно ничего не берёт себе из
               этой цены. Если вы хотите поддержать проект и отблагодарить нас за работу, вы можете
-              <Link href="/donate">сделать нам донат</Link>.
+            <Link href="/donate">сделать нам донат</Link>.
             </p>
 
             <h4>🚫&nbsp;Я не нашёл ментора. Что делать?</h4>

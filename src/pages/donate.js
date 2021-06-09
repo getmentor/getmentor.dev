@@ -95,7 +95,7 @@ export default function Donate() {
             <div className="cards">
               <div className="cards__wrapper per-row--3">
                 {donates.map(donate => (
-                  <div className="card card__image-only has_hover">
+                  <div className="card card__image-only has_hover" key={donate.name}>
                     <div className="card__inner">
                       <div
                         className="card__header"
@@ -109,8 +109,9 @@ export default function Donate() {
                       </div>
                       <a
                         className="card__link"
-                        target="_blank"
                         href={donate.linkUrl}
+                        target="_blank"
+                        rel="noreferrer"
                       ></a>
                     </div>
                   </div>
@@ -132,7 +133,7 @@ export default function Donate() {
             <div className="list">
               <div className="list_items__wrapper">
                 {supporters.map(supporter => (
-                  <div className="list_item">
+                  <div className="list_item" key={supporter.name}>
                     <div className="list_item__inner">
                       <div className="list_item__row">
                         <div className="list_item__content">
@@ -176,7 +177,7 @@ export default function Donate() {
             <div className="cards">
               <div className="cards__wrapper per-row--3">
                 {donates.map(donate => (
-                  <div className="card card__image-only has_hover">
+                  <div className="card card__image-only has_hover" key={donate.name}>
                     <div className="card__inner">
                       <div
                         className="card__header"
@@ -190,8 +191,9 @@ export default function Donate() {
                       </div>
                       <a
                         className="card__link"
-                        target="_blank"
                         href={donate.linkUrl}
+                        target="_blank"
+                        rel="noreferrer"
                       ></a>
                     </div>
                   </div>

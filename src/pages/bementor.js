@@ -23,9 +23,9 @@ export default function Bementor() {
               <div className="column banner__content">
                 <h1>Стань частью нашей команды</h1>
                 <p>Помогать другим – почётно и круто. Спасибо, что хотите этим заниматься.<br/>
-                  Заполните <a href="https://airtable.com/shraFoLi9aSqzU4U9" target="_blank">форму
+                  Заполните <a href="https://airtable.com/shraFoLi9aSqzU4U9" target="_blank" rel="noreferrer">форму
                   ниже</a>, и мы обязательно рассмотрим вашу заявку как можно скорее.
-              </p></div>
+                </p></div>
             </div>
           </div>
         </div>

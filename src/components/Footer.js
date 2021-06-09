@@ -5,9 +5,9 @@ export default function Footer() {
     <footer data-section="footer">
       <div className="text-center">
         <p>
-          <a href="https://t.me/getmentor_dev" target="_blank">Telegram</a>
+          <a href="https://t.me/getmentor_dev" target="_blank" rel="noreferrer">Telegram</a>
           {' | '}
-          <a href="https://www.facebook.com/getmentor.dev" target="_blank">Facebook</a>
+          <a href="https://www.facebook.com/getmentor.dev" target="_blank" rel="noreferrer">Facebook</a>
           {' | '}
           <a href="mailto:hello@getmentor.dev">Email</a>
         </p>

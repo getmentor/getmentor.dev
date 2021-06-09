@@ -4,46 +4,37 @@ module.exports = {
     'plugin:react/recommended',
   ],
 
-  parser: 'babel-eslint',
+  parserOptions: {
+    sourceType: 'module',
+  },
 
   env: {
     browser: true,
-    commonjs: true,
     es6: true,
-    mocha: true,
-    webextensions: true,
   },
 
   plugins: [
-    'babel',
     'react',
   ],
 
-  globals: {
-    'process': true,
-    'gaBGAT': false
-  },
-
   settings: {
     react: {
-      version: '16.6.0',
+      version: '17.0.2',
     },
   },
 
   rules: {
-    'semi': ['error', 'never'],
-    'no-console': ['error', { allow: ['info', 'warn', 'error'] }],
-    'no-unused-vars': ['error', { vars: 'all', args: 'none' }],
-    'comma-dangle': ['error', 'always-multiline'],
-    'no-multiple-empty-lines': ['error', { max: 1 }],
-    'space-before-function-paren': ['error', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
-    'object-curly-spacing': ['error', 'always'],
-    'react/no-children-prop': 'off',
-    'react/no-deprecated': 'off',
-    'keyword-spacing': 'error',
-    'quotes': ['error', 'single', { allowTemplateLiterals: true }],
-    'curly': ['error', 'all'],
-    'no-multi-spaces': 'error',
-    'indent': ['error', 2, { 'SwitchCase': 1 }],
+    'semi': ['warn', 'never'],
+    'no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
+    'no-unused-vars': ['warn', { vars: 'all', args: 'none' }],
+    'comma-dangle': ['warn', 'always-multiline'],
+    'no-multiple-empty-lines': ['warn', { max: 1 }],
+    'space-before-function-paren': ['warn', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
+    'object-curly-spacing': ['warn', 'always'],
+    'keyword-spacing': 'warn',
+    'quotes': ['warn', 'single', { allowTemplateLiterals: true }],
+    'curly': ['warn', 'all'],
+    'indent': ['warn', 2, { 'SwitchCase': 1 }],
+    'react/react-in-jsx-scope': 'off',
   },
 }

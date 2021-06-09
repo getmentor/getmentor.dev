@@ -15,15 +15,15 @@ export default function NavHeader() {
   return (
     <div
       className="nav__container"
-      style={{background: '#fcf8f2', position: 'relative'}}
+      style={{ background: '#fcf8f2', position: 'relative' }}
       data-nav-id="header"
     >
       <div className="container">
         <div className="nav__brand">
-          <a style={{border: 'none', opacity: 1}} href="/">
+          <a style={{ border: 'none', opacity: 1 }} href="/">
             <img
               src="https://dl.airtable.com/.attachments/ce89f2fb2d12814c5ff6340be243793d/5ccb3ce5/dp1zHE.png"
-              style={{width: '120px'}}
+              style={{ width: '120px' }}
             />
           </a>
         </div>
