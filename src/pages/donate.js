@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
+import Section from '../components/Section'
 
 export default function Donate() {
   const donates = [
@@ -48,155 +49,136 @@ export default function Donate() {
 
       <NavHeader />
 
-      <section className="banner banner--default bg-primary-100" data-section="header" >
-        <div className="container">
-          <div className="banner__inner">
-            <div className="row">
-              <div className="column banner__content">
-                <h1>🍩 Донат</h1>
+      <Section className="bg-primary-100" id="header">
+        <div className="text-center py-14 lg:w-3/4 mx-auto">
+          <h1>🍩 Донат</h1>
 
-                <p>
-                  Эта площадка полностью бесплатна для менторов и учеников.
-                  Мы не берём коммиссий, взносов, обязательных платежей – ничего, что могло бы
-                  отвлекать людей от общения.
-                </p>
+          <p>
+            Эта площадка полностью бесплатна для менторов и учеников.
+            Мы не берём коммиссий, взносов, обязательных платежей – ничего, что могло бы
+            отвлекать людей от общения.
+          </p>
 
-                <p>
-                  Но это также значит, что поддержка сайта держится на энтузиазме и наших личных
-                  финансах. Чтобы этот энтузиазм и финансы не иссякали, ты можешь поблагодарить нас
-                  небольшим донатом. Из этих денег мы оплатим хостинги, подписки на всякие SaaS и
-                  прочие штуки, на чём тут всё держится.
-                </p>
+          <p>
+            Но это также значит, что поддержка сайта держится на энтузиазме и наших личных
+            финансах. Чтобы этот энтузиазм и финансы не иссякали, ты можешь поблагодарить нас
+            небольшим донатом. Из этих денег мы оплатим хостинги, подписки на всякие SaaS и
+            прочие штуки, на чём тут всё держится.
+          </p>
 
-                <p>На остаток купим пива 🍻</p>
-              </div>
-            </div>
-          </div>
+          <p>На остаток купим пива 🍻</p>
+        </div>
+      </Section>
+
+      <Section id="list">
+        <Section.Title>Как донатить</Section.Title>
+
+        <div className="text-center">
+          <p>
+            Три простых способа – Patreon, перевод на карту или PayPal. Выбирай тот, который тебе
+            удобнее. Или можно на карту напрямую: 5536 9139 2661 4781.<br/>
+            Если ни один из них не подходит, то <a href="mailto:georgiy@getmentor.dev">напиши
+            нам</a>, мы что-нибудь придумаем.
+          </p>
         </div>
 
-      </section>
-
-      <section className="section" data-section="list">
-        <a name="list"></a>
-        <div className="container">
-          <h2 className="section__title">Как донатить</h2>
-          <div className="section__description text-center">
-            <p>
-              Три простых способа – Patreon, перевод на карту или PayPal. Выбирай тот, который тебе
-              удобнее. Или можно на карту напрямую: 5536 9139 2661 4781.<br/>
-                Если ни один из них не подходит, то <a href="mailto:georgiy@getmentor.dev">напиши
-                нам</a>, мы что-нибудь придумаем.
-            </p>
-          </div>
-
-          <div className="section__content">
-            <div className="cards">
-              <div className="cards__wrapper">
-                {donates.map(donate => (
-                  <div className="card card__image-only has_hover md:w-1/3" key={donate.name}>
-                    <div className="card__inner">
-                      <div
-                        className="card__header"
-                        style={{ backgroundImage: 'url(' + donate.imageUrl + ')' }}
-                      >
-                        <div className="card__content">
-                          <h4 className="card__title text-xl">{donate.name}</h4>
-                          <p className="card__description">{donate.description}</p>
-                        </div>
-                        <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.4)' }}></div>
-                      </div>
-                      <a
-                        className="card__link"
-                        href={donate.linkUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                      ></a>
+        <div className="cards">
+          <div className="cards__wrapper">
+            {donates.map(donate => (
+              <div className="card card__image-only has_hover md:w-1/3" key={donate.name}>
+                <div className="card__inner">
+                  <div
+                    className="card__header"
+                    style={{ backgroundImage: 'url(' + donate.imageUrl + ')' }}
+                  >
+                    <div className="card__content">
+                      <h4 className="card__title text-xl">{donate.name}</h4>
+                      <p className="card__description">{donate.description}</p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="section bg-gray-100" data-section="patrons">
-        <a name="patrons"></a>
-
-        <div className="container">
-          <h2 className="section__title">Нас поддерживают</h2>
-          <div className="section__description text-center">
-            <p>Эти люди поддержали нас через Patreon или вручную. Спасибо им!</p>
-          </div>
-
-          <div className="section__content">
-            {supporters.map(supporter => (
-              <div className="rounded-md shadow-md bg-white py-4 px-5 mb-5"  key={supporter.name}>
-                <div className="flex justify-between">
-                  <div>
-                    <h3 className="text-lg">{supporter.name}</h3>
-
-                    {(supporter.level === 3) && (
-                      <div className="text-sm pt-1 text-gray-600">Меценат 👑</div>
-                    )}
+                    <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.4)' }}></div>
                   </div>
 
-                  <div>
-                    {(supporter.level > 1) ? (
-                      <span>❤️🤟</span>
-                    ) : (
-                      <span>❤️</span>
-                    )}
-                  </div>
+                  <a
+                    className="card__link"
+                    href={donate.linkUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  ></a>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </Section>
 
-      <section className="section" data-section="list2">
-        <a name="list2"></a>
+      <Section className="bg-gray-100" id="patrons">
+        <Section.Title>Нас поддерживают</Section.Title>
 
-        <div className="container">
-          <h2 className="section__title">❗Это важно</h2>
-          <div className="section__description text-center">
-            <p>
-              Проект держится исключительно на энтузиазме и доброй воле, а ими, как известно, счета
-              не оплатишь.<br/>Поэтому твоя помощь очень важна для нас!
-            </p>
-          </div>
+        <div className="text-center">
+          <p>Эти люди поддержали нас через Patreon или вручную. Спасибо им!</p>
+        </div>
 
-          <div className="section__content">
-            <div className="cards">
-              <div className="cards__wrapper">
-                {donates.map(donate => (
-                  <div className="card card__image-only has_hover md:w-1/3" key={donate.name}>
-                    <div className="card__inner">
-                      <div
-                        className="card__header"
-                        style={{ backgroundImage: 'url(' + donate.imageUrl + ')' }}
-                      >
-                        <div className="card__content">
-                          <h4 className="card__title text-xl">{donate.name}</h4>
-                          <p className="card__description">{donate.description}</p>
-                        </div>
-                        <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.4)' }}></div>
-                      </div>
-                      <a
-                        className="card__link"
-                        href={donate.linkUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                      ></a>
-                    </div>
-                  </div>
-                ))}
+        {supporters.map(supporter => (
+          <div className="rounded-md shadow-md bg-white py-4 px-5 mb-5"  key={supporter.name}>
+            <div className="flex justify-between">
+              <div>
+                <h3 className="text-lg">{supporter.name}</h3>
+
+                {(supporter.level === 3) && (
+                  <div className="text-sm pt-1 text-gray-600">Меценат 👑</div>
+                )}
+              </div>
+
+              <div>
+                {(supporter.level > 1) ? (
+                  <span>❤️🤟</span>
+                ) : (
+                  <span>❤️</span>
+                )}
               </div>
             </div>
           </div>
+        ))}
+      </Section>
+
+      <Section id="list2">
+        <Section.Title className="section__title">❗Это важно</Section.Title>
+
+        <div className="text-center">
+          <p>
+            Проект держится исключительно на энтузиазме и доброй воле, а ими, как известно, счета
+            не оплатишь.<br/>Поэтому твоя помощь очень важна для нас!
+          </p>
         </div>
-      </section>
+
+        <div className="cards">
+          <div className="cards__wrapper">
+            {donates.map(donate => (
+              <div className="card card__image-only has_hover md:w-1/3" key={donate.name}>
+                <div className="card__inner">
+                  <div
+                    className="card__header"
+                    style={{ backgroundImage: 'url(' + donate.imageUrl + ')' }}
+                  >
+                    <div className="card__content">
+                      <h4 className="card__title text-xl">{donate.name}</h4>
+                      <p className="card__description">{donate.description}</p>
+                    </div>
+                    <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.4)' }}></div>
+                  </div>
+                  <a
+                    className="card__link"
+                    href={donate.linkUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  ></a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
 
       <Footer />
     </div>

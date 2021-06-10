@@ -38,5 +38,6 @@ module.exports = {
     'curly': ['warn', 'all'],
     'indent': ['warn', 2, { 'SwitchCase': 1 }],
     'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
   },
 }
