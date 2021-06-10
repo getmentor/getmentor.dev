@@ -40,11 +40,11 @@ export default function Mentor(props) {
             <h1 className="mb-2">{mentor.name}</h1>
             <div className="mb-4">{mentor.job}</div>
 
-            <ul className="filters">
+            <div className="flex flex-wrap -m-2 mb-4">
               {mentor.tags.map(tag => (
-                <li className="filter__item">{tag}</li>
+                <div className="border-2 border-gray-700 rounded-full py-1 px-4 m-2">{tag}</div>
               ))}
-            </ul>
+            </div>
 
             <div className="flex">
               <div className="flex-1 text-center">

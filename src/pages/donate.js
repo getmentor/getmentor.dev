@@ -91,9 +91,9 @@ export default function Donate() {
 
           <div className="section__content">
             <div className="cards">
-              <div className="cards__wrapper per-row--3">
+              <div className="cards__wrapper">
                 {donates.map(donate => (
-                  <div className="card card__image-only has_hover" key={donate.name}>
+                  <div className="card card__image-only has_hover md:w-1/3" key={donate.name}>
                     <div className="card__inner">
                       <div
                         className="card__header"
@@ -128,34 +128,29 @@ export default function Donate() {
           <div className="section__description text-center">
             <p>Эти люди поддержали нас через Patreon или вручную. Спасибо им!</p>
           </div>
+
           <div className="section__content">
-            <div className="list">
-              <div className="list_items__wrapper">
-                {supporters.map(supporter => (
-                  <div className="list_item" key={supporter.name}>
-                    <div className="list_item__inner bg-white">
-                      <div className="list_item__row">
-                        <div className="list_item__content">
-                          <h5 className="list_item__title text-lg">{supporter.name}</h5>
+            {supporters.map(supporter => (
+              <div className="rounded-md shadow-md bg-white py-4 px-5 mb-5"  key={supporter.name}>
+                <div className="flex justify-between">
+                  <div>
+                    <h3 className="text-lg">{supporter.name}</h3>
 
-                          {(supporter.level === 3) && (
-                            <p className="list_item__description">Меценат 👑</p>
-                          )}
-                        </div>
-
-                        <div className="list_item__right">
-                          {(supporter.level > 1) ? (
-                            <span>❤️🤟</span>
-                          ) : (
-                            <span>❤️</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                    {(supporter.level === 3) && (
+                      <div className="text-sm pt-1 text-gray-600">Меценат 👑</div>
+                    )}
                   </div>
-                ))}
+
+                  <div>
+                    {(supporter.level > 1) ? (
+                      <span>❤️🤟</span>
+                    ) : (
+                      <span>❤️</span>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -174,9 +169,9 @@ export default function Donate() {
 
           <div className="section__content">
             <div className="cards">
-              <div className="cards__wrapper per-row--3">
+              <div className="cards__wrapper">
                 {donates.map(donate => (
-                  <div className="card card__image-only has_hover" key={donate.name}>
+                  <div className="card card__image-only has_hover md:w-1/3" key={donate.name}>
                     <div className="card__inner">
                       <div
                         className="card__header"

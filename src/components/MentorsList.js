@@ -9,9 +9,9 @@ export default function MentorsList(props) {
 
   return (
     <>
-      <div className="cards__wrapper per-row--4">
+      <div className="cards__wrapper">
         {mentors.map(mentor => (
-          <div className="card card__image-only has_hover" key={mentor.id}>
+          <div className="card card__image-only has_hover md:w-1/2 lg:w-1/3 xl:w-1/4" key={mentor.id}>
             <div className="card__inner">
               <div
                 className="card__header"

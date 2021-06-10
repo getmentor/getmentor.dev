@@ -20,6 +20,26 @@ export async function getServerSideProps() {
   }
 }
 
+export function Feature(props) {
+  return (
+    <div className="flex sm:w-1/2 lg:w-1/3 p-4">
+      <div className="pr-4">
+        <FontAwesomeIcon
+          className="text-primary"
+          icon={props.icon}
+          size="2x"
+          fixedWidth
+        />
+      </div>
+
+      <div>
+        <h3 className="text-xl font-semibold mb-4">{props.title}</h3>
+        <div>{props.text}</div>
+      </div>
+    </div>
+  )
+}
+
 export function MentorsBlock(props) {
   const { allMentors } = props
 
@@ -119,122 +139,42 @@ export default function Home(props) {
           </h2>
 
           <div className="section__content">
-            <div className="features__wrapper features--3">
-              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
-                <div className="icon_box__icon">
-                  <FontAwesomeIcon
-                    className="text-primary"
-                    icon={faIdBadge}
-                    size="2x"
-                    fixedWidth
-                  />
-                </div>
+            <div className="flex flex-wrap">
+              <Feature
+                icon={faIdBadge}
+                title="Ты выбираешь наставника из списка ниже"
+                text="Все наши менторы выбраны вручную, чтобы исключить шарлатанство и спам."
+              />
 
-                <div className="icon_box__content">
-                  <h4 className="icon_box__title">Ты выбираешь наставника из списка ниже</h4>
-                  <p className="icon_box__text">Все наши менторы выбраны вручную, чтобы исключить
-                    шарлатанство
-                    и спам.
-                  </p>
-                </div>
-              </div>
+              <Feature
+                icon={faInfo}
+                title="У каждого ментора есть подробное описание, с чем он может помочь"
+                text="А ещё есть пометки опыта: 🌟10+ лет, 😎5-10 лет, 👍2-5 лет. И цена за сессию."
+              />
 
-              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
-                <div className="icon_box__icon">
-                  <FontAwesomeIcon
-                    className="text-primary"
-                    icon={faInfo}
-                    size="2x"
-                    fixedWidth
-                  />
-                </div>
+              <Feature
+                icon={faEdit}
+                title="Когда выбрал, оставляй заявку"
+                text="Напиши подробно, какую помощь ищешь, чтобы ментор лучше понимал, как тебе помочь."
+              />
 
-                <div className="icon_box__content">
-                  <h4 className="icon_box__title">У каждого ментора есть подробное описание, с чем
-                    он может
-                    помочь</h4>
-                  <p className="icon_box__text">Его легко посмотреть, нажав на фотку профиля, будет
-                    много
-                    текста и кнопка для записи. А ещё есть пометки опыта: 🌟10+ лет, 😎5-10 лет,
-                    👍2-5 лет. И цена за
-                    сессию.
-                  </p>
-                </div>
-              </div>
+              <Feature
+                icon={faPaperPlane}
+                title="Мы передадим твою информацию ментору"
+                text="Почти мгновенно, как только отработает автоматизация."
+              />
 
-              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
-                <div className="icon_box__icon">
-                  <FontAwesomeIcon
-                    className="text-primary"
-                    icon={faEdit}
-                    size="2x"
-                    fixedWidth
-                  />
-                </div>
+              <Feature
+                icon={faComments}
+                title="Ментор напишет тебе и обсудит все детали"
+                text="Напрямую без посредников. Тут мы уже выходим из игры и оставляем вас наедине. Стоимость и способ оплаты — также на усмотрение ментора."
+              />
 
-                <div className="icon_box__content">
-                  <h4 className="icon_box__title">Когда выбрал, оставляй заявку</h4>
-                  <p className="icon_box__text">
-                    Напиши подробно, какую помощь ищешь, чтобы ментор лучше понимал, как тебе
-                    помочь.
-                  </p>
-                </div>
-              </div>
-
-              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
-                <div className="icon_box__icon">
-                  <FontAwesomeIcon
-                    className="text-primary"
-                    icon={faPaperPlane}
-                    size="2x"
-                    fixedWidth
-                  />
-                </div>
-
-                <div className="icon_box__content">
-                  <h4 className="icon_box__title">Мы передадим твою информацию ментору</h4>
-                  <p className="icon_box__text">Почти мгновенно, как только отработает
-                    автоматизация.</p>
-                </div>
-              </div>
-
-              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
-                <div className="icon_box__icon">
-                  <FontAwesomeIcon
-                    className="text-primary"
-                    icon={faComments}
-                    size="2x"
-                    fixedWidth
-                  />
-                </div>
-
-                <div className="icon_box__content">
-                  <h4 className="icon_box__title">Ментор напишет тебе и обсудит все детали</h4>
-                  <p className="icon_box__text">
-                    Напрямую без посредников. Тут мы уже выходим из игры и
-                    оставляем вас наедине. Стоимость и способ оплаты — также на усмотрение ментора.
-                  </p>
-                </div>
-              </div>
-
-              <div className="icon_box style--icon_left" style={{ width: '33.33%' }}>
-                <div className="icon_box__icon">
-                  <FontAwesomeIcon
-                    className="text-primary"
-                    icon={faSearch}
-                    size="2x"
-                    fixedWidth
-                  />
-                </div>
-
-                <div className="icon_box__content">
-                  <h4 className="icon_box__title">Не нашли, кого искали?</h4>
-                  <p className="icon_box__text">
-                    Оставь заявку на подбор ментора и наши специалисты вручную найдут наставника под
-                    твой запрос.
-                  </p>
-                </div>
-              </div>
+              <Feature
+                icon={faSearch}
+                title="Не нашли, кого искали?"
+                text="Оставь заявку на подбор ментора и наши специалисты вручную найдут наставника под твой запрос."
+              />
             </div>
           </div>
         </div>
@@ -349,7 +289,7 @@ export default function Home(props) {
           </div>
 
           <div className="section__content">
-            <div className="text-center element-center">
+            <div className="text-center">
               <div className="section__cta">
                 <Link href="/donate">
                   <a className="button bg-primary-900">Поблагодарить</a>
@@ -375,7 +315,7 @@ export default function Home(props) {
           </div>
 
           <div className="section__content">
-            <div className="text-center element-center">
+            <div className="text-center">
               <div className="section__cta">
                 <Link href="/bementor">
                   <a className="button bg-primary-900">Оставить заявку</a>

@@ -71,7 +71,7 @@ export default function MentorsFilters(props) {
 
   return (
     <div className="text-center">
-      <ul className="filters list-unstyled list-inline">
+      <ul className="flex flex-wrap justify-center -m-2 mb-4">
         {allFilters.tags.map(tag => {
           const isActive = (tag !== TAG_ALL)
             ? selectedTags.includes(tag)
@@ -79,8 +79,8 @@ export default function MentorsFilters(props) {
 
           return (
             <li
-              className={classNames('filter__item', {
-                'active': isActive,
+              className={classNames('border-2 border-gray-700 rounded-full py-1 px-4 m-2 cursor-pointer', {
+                'bg-gray-700 text-white': isActive,
               })}
               key={tag}
               onClick={() => onClickTag(tag)}
