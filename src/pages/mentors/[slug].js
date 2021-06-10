@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import ReactMarkdown from 'react-markdown'
 import NavHeader from '../../components/NavHeader'
 import Footer from '../../components/Footer'
 import { getMentors } from '../../server/cached-mentors'
@@ -31,35 +32,34 @@ export default function Mentor(props) {
 
       <NavHeader />
 
-      <section className="banner banner--default bg-primary-100" data-section="header" >
-        <div className="container">
-          <div className="banner__inner">
-            <div className="row">
-              <div className="column banner__content">
-                <h1>{mentor.name}</h1>
-                <h3>{mentor.job}</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="section" data-section="body">
         <a name="body"></a>
 
         <div className="container">
           <div className="section__content">
-            <div className="row row--center-cols row--img-left">
-              <div className="column col--img">
+            <h1 className="mb-2">{mentor.name}</h1>
+            <div className="mb-4">{mentor.job}</div>
+
+            <ul className="filters">
+              {mentor.tags.map(tag => (
+                <li className="filter__item">{tag}</li>
+              ))}
+            </ul>
+
+            <div className="flex">
+              <div className="flex-1 text-center">
                 <img src={mentor.photo.url} />
               </div>
-              <div className="column col--text">
-                <p>{mentor.description}</p>
-                <p>
-                  <b>Цена:</b> {mentor.price}<br/>
+
+              <div className="flex-1 px-4">
+                <div>
                   <b>Опыт:</b> {mentor.experience}<br/>
-                  <b>Теги:</b> {mentor.tags.join(', ')}
-                </p>
+                  <b>Цена:</b> {mentor.price}<br/>
+                </div>
+
+                <div className="my-4">
+                  <ReactMarkdown>{mentor.description}</ReactMarkdown>
+                </div>
 
                 <div className="section__cta">
                   <a

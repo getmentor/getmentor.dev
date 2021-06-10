@@ -545,12 +545,13 @@ section.banner--image_stick_bottom {
 
 .filters {
   list-style-type: none;
+  margin: -0.5rem;
   margin-bottom: 15px
 }
 
 .filter__item {
   display: inline-block;
-  margin: 10px;
+  margin: 0.5rem;
   padding: 7px 14px;
   line-height: 1;
   border-radius: 50px;
