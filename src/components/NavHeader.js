@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import classNames from 'classnames'
 import Link from 'next/link'
 import styles from  './NavHeader.module.css'
 
@@ -13,12 +15,10 @@ function Nav() {
 }
 
 export default function NavHeader() {
+  const [open, setOpen] = useState(false)
+
   return (
-    <div
-      className={styles.container}
-      style={{ background: '#fcf8f2', position: 'relative' }}
-      data-nav-id="header"
-    >
+    <div className={styles.container}>
       <div className="container flex">
         <div className={styles.brand}>
           <Link href="/">
@@ -30,12 +30,20 @@ export default function NavHeader() {
             </a>
           </Link>
         </div>
-        <div className={styles.toggle}>☰</div>
-        <div className={styles.mobile}>
+
+        <div
+          className={classNames(styles.toggle, 'md:hidden')}
+          onClick={() => setOpen(!open)}
+        >☰</div>
+        <div className={classNames(styles.mobile, open ? styles.active : '')}>
           <Nav />
         </div>
-        <div className={styles.backdrop}></div>
-        <nav className={styles.desktop}>
+        <div
+          className={classNames(styles.overlay, open ? 'block' : 'hidden')}
+          onClick={() => setOpen(!open)}
+        ></div>
+
+        <nav className={classNames(styles.desktop, 'hidden md:block')}>
           <Nav />
         </nav>
       </div>
