@@ -25,6 +25,27 @@
   }
 }
 
+@layer components {
+  .button {
+    color: white;
+    padding: .87em 1.7em;
+    border-radius: 4px;
+    background: #1A2238;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: transform .3s cubic-bezier(.374, .019, .035, 1.861), -webkit-transform .3s cubic-bezier(.374, .019, .035, 1.861);
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    outline: 0
+  }
+
+  .button:hover {
+    transform: scale(1.05);
+    opacity: 1
+  }
+}
+
 @layer utilities {
   .text-primary {
     color: #ff6a3d;

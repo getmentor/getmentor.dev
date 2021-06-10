@@ -2,6 +2,7 @@ import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
+import {Card} from "../components/Card";
 
 export default function Donate() {
   const donates = [
@@ -82,33 +83,19 @@ export default function Donate() {
           </p>
         </div>
 
-        <div className="cards">
-          <div className="cards__wrapper">
-            {donates.map(donate => (
-              <div className="card card__image-only has_hover md:w-1/3" key={donate.name}>
-                <div className="card__inner">
-                  <div
-                    className="card__header"
-                    style={{ backgroundImage: 'url(' + donate.imageUrl + ')' }}
-                  >
-                    <div className="card__content">
-                      <h4 className="card__title text-xl">{donate.name}</h4>
-                      <p className="card__description">{donate.description}</p>
-                    </div>
-
-                    <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.4)' }}></div>
-                  </div>
-
-                  <a
-                    className="card__link"
-                    href={donate.linkUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  ></a>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex">
+          {donates.map(donate => (
+            <div className="md:w-1/3">
+              <Card
+                key={donate.name}
+                linkUrl={donate.linkUrl}
+                imageUrl={donate.imageUrl}
+              >
+                <div className="text-xl">{donate.name}</div>
+                <p>{donate.description}</p>
+              </Card>
+            </div>
+          ))}
         </div>
       </Section>
 
@@ -152,31 +139,19 @@ export default function Donate() {
           </p>
         </div>
 
-        <div className="cards">
-          <div className="cards__wrapper">
-            {donates.map(donate => (
-              <div className="card card__image-only has_hover md:w-1/3" key={donate.name}>
-                <div className="card__inner">
-                  <div
-                    className="card__header"
-                    style={{ backgroundImage: 'url(' + donate.imageUrl + ')' }}
-                  >
-                    <div className="card__content">
-                      <h4 className="card__title text-xl">{donate.name}</h4>
-                      <p className="card__description">{donate.description}</p>
-                    </div>
-                    <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.4)' }}></div>
-                  </div>
-                  <a
-                    className="card__link"
-                    href={donate.linkUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  ></a>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex">
+          {donates.map(donate => (
+            <div className="md:w-1/3">
+              <Card
+                key={donate.name}
+                linkUrl={donate.linkUrl}
+                imageUrl={donate.imageUrl}
+              >
+                <div className="text-xl">{donate.name}</div>
+                <p>{donate.description}</p>
+              </Card>
+            </div>
+          ))}
         </div>
       </Section>
 

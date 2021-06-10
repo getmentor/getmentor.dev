@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import {Card} from "./Card";
 
 export default function MentorsList(props) {
   const {
@@ -9,39 +10,32 @@ export default function MentorsList(props) {
 
   return (
     <>
-      <div className="cards__wrapper">
+      <div className="flex flex-wrap">
         {mentors.map(mentor => (
-          <div className="card card__image-only has_hover md:w-1/2 lg:w-1/3 xl:w-1/4" key={mentor.id}>
-            <div className="card__inner">
-              <div
-                className="card__header"
-                style={{ backgroundImage: 'url(' + mentor.photo.thumbnails.large.url + ')' }}
-              >
-                <div className="card__extras">
-                  <div>{mentor.experience}</div>
-                  <div>{'✅ ' + mentor.menteeCount}</div>
-                  <div>{mentor.price}</div>
-                  <div>➡️</div>
-                </div>
-                <div className="card__content">
-                  <h4 className="card__title text-xl">{mentor.name}</h4>
-                  <p className="card__description">{mentor.job}</p>
-                </div>
-                <div className="card__header_overlay" style={{ background: 'rgba(0,0,0,0.3)' }}></div>
-              </div>
-
-              <Link href={'/mentors/' + mentor.slug}>
-                <a className="card__link" target="_blank" rel="noreferrer"></a>
-              </Link>
-            </div>
+          <div className="md:w-1/2 lg:w-1/3 xl:w-1/4" key={mentor.id}>
+            <Card
+              linkUrl={'/mentors/' + mentor.slug}
+              imageUrl={mentor.photo.thumbnails.large.url}
+              extras={(
+                <>
+                  <div className="top-0 left-0">{mentor.experience}</div>
+                  <div className="top-0 right-0">{'✅ ' + mentor.menteeCount}</div>
+                  <div className="bottom-0 left-0">{mentor.price}</div>
+                  <div className="bottom-0 right-0">➡️</div>
+                </>
+              )}
+            >
+              <div className="text-xl">{mentor.name}</div>
+              <p>{mentor.job}</p>
+            </Card>
           </div>
         ))}
       </div>
 
       {hasMore && (
-        <div className="more text-center">
+        <div className="text-center">
           <button
-            className="button btn__load_more"
+            className="button"
             onClick={() => onClickMore()}
           >Посмотреть ещё</button>
         </div>
