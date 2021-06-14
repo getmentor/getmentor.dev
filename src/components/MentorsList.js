@@ -10,25 +10,24 @@ export default function MentorsList(props) {
 
   return (
     <>
-      <div className="flex flex-wrap">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
         {mentors.map(mentor => (
-          <div className="md:w-1/2 lg:w-1/3 xl:w-1/4" key={mentor.id}>
-            <Card
-              linkUrl={'/mentors/' + mentor.slug}
-              imageUrl={mentor.photo.thumbnails.large.url}
-              extras={(
-                <>
-                  <div className="top-0 left-0">{mentor.experience}</div>
-                  <div className="top-0 right-0">{'✅ ' + mentor.menteeCount}</div>
-                  <div className="bottom-0 left-0">{mentor.price}</div>
-                  <div className="bottom-0 right-0">➡️</div>
-                </>
-              )}
-            >
-              <div className="text-xl">{mentor.name}</div>
-              <p>{mentor.job}</p>
-            </Card>
-          </div>
+          <Card
+            key={mentor.id}
+            linkUrl={'/mentors/' + mentor.slug}
+            imageUrl={mentor.photo.thumbnails.large.url}
+            extras={(
+              <>
+                <div className="top-0 left-0">{mentor.experience}</div>
+                <div className="top-0 right-0">{'✅ ' + mentor.menteeCount}</div>
+                <div className="bottom-0 left-0">{mentor.price}</div>
+                <div className="bottom-0 right-0">➡️</div>
+              </>
+            )}
+          >
+            <div className="text-xl">{mentor.name}</div>
+            <p>{mentor.job}</p>
+          </Card>
         ))}
       </div>
 
