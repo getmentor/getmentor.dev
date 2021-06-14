@@ -45,6 +45,13 @@ export default function Mentor(props) {
               ))}
             </div>
 
+            <div className="mb-4 md:hidden">
+              <img
+                className="w-full"
+                src={mentor.photo.url}
+              />
+            </div>
+
             <div>
               <b>Опыт:</b> {mentor.experience}<br/>
               <b>Цена:</b> {mentor.price}<br/>
@@ -62,7 +69,7 @@ export default function Mentor(props) {
             </div>
           </div>
 
-          <div className="flex-1 text-center">
+          <div className="flex-1 pl-4 hidden md:block">
             <img src={mentor.photo.url} />
           </div>
         </div>
