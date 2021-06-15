@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import ReactMarkdown from 'react-markdown'
-import NavHeader from '../../components/NavHeader'
-import Footer from '../../components/Footer'
-import { getMentors } from '../../server/cached-mentors'
-import Section from '../../components/Section'
+import NavHeader from '../components/NavHeader'
+import Footer from '../components/Footer'
+import { getMentors } from '../server/cached-mentors'
+import Section from '../components/Section'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()

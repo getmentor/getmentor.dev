@@ -14,7 +14,7 @@ export default function MentorsList(props) {
         {mentors.map(mentor => (
           <Card
             key={mentor.id}
-            linkUrl={'/mentors/' + mentor.slug}
+            linkUrl={'/' + mentor.slug}
             imageUrl={mentor.photo.thumbnails.large.url}
             extras={(
               <>
