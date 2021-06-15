@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,6 +9,7 @@ import MentorsList from '../components/MentorsList'
 import { getMentors } from '../server/cached-mentors'
 import Section from '../components/Section'
 import config from '../config'
+import useMentorsByTags from '../components/useMentorsByTags'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -21,7 +21,7 @@ export async function getServerSideProps() {
   }
 }
 
-export function Feature(props) {
+function Feature(props) {
   return (
     <div className="flex sm:w-1/2 lg:w-1/3 p-4">
       <div className="pr-4">
@@ -41,56 +41,14 @@ export function Feature(props) {
   )
 }
 
-export function MentorsBlock(props) {
-  const { allMentors } = props
-
-  const [selectedTags, setSelectedTags] = useState([])
-  const [mentorsCount, setMentorsCount] = useState(48)
-
-  // reset pagination on filters change
-  useEffect(() => {
-    setMentorsCount(48)
-  }, [selectedTags])
-
-  const showMoreMentors = () => {
-    setMentorsCount(mentorsCount + 48)
-  }
-
-  const hasAllTags = (mentorTags, selectedTags) => {
-    for (const selectedTag of selectedTags) {
-      if (!mentorTags.includes(selectedTag)) {
-        return false
-      }
-    }
-    return true
-  }
-  const filteredMentors = (selectedTags.length)
-    ? allMentors.filter(mentor => hasAllTags(mentor.tags, selectedTags))
-    : allMentors
-
-  const mentors = filteredMentors.slice(0, mentorsCount)
-  const hasMoreMentors = (filteredMentors.length > mentorsCount)
-
-  return (
-    <Section id="list">
-      <Section.Title>Наши менторы</Section.Title>
-
-      <MentorsFilters
-        tags={selectedTags}
-        onChange={newTags => setSelectedTags(newTags)}
-      />
-
-      <MentorsList
-        mentors={mentors}
-        hasMore={hasMoreMentors}
-        onClickMore={() => showMoreMentors()}
-      />
-    </Section>
-  )
-}
-
-export default function Home(props) {
-  const { allMentors } = props
+export default function Home({ allMentors }) {
+  const [
+    mentors,
+    selectedTags,
+    setSelectedTags,
+    hasMoreMentors,
+    showMoreMentors,
+  ] = useMentorsByTags(allMentors)
 
   return (
     <>
@@ -209,7 +167,20 @@ export default function Home(props) {
         </div>
       </Section>
 
-      <MentorsBlock allMentors={allMentors} />
+      <Section id="list">
+        <Section.Title>Наши менторы</Section.Title>
+
+        <MentorsFilters
+          tags={selectedTags}
+          onChange={newTags => setSelectedTags(newTags)}
+        />
+
+        <MentorsList
+          mentors={mentors}
+          hasMore={hasMoreMentors}
+          onClickMore={() => showMoreMentors()}
+        />
+      </Section>
 
       <Section className="bg-gray-100" id="sponsors">
         <Section.Title>Нас поддерживают</Section.Title>
