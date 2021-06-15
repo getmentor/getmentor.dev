@@ -2,13 +2,13 @@ import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
+import config from '../config'
 
 export default function Bementor() {
   return (
     <div>
       <Head>
-        <title>Стань частью нашей команды | GetMentor – открытое сообщество IT-наставников</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Стань частью нашей команды | {config.seo.title}</title>
       </Head>
 
       <NavHeader />

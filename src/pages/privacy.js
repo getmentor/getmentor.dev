@@ -2,12 +2,13 @@ import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
+import config from '../config'
 
 export default function Privacy() {
   return (
     <div>
       <Head>
-        <title>Политика в отношении обработки персональных данных | GetMentor – открытое сообщество IT-наставников</title>
+        <title>Политика в отношении обработки персональных данных | {config.seo.title}</title>
       </Head>
 
       <NavHeader />

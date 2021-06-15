@@ -2,12 +2,13 @@ import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
+import config from '../config'
 
 export default function Disclaimer() {
   return (
     <div>
       <Head>
-        <title>Отказ от ответственности | GetMentor – открытое сообщество IT-наставников</title>
+        <title>Отказ от ответственности | {config.seo.title}</title>
       </Head>
 
       <NavHeader />

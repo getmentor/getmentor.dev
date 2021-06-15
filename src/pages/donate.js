@@ -2,7 +2,8 @@ import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
-import {Card} from "../components/Card";
+import { Card } from '../components/Card'
+import config from '../config'
 
 export default function Donate() {
   const donates = [
@@ -44,8 +45,7 @@ export default function Donate() {
   return (
     <div>
       <Head>
-        <title>Донат | GetMentor – открытое сообщество IT-наставников</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Донат | {config.seo.title}</title>
       </Head>
 
       <NavHeader />
@@ -85,7 +85,7 @@ export default function Donate() {
 
         <div className="flex">
           {donates.map(donate => (
-            <div className="md:w-1/3">
+            <div className="md:w-1/3" key={donate.name}>
               <Card
                 key={donate.name}
                 linkUrl={donate.linkUrl}
@@ -141,7 +141,7 @@ export default function Donate() {
 
         <div className="flex">
           {donates.map(donate => (
-            <div className="md:w-1/3">
+            <div className="md:w-1/3" key={donate.name}>
               <Card
                 key={donate.name}
                 linkUrl={donate.linkUrl}

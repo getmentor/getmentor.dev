@@ -4,6 +4,7 @@ import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import { getMentors } from '../server/cached-mentors'
 import Section from '../components/Section'
+import config from '../config'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -28,7 +29,7 @@ export default function Mentor(props) {
   return (
     <>
       <Head>
-        <title>{mentor.name} | GetMentor – открытое сообщество IT-наставников</title>
+        <title>{mentor.name} | {config.seo.title}</title>
       </Head>
 
       <NavHeader />
