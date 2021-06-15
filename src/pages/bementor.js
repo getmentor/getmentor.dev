@@ -6,7 +6,7 @@ import config from '../config'
 
 export default function Bementor() {
   return (
-    <div>
+    <>
       <Head>
         <title>Стань частью нашей команды | {config.seo.title}</title>
       </Head>
@@ -38,6 +38,6 @@ export default function Bementor() {
       </div>
 
       <Footer />
-    </div>
+    </>
   )
 }

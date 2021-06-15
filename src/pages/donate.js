@@ -43,7 +43,7 @@ export default function Donate() {
   ]
 
   return (
-    <div>
+    <>
       <Head>
         <title>Донат | {config.seo.title}</title>
       </Head>
@@ -56,7 +56,7 @@ export default function Donate() {
 
           <p>
             Эта площадка полностью бесплатна для менторов и учеников.
-            Мы не берём коммиссий, взносов, обязательных платежей – ничего, что могло бы
+            Мы не берём комиссий, взносов, обязательных платежей – ничего, что могло бы
             отвлекать людей от общения.
           </p>
 
@@ -156,6 +156,6 @@ export default function Donate() {
       </Section>
 
       <Footer />
-    </div>
+    </>
   )
 }

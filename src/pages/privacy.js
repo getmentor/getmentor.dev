@@ -6,7 +6,7 @@ import config from '../config'
 
 export default function Privacy() {
   return (
-    <div>
+    <>
       <Head>
         <title>Политика в отношении обработки персональных данных | {config.seo.title}</title>
       </Head>
@@ -33,6 +33,6 @@ export default function Privacy() {
       </div>
 
       <Footer />
-    </div>
+    </>
   )
 }

@@ -6,7 +6,7 @@ import config from '../config'
 
 export default function Disclaimer() {
   return (
-    <div>
+    <>
       <Head>
         <title>Отказ от ответственности | {config.seo.title}</title>
       </Head>
@@ -33,6 +33,6 @@ export default function Disclaimer() {
       </div>
 
       <Footer />
-    </div>
+    </>
   )
 }
