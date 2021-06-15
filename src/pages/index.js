@@ -11,6 +11,7 @@ import MentorsSearch from '../components/MentorsSearch'
 import Section from '../components/Section'
 import useMentorsByTags from '../components/useMentorsByTags'
 import seo from '../config/seo'
+import donates from '../config/donates'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -131,42 +132,21 @@ export default function Home({ allMentors }) {
       <Section className="bg-gray-100" id="support">
         <Section.Title>Поддержать проект</Section.Title>
 
-        <div className="flex justify-center items-center">
-          <a
-            className="border-0 px-4"
-            href="https://www.patreon.com/getmentor"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img
-              src="https://dl.airtable.com/.attachments/459c122afbca675d1172b0a198c176ab/d7bfca46/Digital-Patreon-Wordmark_FieryCoral.png"
-              width="200px"
-            />
-          </a>
-
-          <a
-            className="border-0 px-4"
-            href="https://www.tinkoff.ru/rm/mogelashvili.georgiy1/llaLa45003"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img
-              src="https://dl.airtable.com/.attachments/39cd6946259ab35a8d8f8ecec995c325/f523c45c/tinkoff.png"
-              width="200px"
-            />
-          </a>
-
-          <a
-            className="border-0 px-4"
-            href="https://paypal.me/glamcoder"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img
-              src="https://dl.airtable.com/.attachments/d671166bc047b43a9d897b5cbda5c336/fa2e91fe/paypal.png"
-              width="200px"
-            />
-          </a>
+        <div className="flex flex-wrap justify-center items-center">
+          {donates.map(donate => (
+            <a
+              key={donate.name}
+              className="border-0 h-20 px-8 flex justify-center items-center"
+              href={donate.linkUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                src={donate.logoImageUrl}
+                width="200px"
+              />
+            </a>
+          ))}
         </div>
       </Section>
 

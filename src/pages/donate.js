@@ -4,29 +4,9 @@ import Footer from '../components/Footer'
 import Section from '../components/Section'
 import { Card } from '../components/Card'
 import seo from '../config/seo'
+import donates from '../config/donates'
 
 export default function Donate() {
-  const donates = [
-    {
-      name: 'Patreon',
-      description: 'Донатить через Patreon',
-      imageUrl: 'https://dl.airtable.com/.attachments/24433b517415d9a046694246ca40486a/61d80b5f/patreon.jpg',
-      linkUrl: 'https://www.patreon.com/getmentor',
-    },
-    {
-      name: 'Tinkoff',
-      description: 'Перевод на карту',
-      imageUrl: 'https://dl.airtable.com/.attachments/ddf7a481c48007e1b5064753f3db3236/29648357/512x512bb.jpg',
-      linkUrl: 'https://www.tinkoff.ru/rm/mogelashvili.georgiy1/llaLa45003',
-    },
-    {
-      name: 'Paypal',
-      description: 'Оплатить через PayPal',
-      imageUrl: 'https://dl.airtable.com/.attachments/1e2b02c5c4dd5ee67ab346f29bd54857/bed675ef/Paypal_2014_logo.png',
-      linkUrl: 'https://paypal.me/glamcoder',
-    },
-  ]
-
   const supporters = [
     { name: 'Михаил Князев', level: 3 },
     { name: 'Иван Круглов', level: 3 },
@@ -83,18 +63,16 @@ export default function Donate() {
           </p>
         </div>
 
-        <div className="flex">
+        <div className="grid lg:grid-cols-3 gap-4">
           {donates.map(donate => (
-            <div className="md:w-1/3" key={donate.name}>
-              <Card
-                key={donate.name}
-                linkUrl={donate.linkUrl}
-                imageUrl={donate.imageUrl}
-              >
-                <div className="text-xl">{donate.name}</div>
-                <p>{donate.description}</p>
-              </Card>
-            </div>
+            <Card
+              key={donate.name}
+              linkUrl={donate.linkUrl}
+              imageUrl={donate.coverImageUrl}
+            >
+              <div className="text-xl">{donate.name}</div>
+              <p>{donate.description}</p>
+            </Card>
           ))}
         </div>
       </Section>
@@ -139,18 +117,16 @@ export default function Donate() {
           </p>
         </div>
 
-        <div className="flex">
+        <div className="grid lg:grid-cols-3 gap-4">
           {donates.map(donate => (
-            <div className="md:w-1/3" key={donate.name}>
-              <Card
-                key={donate.name}
-                linkUrl={donate.linkUrl}
-                imageUrl={donate.imageUrl}
-              >
-                <div className="text-xl">{donate.name}</div>
-                <p>{donate.description}</p>
-              </Card>
-            </div>
+            <Card
+              key={donate.name}
+              linkUrl={donate.linkUrl}
+              imageUrl={donate.coverImageUrl}
+            >
+              <div className="text-xl">{donate.name}</div>
+              <p>{donate.description}</p>
+            </Card>
           ))}
         </div>
       </Section>
