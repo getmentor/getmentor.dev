@@ -2,13 +2,13 @@ import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
-import config from '../config'
+import seo from '../config/seo'
 
 export default function Bementor() {
   return (
     <>
       <Head>
-        <title>Стань частью нашей команды | {config.seo.title}</title>
+        <title>Стань частью нашей команды | {seo.title}</title>
       </Head>
 
       <NavHeader />

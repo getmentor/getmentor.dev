@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import config from '../config'
+import seo from '../config/seo'
 import NavHeader from '../components/NavHeader'
 import Section from '../components/Section'
 import { getMentors } from '../server/cached-mentors'
@@ -54,7 +54,7 @@ export default function Ontico({ onticoMentors }) {
   return (
     <>
       <Head>
-        <title>Конференции Онтико | {config.seo.title}</title>
+        <title>Конференции Онтико | {seo.title}</title>
       </Head>
 
       <NavHeader />

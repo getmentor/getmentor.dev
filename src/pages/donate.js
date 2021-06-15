@@ -3,7 +3,7 @@ import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
 import { Card } from '../components/Card'
-import config from '../config'
+import seo from '../config/seo'
 
 export default function Donate() {
   const donates = [
@@ -45,7 +45,7 @@ export default function Donate() {
   return (
     <>
       <Head>
-        <title>Донат | {config.seo.title}</title>
+        <title>Донат | {seo.title}</title>
       </Head>
 
       <NavHeader />

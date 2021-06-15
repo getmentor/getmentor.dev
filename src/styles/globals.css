@@ -19,9 +19,10 @@
     @apply my-4;
   }
 
-  a {
+  a,
+  .prose a {
     border-bottom: 2px solid;
-    text-decoration: none;
+    text-decoration: none !important;
   }
 }
 

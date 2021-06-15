@@ -2,15 +2,15 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIdBadge, faInfo, faPaperPlane, faComments, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { getMentors } from '../server/cached-mentors'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import MentorsFilters from '../components/MentorsFilters'
 import MentorsList from '../components/MentorsList'
 import MentorsSearch from '../components/MentorsSearch'
-import { getMentors } from '../server/cached-mentors'
 import Section from '../components/Section'
-import config from '../config'
 import useMentorsByTags from '../components/useMentorsByTags'
+import seo from '../config/seo'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -56,18 +56,18 @@ export default function Home({ allMentors }) {
   return (
     <>
       <Head>
-        <title>{config.seo.title}</title>
-        <meta name="description" content={config.seo.description} />
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
 
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={config.seo.title} />
-        <meta name="twitter:description" content={config.seo.description} />
-        <meta name="twitter:image.src" content={config.seo.imageUrl} />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <meta name="twitter:image.src" content={seo.imageUrl} />
 
-        <meta name="og:site_name" content={config.seo.title} />
+        <meta name="og:site_name" content={seo.title} />
         <meta name="og:type" content="website" />
-        <meta name="og:description" content={config.seo.description} />
-        <meta name="og:image" content={config.seo.imageUrl} />
+        <meta name="og:description" content={seo.description} />
+        <meta name="og:image" content={seo.imageUrl} />
       </Head>
 
       <NavHeader />

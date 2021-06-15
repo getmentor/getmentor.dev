@@ -1,10 +1,12 @@
+import classNames from 'classnames'
 import Head from 'next/head'
-import ReactMarkdown from 'react-markdown'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import { getMentors } from '../server/cached-mentors'
 import Section from '../components/Section'
-import config from '../config'
+import Interweave from 'interweave'
+import seo from '../config/seo'
+import allFilters from '../config/filters'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -29,7 +31,7 @@ export default function Mentor(props) {
   return (
     <>
       <Head>
-        <title>{mentor.name} | {config.seo.title}</title>
+        <title>{mentor.name} | {seo.title}</title>
       </Head>
 
       <NavHeader />
@@ -38,11 +40,18 @@ export default function Mentor(props) {
         <div className="flex">
           <div className="flex-1">
             <h1 className="mb-2">{mentor.name}</h1>
-            <div className="mb-4">{mentor.job}</div>
+            <div className="mb-3">{mentor.job}</div>
 
-            <div className="flex flex-wrap -m-2 mb-4">
+            <div className="flex flex-wrap -m-1 mb-5">
               {mentor.tags.map(tag => (
-                <div className="border-2 border-gray-700 rounded-full py-1 px-4 m-2" key={tag}>{tag}</div>
+                <div
+                  key={tag}
+                  // className="border-2 border-gray-700 rounded-full py-1 px-4 m-2"
+                  className={classNames('text-sm text-gray-600 rounded-full py-1 px-4 m-1', {
+                    'bg-gray-300': allFilters.tags.includes(tag),
+                    'bg-indigo-200': allFilters.sponsors.includes(tag),
+                  })}
+                >{tag}</div>
               ))}
             </div>
 
@@ -58,8 +67,11 @@ export default function Mentor(props) {
               <b>Цена:</b> {mentor.price}<br/>
             </div>
 
-            <div className="my-4">
-              <ReactMarkdown>{mentor.description}</ReactMarkdown>
+            <div className="prose my-4">
+              <Interweave
+                noWrap={true}
+                content={mentor.description}
+              />
             </div>
 
             <div className="section__cta">
