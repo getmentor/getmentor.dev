@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Card } from './Card'
 
 export default function MentorsList(props) {
@@ -11,22 +12,33 @@ export default function MentorsList(props) {
     <>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
         {mentors.map(mentor => (
-          <Card
+          <Link
             key={mentor.id}
-            linkUrl={'/' + mentor.slug}
-            imageUrl={mentor.photo.thumbnails?.large.url}
-            extras={(
-              <>
-                <div className="top-0 left-0">{mentor.experience}</div>
-                <div className="top-0 right-0">{'✅ ' + mentor.menteeCount}</div>
-                <div className="bottom-0 left-0">{mentor.price}</div>
-                <div className="bottom-0 right-0">➡️</div>
-              </>
-            )}
+            href={'/' + mentor.slug}
           >
-            <div className="text-xl">{mentor.name}</div>
-            <p>{mentor.job}</p>
-          </Card>
+            <a className="border-0" target="_blank">
+              <div
+                style={{
+                  height: '230px',
+                  background: `50% url(${mentor.photo.thumbnails?.large.url}) no-repeat`,
+                  backgroundSize: 'cover',
+                }}
+              />
+
+              <div className="mt-3 mb-5">
+                <div className="text-2xl mb-1">{mentor.name}</div>
+                <div className="mb-2">{mentor.job}</div>
+                <div className="flex">
+                  <div>{mentor.experience}</div>
+
+                  {(mentor.menteeCount > 0) && (
+                    <div className="ml-4" title="Проведено встреч">{'✅ ' + mentor.menteeCount}</div>
+                  )}
+                </div>
+                <div>{mentor.price}</div>
+              </div>
+            </a>
+          </Link>
         ))}
       </div>
 
