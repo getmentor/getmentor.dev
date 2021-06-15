@@ -2,7 +2,6 @@ import classNames from 'classnames'
 
 const allFilters = {
   tags: [
-    'All',
     'Backend',
     'Frontend',
     'Code Review',
@@ -55,10 +54,16 @@ const allFilters = {
 }
 
 export default function MentorsFilters(props) {
+  const defaultProps = {
+    tags: [],
+    allowSponsors: true,
+  }
+
   const {
     tags: selectedTags,
     onChange: onChangeTags,
-  } = props
+    allowSponsors,
+  } = { ...defaultProps, ...props }
 
   const TAG_ALL = 'All'
 
@@ -74,8 +79,8 @@ export default function MentorsFilters(props) {
 
   return (
     <div className="text-center">
-      <ul className="flex flex-wrap justify-center -m-1 mb-4">
-        {allFilters.tags.map(tag => {
+      <ul className="flex flex-wrap justify-center -m-1 mb-3">
+        {[ TAG_ALL ].map(tag => {
           const isActive = (tag !== TAG_ALL)
             ? selectedTags.includes(tag)
             : (selectedTags.length === 0)
@@ -91,10 +96,29 @@ export default function MentorsFilters(props) {
             >{tag}</li>
           )
         })}
-      </ul>
 
-      <ul className="flex flex-wrap justify-center -m-1 mb-6">
-        {allFilters.sponsors.map(tag => {
+        {allowSponsors && (
+          <>
+            {allFilters.sponsors.map(tag => {
+              const isActive = (tag !== TAG_ALL)
+                ? selectedTags.includes(tag)
+                : (selectedTags.length === 0)
+
+              return (
+                <li
+                  className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
+                    'bg-indigo-200 hover:bg-indigo-300 text-gray-600': !isActive,
+                    'bg-indigo-700 text-white': isActive,
+                  })}
+                  key={tag}
+                  onClick={() => onClickTag(tag)}
+                >{tag}</li>
+              )
+            })}
+          </>
+        )}
+
+        {allFilters.tags.map(tag => {
           const isActive = (tag !== TAG_ALL)
             ? selectedTags.includes(tag)
             : (selectedTags.length === 0)

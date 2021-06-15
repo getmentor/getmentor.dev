@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 export default function useMentorsByTags(allMentors, pageSize = 48) {
+  const [searchInput, setSearchInput] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [mentorsCount, setMentorsCount] = useState(pageSize)
 
@@ -21,12 +22,19 @@ export default function useMentorsByTags(allMentors, pageSize = 48) {
     }
     return true
   }
-  const filteredMentors = (selectedTags.length)
-    ? allMentors.filter(mentor => hasAllTags(mentor.tags, selectedTags))
-    : allMentors
+  let filteredMentors = allMentors
+  if (searchInput.length >= 2) {
+    filteredMentors = filteredMentors.filter(mentor => {
+      const searchContent = mentor.name + ' ' + mentor.job + ' ' + mentor.description
+      return searchContent.toLowerCase().includes(searchInput.toLowerCase())
+    })
+  }
+  if (selectedTags.length) {
+    filteredMentors = filteredMentors.filter(mentor => hasAllTags(mentor.tags, selectedTags))
+  }
 
   const mentors = filteredMentors.slice(0, mentorsCount)
   const hasMoreMentors = (filteredMentors.length > mentorsCount)
 
-  return [mentors, selectedTags, setSelectedTags, hasMoreMentors, showMoreMentors]
+  return [mentors, searchInput, selectedTags, hasMoreMentors, setSearchInput, setSelectedTags, showMoreMentors]
 }

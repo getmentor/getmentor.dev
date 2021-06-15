@@ -7,6 +7,7 @@ import MentorsFilters from '../components/MentorsFilters'
 import MentorsList from '../components/MentorsList'
 import useMentorsByTags from '../components/useMentorsByTags'
 import Footer from '../components/Footer'
+import MentorsSearch from '../components/MentorsSearch'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -42,9 +43,11 @@ function Feature({ title, text, imageUrl }) {
 export default function Ontico({ onticoMentors }) {
   const [
     mentors,
+    searchInput,
     selectedTags,
-    setSelectedTags,
     hasMoreMentors,
+    setSearchInput,
+    setSelectedTags,
     showMoreMentors,
   ] = useMentorsByTags(onticoMentors)
 
@@ -111,10 +114,20 @@ export default function Ontico({ onticoMentors }) {
           </p>
         </div>
 
-        <MentorsFilters
-          tags={selectedTags}
-          onChange={newTags => setSelectedTags(newTags)}
-        />
+        <div className="mb-6">
+          <MentorsSearch
+            value={searchInput}
+            onChange={setSearchInput}
+          />
+        </div>
+
+        <div className="mb-8">
+          <MentorsFilters
+            tags={selectedTags}
+            onChange={setSelectedTags}
+            allowSponsors={false}
+          />
+        </div>
 
         <MentorsList
           mentors={mentors}

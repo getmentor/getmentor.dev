@@ -6,6 +6,7 @@ import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import MentorsFilters from '../components/MentorsFilters'
 import MentorsList from '../components/MentorsList'
+import MentorsSearch from '../components/MentorsSearch'
 import { getMentors } from '../server/cached-mentors'
 import Section from '../components/Section'
 import config from '../config'
@@ -44,10 +45,12 @@ function Feature(props) {
 export default function Home({ allMentors }) {
   const [
     mentors,
+    searchInput,
     selectedTags,
+    showMoreMentors,
+    setSearchInput,
     setSelectedTags,
     hasMoreMentors,
-    showMoreMentors,
   ] = useMentorsByTags(allMentors)
 
   return (
@@ -170,10 +173,19 @@ export default function Home({ allMentors }) {
       <Section id="list">
         <Section.Title>Наши менторы</Section.Title>
 
-        <MentorsFilters
-          tags={selectedTags}
-          onChange={newTags => setSelectedTags(newTags)}
-        />
+        <div className="mb-6">
+          <MentorsSearch
+            value={searchInput}
+            onChange={setSearchInput}
+          />
+        </div>
+
+        <div className="mb-8">
+          <MentorsFilters
+            tags={selectedTags}
+            onChange={setSelectedTags}
+          />
+        </div>
 
         <MentorsList
           mentors={mentors}
