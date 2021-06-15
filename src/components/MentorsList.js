@@ -14,7 +14,7 @@ export default function MentorsList(props) {
           <Card
             key={mentor.id}
             linkUrl={'/' + mentor.slug}
-            imageUrl={mentor.photo.thumbnails.large.url}
+            imageUrl={mentor.photo.thumbnails?.large.url}
             extras={(
               <>
                 <div className="top-0 left-0">{mentor.experience}</div>

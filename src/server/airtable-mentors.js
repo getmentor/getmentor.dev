@@ -1,7 +1,6 @@
 import Airtable from 'airtable'
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID)
-const airtableMentors = base('Mentors Prod')
 
 /**
  * @typedef Mentor
@@ -14,40 +13,49 @@ const airtableMentors = base('Mentors Prod')
  * @param {string} experience
  * @param {number} menteeCount
  * @param {string[]} tags
+ * @param {number} sortOrder
  */
 
 /**
  * @returns {Promise<Mentor[]>}
  */
 export async function getMentors() {
-  const items = await airtableMentors.select({
-    view: 'Site View',
-    sort: [{ field: 'Sort Order', direction: 'asc' }],
+  const mentorsSortRaw = await base('MentorsView').select({
+    fields: ['Mentor', 'Sort Order'],
+    filterByFormula: 'OnSite = 1',
   }).all()
 
-  return items.map(item => formatRecord(item))
-}
-
-/**
- * @param {string} id
- * @returns {Promise<Mentor>}
- */
-export async function getMentor(id) {
-  const item = await airtableMentors.find(id)
-  return formatRecord(item)
-}
-
-function formatRecord(item) {
-  return {
-    id: item.id,
-    slug: item.fields['Alias'],
-    name: item.fields['Title'],
-    job: item.fields['Description'],
-    description: item.fields['Details'],
-    experience: item.fields['Extra_1'],
-    price: item.fields['Extra_3'],
-    menteeCount: item.fields['Done Sessions Count'],
-    photo: item.fields['Image_Attachment'][0],
-    tags: item.fields['Tags'].split(','),
+  const mentorsSortById = {}
+  for (const item of mentorsSortRaw) {
+    const recId = item.fields['Mentor'][0]
+    const sortOrder = item.fields['Sort Order']
+    mentorsSortById[recId] = sortOrder
   }
+
+  const mentorsRaw = await base('Mentors').select({
+    filterByFormula: 'OnSite = 1',
+  }).all()
+
+  /** @var {Mentor[]} mentors */
+  const mentors = mentorsRaw.map(item => {
+    return {
+      id: item.id,
+      slug: item.fields['Alias'],
+      name: item.fields['Title'],
+      job: item.fields['Description'],
+      description: item.fields['Details'],
+      experience: item.fields['Extra_1'],
+      price: item.fields['Extra_3'],
+      menteeCount: item.fields['Done Sessions Count'],
+      photo: item.fields['Image_Attachment'][0],
+      tags: item.fields['Tags'].split(','),
+      sortOrder: mentorsSortById[ item.id ],
+    }
+  })
+
+  mentors.sort((a, b) => {
+    return a.sortOrder - b.sortOrder
+  })
+
+  return mentors
 }
