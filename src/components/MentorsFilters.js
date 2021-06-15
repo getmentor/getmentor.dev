@@ -49,6 +49,9 @@ const allFilters = {
     '😎 5-10 лет',
     '🌟 10+ лет',
   ],
+  sponsors: [
+    'Эксперт Авито',
+  ],
 }
 
 export default function MentorsFilters(props) {
@@ -71,7 +74,7 @@ export default function MentorsFilters(props) {
 
   return (
     <div className="text-center">
-      <ul className="flex flex-wrap justify-center -m-2 mb-4">
+      <ul className="flex flex-wrap justify-center -m-1 mb-4">
         {allFilters.tags.map(tag => {
           const isActive = (tag !== TAG_ALL)
             ? selectedTags.includes(tag)
@@ -79,7 +82,27 @@ export default function MentorsFilters(props) {
 
           return (
             <li
-              className={classNames('border-2 border-gray-700 rounded-full py-1 px-4 m-2 cursor-pointer', {
+              className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
+                'bg-gray-300 hover:bg-gray-200 text-gray-600': !isActive,
+                'bg-gray-700 text-white': isActive,
+              })}
+              key={tag}
+              onClick={() => onClickTag(tag)}
+            >{tag}</li>
+          )
+        })}
+      </ul>
+
+      <ul className="flex flex-wrap justify-center -m-1 mb-6">
+        {allFilters.sponsors.map(tag => {
+          const isActive = (tag !== TAG_ALL)
+            ? selectedTags.includes(tag)
+            : (selectedTags.length === 0)
+
+          return (
+            <li
+              className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
+                'bg-gray-300 hover:bg-gray-200 text-gray-600': !isActive,
                 'bg-gray-700 text-white': isActive,
               })}
               key={tag}
