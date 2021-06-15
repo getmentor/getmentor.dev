@@ -5,7 +5,7 @@ import Section from '../components/Section'
 import { getMentors } from '../server/cached-mentors'
 import MentorsFilters from '../components/MentorsFilters'
 import MentorsList from '../components/MentorsList'
-import useMentorsByTags from '../components/useMentorsByTags'
+import useMentors from '../components/useMentors'
 import Footer from '../components/Footer'
 import MentorsSearch from '../components/MentorsSearch'
 
@@ -49,7 +49,7 @@ export default function Ontico({ onticoMentors }) {
     setSearchInput,
     setSelectedTags,
     showMoreMentors,
-  ] = useMentorsByTags(onticoMentors)
+  ] = useMentors(onticoMentors)
 
   return (
     <>

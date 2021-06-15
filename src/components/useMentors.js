@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-export default function useMentorsByTags(allMentors, pageSize = 48) {
+export default function useMentors(allMentors, pageSize = 48) {
   const [searchInput, setSearchInput] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [mentorsCount, setMentorsCount] = useState(pageSize)
@@ -8,7 +8,7 @@ export default function useMentorsByTags(allMentors, pageSize = 48) {
   // reset pagination on filters change
   useEffect(() => {
     setMentorsCount(pageSize)
-  }, [selectedTags])
+  }, [searchInput, selectedTags])
 
   const showMoreMentors = () => {
     setMentorsCount(mentorsCount + pageSize)

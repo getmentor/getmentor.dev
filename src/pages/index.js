@@ -9,7 +9,7 @@ import MentorsFilters from '../components/MentorsFilters'
 import MentorsList from '../components/MentorsList'
 import MentorsSearch from '../components/MentorsSearch'
 import Section from '../components/Section'
-import useMentorsByTags from '../components/useMentorsByTags'
+import useMentors from '../components/useMentors'
 import seo from '../config/seo'
 import donates from '../config/donates'
 
@@ -48,11 +48,11 @@ export default function Home({ allMentors }) {
     mentors,
     searchInput,
     selectedTags,
-    showMoreMentors,
+    hasMoreMentors,
     setSearchInput,
     setSelectedTags,
-    hasMoreMentors,
-  ] = useMentorsByTags(allMentors)
+    showMoreMentors,
+  ] = useMentors(allMentors)
 
   return (
     <>
