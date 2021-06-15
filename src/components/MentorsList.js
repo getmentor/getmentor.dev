@@ -10,7 +10,7 @@ export default function MentorsList(props) {
 
   return (
     <>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
         {mentors.map(mentor => (
           <Link
             key={mentor.id}
@@ -18,8 +18,8 @@ export default function MentorsList(props) {
           >
             <a className="border-0" target="_blank">
               <div
+                className="aspect-w-5 aspect-h-4"
                 style={{
-                  height: '230px',
                   background: `50% url(${mentor.photo.thumbnails?.large.url}) no-repeat`,
                   backgroundSize: 'cover',
                 }}
