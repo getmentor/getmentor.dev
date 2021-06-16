@@ -62,7 +62,11 @@ export default function Ontico({ pageMentors }) {
 
       <Section className="bg-primary-100" id="header">
         <div className="text-center py-14 lg:w-3/4 mx-auto">
-          <h1>Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии</h1>
+          <h1>Конференции Онтико</h1>
+
+          <p>Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии</p>
+
+          <a className="button bg-primary-900 mt-6" href="https://conf.ontico.ru/" rel="noreferrer" target="_blank">Наши конференции</a>
         </div>
       </Section>
 
