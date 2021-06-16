@@ -30,7 +30,6 @@ module.exports = {
     'no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
     'no-unused-vars': ['warn', { vars: 'all', args: 'none' }],
     'comma-dangle': ['warn', 'always-multiline'],
-    'no-multiple-empty-lines': ['warn', { max: 1 }],
     'space-before-function-paren': ['warn', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
     'object-curly-spacing': ['warn', 'always'],
     'keyword-spacing': 'warn',

@@ -12,12 +12,13 @@ import MentorsSearch from '../components/MentorsSearch'
 export async function getServerSideProps() {
   const allMentors = await getMentors()
 
-  const onticoMentors = allMentors
+  const pageMentors = allMentors
+    .filter(mentor => mentor.isVisible)
     .filter(mentor => mentor.tags.includes('Сообщество Онтико'))
 
   return {
     props: {
-      onticoMentors,
+      pageMentors,
     },
   }
 }
@@ -40,7 +41,7 @@ function Feature({ title, text, imageUrl }) {
   )
 }
 
-export default function Ontico({ onticoMentors }) {
+export default function Ontico({ pageMentors }) {
   const [
     mentors,
     searchInput,
@@ -49,7 +50,7 @@ export default function Ontico({ onticoMentors }) {
     setSearchInput,
     setSelectedTags,
     showMoreMentors,
-  ] = useMentors(onticoMentors)
+  ] = useMentors(pageMentors)
 
   return (
     <>

@@ -16,9 +16,12 @@ import donates from '../config/donates'
 export async function getServerSideProps() {
   const allMentors = await getMentors()
 
+  const pageMentors = allMentors
+    .filter(mentor => mentor.isVisible)
+
   return {
     props: {
-      allMentors,
+      pageMentors,
     },
   }
 }
@@ -43,7 +46,7 @@ function Feature(props) {
   )
 }
 
-export default function Home({ allMentors }) {
+export default function Home({ pageMentors }) {
   const [
     mentors,
     searchInput,
@@ -52,7 +55,7 @@ export default function Home({ allMentors }) {
     setSearchInput,
     setSelectedTags,
     showMoreMentors,
-  ] = useMentors(allMentors)
+  ] = useMentors(pageMentors)
 
   return (
     <>

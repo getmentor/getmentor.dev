@@ -62,23 +62,31 @@ export default function Mentor(props) {
               />
             </div>
 
-            <div>
+            {(!mentor.isVisible) && (
+              <div className="text-gray-500 mb-6">
+                Ментор приостановил приём заявок.
+              </div>
+            )}
+
+            <div className="mb-4">
               <b>Опыт:</b> {mentor.experience}<br/>
               <b>Цена:</b> {mentor.price}<br/>
             </div>
+
+            {(mentor.isVisible) && (
+              <div className="mb-6">
+                <a
+                  className="button"
+                  href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
+                >Оставить заявку</a>
+              </div>
+            )}
 
             <div className="prose my-4">
               <Interweave
                 noWrap={true}
                 content={mentor.description}
               />
-            </div>
-
-            <div className="section__cta">
-              <a
-                className="button"
-                href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
-              >Оставить заявку</a>
             </div>
           </div>
 
