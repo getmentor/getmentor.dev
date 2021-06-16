@@ -1,18 +1,37 @@
-import NodeCache from 'node-cache'
 import { getMentors as getMentorsFromAirtable } from './airtable-mentors'
 
-const cache = new NodeCache({
-  stdTTL: 5 * 60, // set default ttl to 5 minutes
-})
+/**
+ * @var {Promise<Mentor[]>}
+ */
+let mentorsPromise
+
+/**
+ * @var {Mentor[]}
+ */
+let mentors
+
+// warm up cache on start
+mentorsPromise = getMentorsFromAirtable()
+
+// rebuild cache every 5 minutes
+setInterval(async () => {
+  try {
+    mentors = await getMentorsFromAirtable()
+  } catch (e) {
+    console.error(e)
+  }
+}, 5 * 60 * 1000)
 
 /**
  * @returns {Promise<Mentor[]>}
  */
 export async function getMentors() {
-  let mentors = cache.get('mentors')
   if (!mentors) {
-    mentors = await getMentorsFromAirtable()
-    cache.set('mentors', mentors)
+    if (!mentorsPromise) {
+      mentorsPromise = getMentorsFromAirtable()
+    }
+
+    return await mentorsPromise
   }
 
   return mentors

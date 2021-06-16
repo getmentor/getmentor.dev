@@ -17,10 +17,9 @@ export default function MentorsList(props) {
           >
             <a className="border-0" target="_blank">
               <div
-                className="aspect-w-5 aspect-h-4"
+                className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat"
                 style={{
-                  background: `50% url(${mentor.photo.thumbnails?.large.url}) no-repeat`,
-                  backgroundSize: 'cover',
+                  backgroundImage: `url(${mentor.photo.thumbnails?.large.url || mentor.photo.url})`,
                 }}
               />
 
