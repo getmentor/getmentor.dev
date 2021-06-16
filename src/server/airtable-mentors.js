@@ -21,16 +21,6 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process
  * @returns {Promise<Mentor[]>}
  */
 export async function getMentors() {
-  const mentorsSortRaw = await base('MentorsView').select({
-    fields: ['Mentor', 'Sort Order'],
-  }).all()
-
-  const mentorsSortById = {}
-  for (const item of mentorsSortRaw) {
-    const recId = item.fields['Mentor'][0]
-    const sortOrder = item.fields['Sort Order']
-    mentorsSortById[recId] = sortOrder
-  }
 
   const mentorsRaw = await base('Mentors').select({
     filterByFormula: 'OR(Status = "active", Status = "inactive")',
@@ -50,7 +40,7 @@ export async function getMentors() {
       photo: item.fields['Image_Attachment'][0],
       photo_url: item.fields['Image'],
       tags: item.fields['Tags'].split(','),
-      sortOrder: mentorsSortById[ item.id ],
+      sortOrder: item.fields['SortOrder'],
       isVisible: (item.fields['OnSite'] === 1 && item.fields['Status'] === 'active'),
     }
   })
