@@ -1,5 +1,7 @@
 import { getMentors as getMentorsFromAirtable } from './airtable-mentors'
 
+const hash = require('object-hash');
+
 /**
  * @var {Promise<Mentor[]>}
  */
@@ -16,11 +18,17 @@ mentorsPromise = getMentorsFromAirtable()
 // rebuild cache every 5 minutes
 setInterval(async () => {
   try {
-    mentors = await getMentorsFromAirtable()
+    let new_mentors = await getMentorsFromAirtable()
+    let new_hash = hash(new_mentors)
+    let old_hash = mentors ? hash(mentors) : '__'
+
+    if (new_hash !== old_hash) {
+      mentors = new_mentors
+    }
   } catch (e) {
     console.error(e)
   }
-}, 5 * 60 * 1000)
+}, 10 * 60 * 1000)
 
 /**
  * @returns {Promise<Mentor[]>}
@@ -31,7 +39,8 @@ export async function getMentors() {
       mentorsPromise = getMentorsFromAirtable()
     }
 
-    return await mentorsPromise
+    mentors = await mentorsPromise
+    return mentors
   }
 
   return mentors
