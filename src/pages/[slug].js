@@ -58,7 +58,7 @@ export default function Mentor(props) {
             <div className="mb-4 md:hidden">
               <img
                 className="w-full"
-                src={mentor.photo.url}
+                src={mentor.photo_url}
               />
             </div>
 
