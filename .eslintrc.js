@@ -1,8 +1,5 @@
 module.exports = {
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
 
   parserOptions: {
     ecmaVersion: 11,
@@ -15,9 +12,7 @@ module.exports = {
     node: true,
   },
 
-  plugins: [
-    'react',
-  ],
+  plugins: ['react'],
 
   settings: {
     react: {
@@ -26,16 +21,8 @@ module.exports = {
   },
 
   rules: {
-    'semi': ['warn', 'never'],
     'no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
     'no-unused-vars': ['warn', { vars: 'all', args: 'none' }],
-    'comma-dangle': ['warn', 'always-multiline'],
-    'space-before-function-paren': ['warn', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
-    'object-curly-spacing': ['warn', 'always'],
-    'keyword-spacing': 'warn',
-    'quotes': ['warn', 'single', { allowTemplateLiterals: true }],
-    'curly': ['warn', 'all'],
-    'indent': ['warn', 2, { 'SwitchCase': 1 }],
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
   },
