@@ -27,13 +27,13 @@ export default function MentorsList(props) {
                 <div className="text-2xl mb-1">{mentor.name}</div>
                 <div className="mb-2">{mentor.job}</div>
                 <div className="flex">
-                  <div>{mentor.experience}</div>
+                  <div>Опыт: {mentor.experience}</div>
 
                   {(mentor.menteeCount > 0) && (
-                    <div className="ml-4" title="Проведено встреч">{'✅ ' + mentor.menteeCount}</div>
+                    <div className="ml-4" title="Проведено встреч">Проведено встреч: {'✅ ' + mentor.menteeCount}</div>
                   )}
                 </div>
-                <div>{mentor.price}</div>
+                <div>Стоимость: {mentor.price}</div>
               </div>
             </a>
           </Link>
