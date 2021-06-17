@@ -8,9 +8,6 @@ function Nav() {
   return (
     <ul>
       <li>
-        <Link href="/#list">🎓 Все менторы</Link>
-      </li>
-      <li>
         <Link href="/bementor">➕ Стать ментором</Link>
       </li>
       <li>
@@ -31,7 +28,7 @@ export default function NavHeader() {
       <div className="container flex items-center">
         <Link href="/">
           <a className="flex items-center pt-1">
-            <Image src="/images/logo.png" width={120} height={24} />
+            <Image src="/images/logo.png" width={120} height={24} loader="eager" />
           </a>
         </Link>
 
