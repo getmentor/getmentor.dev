@@ -28,7 +28,7 @@ export default function NavHeader() {
       <div className="container flex items-center">
         <Link href="/">
           <a className="flex items-center pt-1">
-            <Image src="/images/logo.png" width={120} height={24} loader="eager" />
+            <Image src="/images/logo.png" width={120} height={24} loading="eager" />
           </a>
         </Link>
 
