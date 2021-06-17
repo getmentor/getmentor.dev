@@ -23,8 +23,8 @@ let mentorsLoadedAt
 
 
 // this hack prevent this functions to me called during build time and etc
-// be sure you set APP_ENV in production deployment
-if (process.env.APP_ENV === 'production') {
+// be sure you set NODE_ENV in production deployment
+if (process.env.NODE_ENV === 'production') {
   init()
 }
 
