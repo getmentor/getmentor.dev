@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import pluralize from '../lib/pluralize'
 
@@ -11,9 +10,12 @@ export default function MentorsList(props) {
         {mentors.map((mentor) => (
           <Link key={mentor.id} href={'/' + mentor.slug}>
             <a target="_blank">
-              <div className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat">
-                <Image src={mentor.photo_url} layout="fill" objectFit="cover" />
-              </div>
+              <div
+                className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat"
+                style={{
+                  backgroundImage: `url(${mentor.photo.thumbnails?.large.url || mentor.photo_url})`,
+                }}
+              />
 
               <div className="mt-3 mb-5">
                 <div className="text-2xl mb-1">{mentor.name}</div>
