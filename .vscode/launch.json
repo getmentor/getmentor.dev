@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Launch App",
+            "skipFiles": ["<node_internals>/**"],
+            "port": 9229
+        }
+    ]
+}
