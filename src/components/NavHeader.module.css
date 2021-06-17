@@ -1,4 +1,11 @@
 
+.container {
+  background: #fcf8f2;
+  position: relative;
+  z-index: 3;
+  padding: 13px 0
+}
+
 .toggle {
   position: absolute;
   top: 0;
@@ -28,6 +35,23 @@
   transform: translateX(0)
 }
 
+.mobile ul {
+  padding: 25px;
+  list-style: none
+}
+
+.mobile li a {
+  color: #222;
+  padding: 5px 0;
+  display: block;
+  border: none;
+  opacity: .7;
+}
+
+.mobile li a:hover {
+  opacity: 1
+}
+
 .overlay {
   position: fixed;
   top: 0;
@@ -36,34 +60,6 @@
   right: 0;
   background: rgba(0, 0, 0, .3);
   z-index: 0;
-}
-
-.mobile ul {
-  padding: 25px;
-  list-style: none
-}
-
-.container .mobile li a {
-  color: #222;
-  padding: 5px 0;
-  display: block;
-  border: none
-}
-
-.container {
-  background: #fcf8f2;
-  position: relative;
-  z-index: 3;
-  padding: 13px 0
-}
-
-.brand {
-  float: left
-}
-
-.brand img {
-  width: 45px;
-  vertical-align: middle
 }
 
 .desktop {
@@ -75,7 +71,7 @@
   list-style-type: none
 }
 
-.desktop ul li {
+.desktop li {
   display: inline-block
 }
 

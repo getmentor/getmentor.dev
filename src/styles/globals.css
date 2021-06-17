@@ -19,7 +19,7 @@
     @apply my-4;
   }
 
-  a,
+  .link,
   .prose a {
     border-bottom: 2px solid;
     text-decoration: none !important;

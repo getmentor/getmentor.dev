@@ -17,9 +17,19 @@ export default function Bementor() {
         <div className="text-center py-14 lg:w-3/4 mx-auto">
           <h1>Стань частью нашей команды</h1>
 
-          <p>Помогать другим – почётно и круто. Спасибо, что хотите этим заниматься.<br/>
-            Заполните <a href="https://airtable.com/shraFoLi9aSqzU4U9" target="_blank" rel="noreferrer">форму
-              ниже</a>, и мы обязательно рассмотрим вашу заявку как можно скорее.
+          <p>
+            Помогать другим – почётно и круто. Спасибо, что хотите этим заниматься.
+            <br />
+            Заполните{' '}
+            <a
+              className="link"
+              href="https://airtable.com/shraFoLi9aSqzU4U9"
+              target="_blank"
+              rel="noreferrer"
+            >
+              форму ниже
+            </a>
+            , и мы обязательно рассмотрим вашу заявку как можно скорее.
           </p>
         </div>
       </Section>
@@ -33,8 +43,8 @@ export default function Bementor() {
             margin: '0 auto',
             width: '100%',
             height: '600px',
-          }}>
-        </iframe>
+          }}
+        ></iframe>
       </div>
 
       <Footer />
