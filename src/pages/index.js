@@ -179,11 +179,11 @@ export default function Home({ pageMentors }) {
             <Image src="/images/avito_tech_600.png" width={300} height={100} />
           </a>
 
-          <Link href="/ontico">
+          {/*<Link href="/ontico">
             <a className="h-20 px-8 flex justify-center items-center">
               <Image src="/images/ontico.png" width={300} height={(220 / 1024) * 300} />
             </a>
-          </Link>
+          </Link>*/}
         </div>
 
         <div className="text-center mt-4">
