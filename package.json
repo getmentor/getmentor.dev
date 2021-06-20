@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' node server.js",
+    "dev": "NODE_OPTIONS='--inspect' node src/server.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production node src/server.js",
     "lint": "eslint src/"
   },
   "dependencies": {

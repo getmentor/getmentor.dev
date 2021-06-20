@@ -176,7 +176,7 @@ export default function Home({ pageMentors }) {
             target="_blank"
             rel="noreferrer"
           >
-            <Image src="/images/avito_tech_600.png" width={300} height={100} />
+            <Image src="/images/avito_tech.png" width={300} height={100} />
           </a>
 
           {/*<Link href="/ontico">
