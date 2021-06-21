@@ -10,7 +10,7 @@ import allFilters from '../config/filters'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
-  const mentor = allMentors.find(mentor => mentor.slug === context.params.slug)
+  const mentor = allMentors.find((mentor) => mentor.slug === context.params.slug)
 
   if (!mentor) {
     return {
@@ -31,7 +31,9 @@ export default function Mentor(props) {
   return (
     <>
       <Head>
-        <title>{mentor.name} | {seo.title}</title>
+        <title>
+          {mentor.name} | {seo.title}
+        </title>
       </Head>
 
       <NavHeader />
@@ -43,7 +45,7 @@ export default function Mentor(props) {
             <div className="mb-3">{mentor.job}</div>
 
             <div className="flex flex-wrap -m-1 mb-5">
-              {mentor.tags.map(tag => (
+              {mentor.tags.map((tag) => (
                 <div
                   key={tag}
                   // className="border-2 border-gray-700 rounded-full py-1 px-4 m-2"
@@ -51,42 +53,40 @@ export default function Mentor(props) {
                     'bg-gray-300': allFilters.tags.includes(tag),
                     'bg-indigo-200': allFilters.sponsors.includes(tag),
                   })}
-                >{tag}</div>
+                >
+                  {tag}
+                </div>
               ))}
             </div>
 
             <div className="mb-4 md:hidden">
-              <img
-                className="w-full"
-                src={mentor.photo_url}
-              />
+              <img className="w-full" src={mentor.photo_url} />
             </div>
 
-            {(!mentor.isVisible) && (
-              <div className="text-gray-500 mb-6">
-                Ментор приостановил приём заявок.
-              </div>
+            {!mentor.isVisible && (
+              <div className="text-gray-500 mb-6">Ментор приостановил приём заявок.</div>
             )}
 
             <div className="mb-4">
-              <b>Опыт:</b> {mentor.experience}<br/>
-              <b>Цена:</b> {mentor.price}<br/>
+              <b>Опыт:</b> {mentor.experience}
+              <br />
+              <b>Цена:</b> {mentor.price}
+              <br />
             </div>
 
-            {(mentor.isVisible) && (
+            {mentor.isVisible && (
               <div className="mb-6">
                 <a
                   className="button"
                   href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
-                >Оставить заявку</a>
+                >
+                  Оставить заявку
+                </a>
               </div>
             )}
 
             <div className="prose my-4">
-              <Interweave
-                noWrap={true}
-                content={mentor.description}
-              />
+              <Interweave noWrap={true} content={mentor.description.replace(/\n/gi, '</br/>')} />
             </div>
           </div>
 
