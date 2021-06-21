@@ -34,6 +34,19 @@ export default function Mentor(props) {
         <title>
           {mentor.name} | {seo.title}
         </title>
+
+        <meta name="description" content={mentor.job + '\n' + seo.description} />
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={mentor.name + ' | ' + seo.title} />
+        <meta name="twitter:description" content={mentor.job} />
+        <meta name="twitter:image.src" content={mentor.photo_url} />
+
+        <meta name="og:site_name" content={mentor.name + ' | ' + seo.title} />
+        <meta name="og:type" content="website" />
+        <meta name="og:description" content={mentor.job + '\n' + seo.description} />
+        <meta name="og:image" content={mentor.photo_url} />
+        <meta name="og:image:alt" content={mentor.name + ' | ' + mentor.job} />
       </Head>
 
       <NavHeader />
