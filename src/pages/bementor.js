@@ -3,8 +3,14 @@ import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
 import seo from '../config/seo'
+import { useEffect } from 'react'
+import analytics from '../lib/analytics'
 
 export default function Bementor() {
+  useEffect(() => {
+    analytics.event('Visit Bementor Page')
+  }, [])
+
   return (
     <>
       <Head>

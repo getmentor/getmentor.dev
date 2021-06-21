@@ -7,16 +7,18 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
 /**
  * @typedef Mentor
  * @param {number} id
+ * @param {string} slug
  * @param {string} name
  * @param {string} job
  * @param {string} description
+ * @param {string} experience
  * @param {string} price
+ * @param {number} menteeCount
  * @param {Object} photo
  * @param {string} photo_url
- * @param {string} experience
- * @param {number} menteeCount
  * @param {string[]} tags
  * @param {number} sortOrder
+ * @param {boolean} isVisible
  */
 
 /**

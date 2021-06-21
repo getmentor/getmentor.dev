@@ -13,6 +13,8 @@ import Section from '../components/Section'
 import useMentors from '../components/useMentors'
 import seo from '../config/seo'
 import donates from '../config/donates'
+import { useEffect } from 'react'
+import analytics from '../lib/analytics'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -53,6 +55,10 @@ export default function Home({ pageMentors }) {
     setSelectedTags,
     showMoreMentors,
   ] = useMentors(pageMentors)
+
+  useEffect(() => {
+    analytics.event('Visit Index Page')
+  }, [])
 
   return (
     <>

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import classNames from 'classnames'
 import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
@@ -7,6 +8,7 @@ import Section from '../components/Section'
 import Interweave from 'interweave'
 import seo from '../config/seo'
 import allFilters from '../config/filters'
+import analytics from '../lib/analytics'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -27,6 +29,15 @@ export async function getServerSideProps(context) {
 
 export default function Mentor(props) {
   const { mentor } = props
+
+  useEffect(() => {
+    analytics.event('View Mentor Page', {
+      id: mentor.id,
+      name: mentor.name,
+      experience: mentor.experience,
+      price: mentor.price,
+    })
+  }, [])
 
   return (
     <>
@@ -92,6 +103,14 @@ export default function Mentor(props) {
                 <a
                   className="button"
                   href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
+                  onClick={() => {
+                    analytics.event('Request a Mentor', {
+                      id: mentor.id,
+                      name: mentor.name,
+                      experience: mentor.experience,
+                      price: mentor.price,
+                    })
+                  }}
                 >
                   Оставить заявку
                 </a>
