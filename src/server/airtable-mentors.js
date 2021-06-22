@@ -28,6 +28,21 @@ export async function getMentors() {
   const mentorsRaw = await base('Mentors')
     .select({
       filterByFormula: 'OR(Status = "active", Status = "inactive")',
+      fields: [
+        'Alias',
+        'Title',
+        'Description',
+        'Details',
+        'Experience',
+        'Price',
+        'Done Sessions Count',
+        'Image_Attachment',
+        'Image',
+        'Tags',
+        'SortOrder',
+        'OnSite',
+        'Status',
+      ],
     })
     .all()
 
