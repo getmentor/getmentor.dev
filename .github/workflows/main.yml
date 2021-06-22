@@ -37,6 +37,10 @@ jobs:
   deploy-notification:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+      AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+      APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
     
     steps:
       - name: Create deployment notification
@@ -51,7 +55,7 @@ jobs:
             const options = {
               hostname: 'push.appsignal.com',
               port: 443,
-              path: `/1/markers?api_key=${secrets.APPSIGNAL_PUSH_API_KEY}&name=getmentor&environment=production`,
+              path: `/1/markers?api_key=${process.env.APPSIGNAL_PUSH_API_KEY}&name=getmentor&environment=production`,
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
