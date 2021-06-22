@@ -34,8 +34,22 @@ jobs:
           yarn install --frozen-lockfile
           yarn build
 
-  deploy-notification:
+  deploy-to-DO:
     needs: build
+    runs-on: ubuntu-latest
+    env:
+      DIGITALOCEAN_APP_ID: ${{ secrets.DIGITALOCEAN_APP_ID }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Deploy
+        run: doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }}
+
+  deploy-notification:
+    needs: deploy-to-DO
     runs-on: ubuntu-latest
     env:
       AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
