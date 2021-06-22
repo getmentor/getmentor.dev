@@ -1,5 +1,5 @@
 import hash from 'object-hash'
-import { getMentors as getMentorsFromAirtable } from './airtable-mentors'
+import { Mentor, getMentors as getMentorsFromAirtable } from './airtable-mentors'
 
 /**
  * @var {Promise<Mentor[]>}
@@ -46,9 +46,9 @@ function init() {
 /**
  * @returns {Promise<void>}
  */
-async function loadMentorsToCache() {
-  const newMentors = await getMentorsFromAirtable()
-  const newHash = hash(newMentors)
+async function loadMentorsToCache(): Promise<void> {
+  let newMentors = await getMentorsFromAirtable()
+  let newHash = hash(newMentors)
   if (newHash !== mentorsHash) {
     mentors = newMentors
     mentorsHash = newHash
@@ -59,7 +59,7 @@ async function loadMentorsToCache() {
 /**
  * @returns {Promise<Mentor[]>}
  */
-export async function getMentors() {
+export async function getMentors(): Promise<Mentor[]> {
   // uncomment if you want to disable cache
   // return getMentorsFromAirtable()
 
