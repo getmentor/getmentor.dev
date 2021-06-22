@@ -54,6 +54,25 @@ export default function Ontico({ pageMentors }) {
     <>
       <Head>
         <title>Конференции Онтико | {seo.title}</title>
+
+        <meta
+          name="description"
+          content="Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии"
+        />
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={'Конференции Онтико | ' + seo.title} />
+        <meta
+          name="twitter:description"
+          content="Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии"
+        />
+
+        <meta name="og:site_name" content={'Конференции Онтико | ' + seo.title} />
+        <meta name="og:type" content="website" />
+        <meta
+          name="og:description"
+          content="Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии"
+        />
       </Head>
 
       <NavHeader />
