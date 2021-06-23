@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import classNames from 'classnames'
+import cloudinary from '../lib/cloudinary'
 import seo from '../config/seo'
 import NavHeader from '../components/NavHeader'
 import Section from '../components/Section'
@@ -24,27 +26,31 @@ export async function getServerSideProps() {
   }
 }
 
-const photos = [
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624463026/ontico/19-04-09_13-30_0145_bqhq6l.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624463000/ontico/21-04-30_10-41_0029_dnfuik.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462999/ontico/21-04-30_11-13_0044_gzigmv.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462942/ontico/2019-11-07_10-33_0076_VI_cxage5.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462830/ontico/19-11-07_10-29_0528_SK_lazjux.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462829/ontico/11-22_20-02-10_0139_nsdxbp.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462828/ontico/19-09-23_16-22_0677_avktxz.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462828/ontico/21-05-17_10-52_0403_A_rafyhx.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462828/ontico/21-05-17_10-03_0186_A_gldji4.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462828/ontico/21-05-17_11-15_0270_L_tlth2r.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_11-18_0272_L_r6xmvm.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_11-20_0277_A_xhzqhy.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_11-39_0286_L_ajcm7o.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_12-09_0326_A_u6yi9x.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_16-41_0513_L_wwcf7u.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_18-30_0599_L_k7ubvc.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_15-50_0469_L_le7xzl.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_17-57_0578_L_i6qi2u.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_17-39_0569_L_gnjule.jpg',
-  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-06-01_10-13_0013_pd15th.jpg',
+const pageTitle = 'Конференции Онтико'
+const pageDescription =
+  'Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии'
+
+const galleryPhotos = [
+  'ontico/19-04-09_13-30_0145_bqhq6l.jpg',
+  'ontico/21-04-30_10-41_0029_dnfuik.jpg',
+  'ontico/21-04-30_11-13_0044_gzigmv.jpg',
+  'ontico/2019-11-07_10-33_0076_VI_cxage5.jpg',
+  'ontico/19-11-07_10-29_0528_SK_lazjux.jpg',
+  'ontico/11-22_20-02-10_0139_nsdxbp.jpg',
+  'ontico/19-09-23_16-22_0677_avktxz.jpg',
+  'ontico/21-05-17_10-52_0403_A_rafyhx.jpg',
+  'ontico/21-05-17_10-03_0186_A_gldji4.jpg',
+  'ontico/21-05-17_11-15_0270_L_tlth2r.jpg',
+  'ontico/21-05-17_11-18_0272_L_r6xmvm.jpg',
+  'ontico/21-05-17_11-20_0277_A_xhzqhy.jpg',
+  'ontico/21-05-17_11-39_0286_L_ajcm7o.jpg',
+  'ontico/21-05-17_12-09_0326_A_u6yi9x.jpg',
+  'ontico/21-05-17_16-41_0513_L_wwcf7u.jpg',
+  'ontico/21-05-17_18-30_0599_L_k7ubvc.jpg',
+  'ontico/21-05-17_15-50_0469_L_le7xzl.jpg',
+  'ontico/21-05-17_17-57_0578_L_i6qi2u.jpg',
+  'ontico/21-05-17_17-39_0569_L_gnjule.jpg',
+  'ontico/21-06-01_10-13_0013_pd15th.jpg',
 ]
 
 function Feature({ title, text, imageUrl }) {
@@ -70,26 +76,18 @@ export default function Ontico({ pageMentors }) {
   return (
     <>
       <Head>
-        <title>Конференции Онтико | {seo.title}</title>
-
-        <meta
-          name="description"
-          content="Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии"
-        />
+        <title>
+          {pageTitle} | {seo.title}
+        </title>
+        <meta name="description" content={pageDescription} />
 
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={'Конференции Онтико | ' + seo.title} />
-        <meta
-          name="twitter:description"
-          content="Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии"
-        />
+        <meta name="twitter:description" content={pageDescription} />
 
         <meta name="og:site_name" content={'Конференции Онтико | ' + seo.title} />
         <meta name="og:type" content="website" />
-        <meta
-          name="og:description"
-          content="Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии"
-        />
+        <meta name="og:description" content={pageDescription} />
       </Head>
 
       <NavHeader />
@@ -105,7 +103,7 @@ export default function Ontico({ pageMentors }) {
             индустрии
           </p>
 
-          <p className="text-3xl text-right font-light">уже 15 лет :)</p>
+          <p className="text-3xl lg:text-right font-light">уже 15 лет :)</p>
 
           <a
             className="button bg-primary-900 mt-6"
@@ -120,17 +118,23 @@ export default function Ontico({ pageMentors }) {
 
       <Section id="description">
         <div className="grid lg:grid-cols-2 gap-8 max-w-screen-lg	mx-auto">
-          <div>
+          <div className="text-center">
             <Image
-              src="https://res.cloudinary.com/getmentor-dev/image/upload/v1624462829/ontico/19-09-23_16-19_0674_hcqqsy.jpg"
+              src="ontico/19-09-23_16-19_0674_hcqqsy.jpg"
               width={550}
-              height={(1440 / 2160) * 550}
-              layout="responsive"
-              unoptimized={true}
+              height={(1333 / 2000) * 550}
+              loader={({ src, width, quality }) => {
+                return cloudinary.url(src, { width })
+              }}
+              placeholder="blur"
+              blurDataURL={cloudinary.url('ontico/19-09-23_16-19_0674_hcqqsy.jpg', {
+                width: 100,
+                blur: 400,
+              })}
             />
           </div>
 
-          <div className="prose">
+          <div className="prose mx-auto">
             <p>
               Компания Онтико делает профессиональные конференции с 2007 года. Нашей главной
               ценностью является выдающийся опыт участников наших конференций — разработчиков,
@@ -169,10 +173,26 @@ export default function Ontico({ pageMentors }) {
       </Section>
 
       <Section>
-        <div className="grid grid-cols-5 gap-4 mb-6">
-          {photos.map((photoUrl) => (
-            <div className="relative aspect-w-3 aspect-h-2" key={photoUrl}>
-              <Image src={photoUrl} layout="fill" unoptimized={true} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+          {galleryPhotos.map((photoUrl, index) => (
+            <div
+              key={photoUrl}
+              className={classNames({
+                hidden: index >= 10,
+                'sm:block': index >= 10 && index < 12,
+                'lg:block': index >= 10,
+              })}
+            >
+              <Image
+                src={photoUrl}
+                width={300}
+                height={200}
+                loader={({ src, width, quality }) => {
+                  return cloudinary.url(src, { width })
+                }}
+                placeholder="blur"
+                blurDataURL={cloudinary.url(photoUrl, { width: 100, blur: 200 })}
+              />
             </div>
           ))}
         </div>
@@ -180,7 +200,7 @@ export default function Ontico({ pageMentors }) {
 
       <Section>
         <div className="grid lg:grid-cols-2 gap-8 max-w-screen-lg	mx-auto mb-6">
-          <div className="prose">
+          <div className="prose-lg text-center lg:prose lg:text-left mx-auto">
             <p>
               На конференциях Онтико мы собираем большое число экспертов из разных областей, которые
               делятся с участниками своим опытом и лайфхаками. Сейчас вам не обязательно ждать
@@ -189,13 +209,19 @@ export default function Ontico({ pageMentors }) {
             </p>
           </div>
 
-          <div>
+          <div className="hidden lg:block">
             <Image
-              src="https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_17-03_0534_L_sj335b.jpg"
+              src="ontico/21-05-17_17-03_0534_L_sj335b.jpg"
               width={550}
               height={(1333 / 2000) * 550}
-              layout="responsive"
-              unoptimized={true}
+              loader={({ src, width, quality }) => {
+                return cloudinary.url(src, { width })
+              }}
+              placeholder="blur"
+              blurDataURL={cloudinary.url('ontico/21-05-17_17-03_0534_L_sj335b.jpg', {
+                width: 100,
+                blur: 400,
+              })}
             />
           </div>
         </div>
