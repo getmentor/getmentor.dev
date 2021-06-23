@@ -28,7 +28,7 @@ export default function Donate() {
         <title>Донат | {seo.title}</title>
       </Head>
 
-      <NavHeader />
+      <NavHeader className="bg-primary-100" />
 
       <Section className="bg-primary-100" id="header">
         <div className="text-center py-14 lg:w-3/4 mx-auto">

@@ -11,7 +11,7 @@ export default function Privacy() {
         <title>Политика в отношении обработки персональных данных | {seo.title}</title>
       </Head>
 
-      <NavHeader />
+      <NavHeader className="bg-primary-100" />
 
       <Section className="bg-primary-100" id="header">
         <div className="text-center py-14 lg:w-3/4 mx-auto">
@@ -28,8 +28,8 @@ export default function Privacy() {
             margin: '0 auto',
             width: '100%',
             height: '600px',
-          }}>
-        </iframe>
+          }}
+        ></iframe>
       </div>
 
       <Footer />

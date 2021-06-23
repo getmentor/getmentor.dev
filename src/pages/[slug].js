@@ -60,7 +60,7 @@ export default function Mentor(props) {
         <meta name="og:image:alt" content={mentor.name + ' | ' + mentor.job} />
       </Head>
 
-      <NavHeader />
+      <NavHeader className="bg-primary-100" />
 
       <Section id="body">
         <div className="flex">

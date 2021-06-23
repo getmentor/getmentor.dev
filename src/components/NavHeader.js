@@ -20,11 +20,11 @@ function Nav() {
   )
 }
 
-export default function NavHeader() {
+export default function NavHeader(props) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className={styles.container}>
+    <div className={classNames(styles.container, props.className)}>
       <div className="container flex items-center">
         <Link href="/">
           <a className="flex items-center pt-1">

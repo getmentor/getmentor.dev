@@ -24,17 +24,34 @@ export async function getServerSideProps() {
   }
 }
 
+const photos = [
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624463026/ontico/19-04-09_13-30_0145_bqhq6l.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624463000/ontico/21-04-30_10-41_0029_dnfuik.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462999/ontico/21-04-30_11-13_0044_gzigmv.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462942/ontico/2019-11-07_10-33_0076_VI_cxage5.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462830/ontico/19-11-07_10-29_0528_SK_lazjux.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462829/ontico/11-22_20-02-10_0139_nsdxbp.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462828/ontico/19-09-23_16-22_0677_avktxz.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462828/ontico/21-05-17_10-52_0403_A_rafyhx.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462828/ontico/21-05-17_10-03_0186_A_gldji4.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462828/ontico/21-05-17_11-15_0270_L_tlth2r.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_11-18_0272_L_r6xmvm.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_11-20_0277_A_xhzqhy.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_11-39_0286_L_ajcm7o.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_12-09_0326_A_u6yi9x.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_16-41_0513_L_wwcf7u.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462827/ontico/21-05-17_18-30_0599_L_k7ubvc.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_15-50_0469_L_le7xzl.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_17-57_0578_L_i6qi2u.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_17-39_0569_L_gnjule.jpg',
+  'https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-06-01_10-13_0013_pd15th.jpg',
+]
+
 function Feature({ title, text, imageUrl }) {
   return (
-    <div className="flex sm:w-1/2 lg:w-1/3 p-4">
-      <div className="pr-4">
-        <img src={imageUrl} className="w-40" />
-      </div>
-
-      <div>
-        <h3 className="text-xl font-semibold mb-4">{title}</h3>
-        <div>{text}</div>
-      </div>
+    <div className="text-center p-4">
+      <img className="inline w-40" src={imageUrl} />
+      <p>{text}</p>
     </div>
   )
 }
@@ -77,14 +94,18 @@ export default function Ontico({ pageMentors }) {
 
       <NavHeader />
 
-      <Section className="bg-primary-100" id="header">
-        <div className="text-center py-14 lg:w-3/4 mx-auto">
-          <h1>Конференции Онтико</h1>
+      <Section id="header">
+        <div className="py-14 max-w-screen-lg mx-auto">
+          <h1 className="-ml-3">
+            <Image src="/images/ontico.png" alt="Онтико" width={400} height={(400 / 1024) * 220} />
+          </h1>
 
-          <p>
+          <p className="text-3xl leading-relaxed">
             Создаем профессиональное пространство для встречи и обмена опыта представителей IT
             индустрии
           </p>
+
+          <p className="text-3xl text-right font-light">уже 15 лет :)</p>
 
           <a
             className="button bg-primary-900 mt-6"
@@ -101,10 +122,11 @@ export default function Ontico({ pageMentors }) {
         <div className="grid lg:grid-cols-2 gap-8 max-w-screen-lg	mx-auto">
           <div>
             <Image
-              src="/images/ontico_conf.jpeg"
+              src="https://res.cloudinary.com/getmentor-dev/image/upload/v1624462829/ontico/19-09-23_16-19_0674_hcqqsy.jpg"
               width={550}
               height={(1440 / 2160) * 550}
               layout="responsive"
+              unoptimized={true}
             />
           </div>
 
@@ -128,38 +150,59 @@ export default function Ontico({ pageMentors }) {
       </Section>
 
       <Section id="howitworks">
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap justify-around max-w-screen-lg -my-10 mx-auto">
           <Feature
-            title="Конференции"
             text="Более 50 конференций"
             imageUrl="https://dl.airtable.com/.attachments/a372ca40ab8d5407d9a215fdad23baad/41841dcd/Icons-01.png"
           />
 
           <Feature
-            title="Участники"
-            text="Более 40 000 участников"
+            text="Более 3 000 докладчиков"
             imageUrl="https://dl.airtable.com/.attachments/81e7479c0d8caa0a54e9bad068693bba/1e367350/Icons-02.png"
           />
 
           <Feature
-            title="Спикеры"
             text="Более 40 000 участников"
             imageUrl="https://dl.airtable.com/.attachments/438dd1569af1535542ce8ffcededc647/f92ec701/Icons-03.png"
           />
         </div>
       </Section>
 
+      <Section>
+        <div className="grid grid-cols-5 gap-4 mb-6">
+          {photos.map((photoUrl) => (
+            <div className="relative aspect-w-3 aspect-h-2" key={photoUrl}>
+              <Image src={photoUrl} layout="fill" unoptimized={true} />
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section>
+        <div className="grid lg:grid-cols-2 gap-8 max-w-screen-lg	mx-auto mb-6">
+          <div className="prose">
+            <p>
+              На конференциях Онтико мы собираем большое число экспертов из разных областей, которые
+              делятся с участниками своим опытом и лайфхаками. Сейчас вам не обязательно ждать
+              очередной конференции - вы можете записаться на консультацию у нужного эксперта прямо
+              сейчас.
+            </p>
+          </div>
+
+          <div>
+            <Image
+              src="https://res.cloudinary.com/getmentor-dev/image/upload/v1624462826/ontico/21-05-17_17-03_0534_L_sj335b.jpg"
+              width={550}
+              height={(1333 / 2000) * 550}
+              layout="responsive"
+              unoptimized={true}
+            />
+          </div>
+        </div>
+      </Section>
+
       <Section id="list">
         <Section.Title>Наши менторы</Section.Title>
-
-        <div className="text-center">
-          <p>
-            На конференциях Онтико мы собираем большое число экспертов из разных областей, которые
-            делятся с участниками своим опытом и лайфхаками. Сейчас вам не обязательно ждать
-            очередной конференции - вы можете записаться на консультацию у нужного эксперта прямо
-            сейчас.
-          </p>
-        </div>
 
         <div className="mb-6">
           <MentorsSearch value={searchInput} onChange={setSearchInput} />
