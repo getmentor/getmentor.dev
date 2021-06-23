@@ -1,4 +1,4 @@
-import Airtable from 'airtable'
+import Airtable, { Attachment } from 'airtable'
 
 let base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
   process.env.AIRTABLE_BASE_ID
@@ -13,7 +13,7 @@ export type Mentor = {
   experience: string
   price: string
   menteeCount: number
-  photo: Object
+  photo: Attachment
   photo_url: string
   tags: string[]
   sortOrder: number
@@ -52,7 +52,7 @@ export async function getMentors(): Promise<Mentor[]> {
       experience: item.fields['Experience'] as string,
       price: item.fields['Price'] as string,
       menteeCount: item.fields['Done Sessions Count'] as number,
-      photo: item.fields['Image_Attachment'][0] as string,
+      photo: item.fields['Image_Attachment'][0] as Attachment,
       photo_url: item.fields['Image'] as string,
       tags: (item.fields['Tags'] as string).split(','),
       sortOrder: item.fields['SortOrder'] as number,
