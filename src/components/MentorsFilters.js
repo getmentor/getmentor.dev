@@ -19,19 +19,17 @@ export default function MentorsFilters(props) {
     if (tag === TAG_ALL) {
       onChangeTags([])
     } else if (selectedTags.includes(tag)) {
-      onChangeTags(selectedTags.filter(item => item !== tag))
+      onChangeTags(selectedTags.filter((item) => item !== tag))
     } else {
-      onChangeTags([ ...selectedTags, tag ])
+      onChangeTags([...selectedTags, tag])
     }
   }
 
   return (
     <div className="text-center">
       <ul className="flex flex-wrap justify-center -m-1 mb-3">
-        {[ TAG_ALL ].map(tag => {
-          const isActive = (tag !== TAG_ALL)
-            ? selectedTags.includes(tag)
-            : (selectedTags.length === 0)
+        {[TAG_ALL].map((tag) => {
+          const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
 
           return (
             <li
@@ -41,16 +39,17 @@ export default function MentorsFilters(props) {
               })}
               key={tag}
               onClick={() => onClickTag(tag)}
-            >{tag}</li>
+            >
+              {tag}
+            </li>
           )
         })}
 
         {allowSponsors && (
           <>
-            {allFilters.sponsors.map(tag => {
-              const isActive = (tag !== TAG_ALL)
-                ? selectedTags.includes(tag)
-                : (selectedTags.length === 0)
+            {allFilters.sponsors.map((tag) => {
+              const isActive =
+                tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
 
               return (
                 <li
@@ -60,16 +59,16 @@ export default function MentorsFilters(props) {
                   })}
                   key={tag}
                   onClick={() => onClickTag(tag)}
-                >{tag}</li>
+                >
+                  {tag}
+                </li>
               )
             })}
           </>
         )}
 
-        {allFilters.tags.map(tag => {
-          const isActive = (tag !== TAG_ALL)
-            ? selectedTags.includes(tag)
-            : (selectedTags.length === 0)
+        {allFilters.tags.map((tag) => {
+          const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
 
           return (
             <li
@@ -79,7 +78,60 @@ export default function MentorsFilters(props) {
               })}
               key={tag}
               onClick={() => onClickTag(tag)}
-            >{tag}</li>
+            >
+              {tag}
+            </li>
+          )
+        })}
+      </ul>
+      <ul className="flex flex-wrap justify-center -m-1 mb-3">
+        <li
+          className="rounded-full py-1 m-1"
+          style={{ 'font-size': '1rem', 'line-height': '1.25rem' }}
+        >
+          <strong>Опыт: </strong>
+        </li>
+
+        {allFilters.experience.map((tag) => {
+          const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
+
+          return (
+            <li
+              className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
+                'bg-gray-300 hover:bg-gray-200 text-gray-600': !isActive,
+                'bg-gray-700 text-white': isActive,
+              })}
+              key={tag}
+              onClick={() => onClickTag(tag)}
+            >
+              {tag}
+            </li>
+          )
+        })}
+      </ul>
+
+      <ul className="flex flex-wrap justify-center -m-1 mb-3">
+        <li
+          className="rounded-full py-1 m-1"
+          style={{ 'font-size': '1rem', 'line-height': '1.25rem' }}
+        >
+          <strong>Цена: </strong>
+        </li>
+
+        {allFilters.price.map((tag) => {
+          const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
+
+          return (
+            <li
+              className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
+                'bg-gray-300 hover:bg-gray-200 text-gray-600': !isActive,
+                'bg-gray-700 text-white': isActive,
+              })}
+              key={tag}
+              onClick={() => onClickTag(tag)}
+            >
+              {tag}
+            </li>
           )
         })}
       </ul>
