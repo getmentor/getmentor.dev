@@ -5,7 +5,14 @@ export default {
   component: ContactMentorForm,
 }
 
-const Template = (args) => <ContactMentorForm {...args} />
+const Template = (args) => (
+  <div className="max-w-lg">
+    <ContactMentorForm {...args} />
+  </div>
+)
 
 export const Default = Template.bind({})
-Default.args = {}
+Default.args = {
+  isLoading: false,
+  isError: false,
+}
