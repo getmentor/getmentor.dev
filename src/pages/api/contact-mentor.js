@@ -15,37 +15,34 @@ const rateLimitLog = {}
 export default async (req, res) => {
   await bodySchema.validate(req.body)
 
-  try {
-    validateRateLimit('any request', 500)
-    validateRateLimit(req.body['mentorAirtableId'], 1000)
-  } catch (e) {
-    res.status(429).json({ success: false, error: 'Rate limit reached.' })
-    return
-  }
+  let url = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_V3_SECRET_KEY}&response=${req.body['recaptchaToken']}`
 
-  await createClientRequest({
-    Email: req.body['email'],
-    Name: req.body['name'],
-    Level: req.body['experience'] || null,
-    Mentor: [req.body['mentorAirtableId']],
-    Description: req.body['intro'],
-    Telegram: req.body['telegramUsername'],
+  let captchaResult = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+    },
   })
+    .then((res) => {
+      return res.json()
+    })
+    .catch((e) => {
+      res.status(429).json({ success: false, error: 'Captcha failed.' })
+      return
+    })
 
-  res.status(200).json({ success: true })
-}
+  if (captchaResult && captchaResult.success && captchaResult.score > 0.3) {
+    await createClientRequest({
+      Email: req.body['email'],
+      Name: req.body['name'],
+      Level: req.body['experience'] || null,
+      Mentor: [req.body['mentorAirtableId']],
+      Description: req.body['intro'],
+      Telegram: req.body['telegramUsername'],
+    })
 
-/**
- * @param {string} limitKey
- * @param {number} timeout
- */
-function validateRateLimit(limitKey, timeout) {
-  const latestRequestTime = rateLimitLog[limitKey]
-  const isValidRequest = !latestRequestTime || latestRequestTime < Date.now() - timeout
-
-  if (isValidRequest) {
-    rateLimitLog[limitKey] = Date.now()
+    res.status(200).json({ success: true })
   } else {
-    throw new Error('Rate limit reached')
+    res.status(429).json({ success: false, error: 'Captcha failed.' })
   }
 }
