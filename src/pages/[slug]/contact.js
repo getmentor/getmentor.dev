@@ -1,4 +1,3 @@
-import { getMentors } from '../../server/cached-mentors'
 import Head from 'next/head'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -7,6 +6,8 @@ import ContactMentorForm from '../../components/ContactMentorForm'
 import seo from '../../config/seo'
 import Footer from '../../components/Footer'
 import NavHeader from '../../components/NavHeader'
+import { getMentors } from '../../server/cached-mentors'
+import { useState } from 'react'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -27,6 +28,41 @@ export async function getServerSideProps(context) {
 
 export default function OrderMentor(props) {
   const { mentor } = props
+
+  const [readyStatus, setReadyStatus] = useState('')
+
+  const onSubmit = (data) => {
+    if (readyStatus === 'loading') {
+      return
+    }
+
+    setReadyStatus('loading')
+
+    fetch('/api/contact-mentor', {
+      method: 'POST',
+      body: JSON.stringify({
+        ...data,
+        mentorAirtableId: mentor.id,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+        if (data.success) {
+          setReadyStatus('success')
+        } else {
+          setReadyStatus('error')
+        }
+      })
+      .catch((e) => {
+        setReadyStatus('error')
+        console.error(e)
+      })
+  }
 
   return (
     <>
@@ -62,21 +98,27 @@ export default function OrderMentor(props) {
         </div>
       </Section>
 
-      <Section>
-        <div className="text-center">
-          <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-green-100 text-green-500">
-            <FontAwesomeIcon icon={faCheck} size="2x" />
+      {readyStatus === 'success' ? (
+        <Section>
+          <div className="text-center">
+            <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-green-100 text-green-500">
+              <FontAwesomeIcon icon={faCheck} size="2x" />
+            </div>
+            <h3 className="text-2xl mt-6">Ваша заявка принята</h3>
+            <p>Скоро ментор свяжется с вами.</p>
           </div>
-          <h3 className="text-2xl mt-6">Ваша заявка принята</h3>
-          <p>Скоро ментор свяжется с вами.</p>
-        </div>
-      </Section>
-
-      <Section>
-        <div className="max-w-md mx-auto">
-          <ContactMentorForm />
-        </div>
-      </Section>
+        </Section>
+      ) : (
+        <Section>
+          <div className="max-w-md mx-auto">
+            <ContactMentorForm
+              isLoading={readyStatus === 'loading'}
+              isError={readyStatus === 'error'}
+              onSubmit={onSubmit}
+            />
+          </div>
+        </Section>
+      )}
 
       <Footer />
     </>

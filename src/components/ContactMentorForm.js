@@ -1,15 +1,11 @@
 import { useForm } from 'react-hook-form'
 
-export default function ContactMentorForm({ isLoading, isError }) {
+export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
-
-  const onSubmit = (data) => {
-    console.log(data)
-  }
 
   return (
     <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
@@ -93,18 +89,18 @@ export default function ContactMentorForm({ isLoading, isError }) {
       </div>
 
       <div>
-        <label htmlFor="username" className="block mb-2 font-medium text-gray-700">
+        <label htmlFor="telegramUsername" className="block mb-2 font-medium text-gray-700">
           Telegram @username
         </label>
 
-        {errors.username && (
+        {errors.telegramUsername && (
           <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
         )}
 
         <input
           type="text"
-          {...register('username', { required: true })}
-          id="username"
+          {...register('telegramUsername', { required: true })}
+          id="telegramUsername"
           autoComplete="username"
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
         />
