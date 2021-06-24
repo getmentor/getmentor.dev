@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import classNames from 'classnames'
 import Head from 'next/head'
+import Link from 'next/link'
 import NavHeader from '../../components/NavHeader'
 import Footer from '../../components/Footer'
 import { getMentors } from '../../server/cached-mentors'
@@ -99,20 +100,9 @@ export default function Mentor(props) {
 
             {mentor.isVisible && (
               <div className="mb-6">
-                <a
-                  className="button"
-                  href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
-                  onClick={() => {
-                    analytics.event('Request a Mentor', {
-                      id: mentor.id,
-                      name: mentor.name,
-                      experience: mentor.experience,
-                      price: mentor.price,
-                    })
-                  }}
-                >
-                  Оставить заявку
-                </a>
+                <Link href={'/' + mentor.slug + '/contact'} prefetch={true}>
+                  <a className="button">Оставить заявку</a>
+                </Link>
               </div>
             )}
 

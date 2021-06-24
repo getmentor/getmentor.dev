@@ -7,7 +7,8 @@ import seo from '../../config/seo'
 import Footer from '../../components/Footer'
 import NavHeader from '../../components/NavHeader'
 import { getMentors } from '../../server/cached-mentors'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import analytics from '../../lib/analytics'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -26,8 +27,15 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function OrderMentor(props) {
-  const { mentor } = props
+export default function OrderMentor({ mentor }) {
+  useEffect(() => {
+    analytics.event('Request a Mentor', {
+      id: mentor.id,
+      name: mentor.name,
+      experience: mentor.experience,
+      price: mentor.price,
+    })
+  }, [])
 
   const [readyStatus, setReadyStatus] = useState('')
 
@@ -100,13 +108,7 @@ export default function OrderMentor(props) {
 
       {readyStatus === 'success' ? (
         <Section>
-          <div className="text-center">
-            <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-green-100 text-green-500">
-              <FontAwesomeIcon icon={faCheck} size="2x" />
-            </div>
-            <h3 className="text-2xl mt-6">Ваша заявка принята</h3>
-            <p>Скоро ментор свяжется с вами.</p>
-          </div>
+          <SuccessMessage mentor={mentor} />
         </Section>
       ) : (
         <Section>
@@ -122,5 +124,26 @@ export default function OrderMentor(props) {
 
       <Footer />
     </>
+  )
+}
+
+function SuccessMessage({ mentor }) {
+  useEffect(() => {
+    analytics.event('Mentor Request Sent', {
+      id: mentor.id,
+      name: mentor.name,
+      experience: mentor.experience,
+      price: mentor.price,
+    })
+  }, [])
+
+  return (
+    <div className="text-center">
+      <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-green-100 text-green-500">
+        <FontAwesomeIcon icon={faCheck} size="2x" />
+      </div>
+      <h3 className="text-2xl mt-6">Ваша заявка принята</h3>
+      <p>Скоро ментор свяжется с вами.</p>
+    </div>
   )
 }
