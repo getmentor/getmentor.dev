@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 import { createClientRequest } from '../../server/airtable-client-requests'
 
-const schema = yup.object().shape({
+const bodySchema = yup.object().shape({
   name: yup.string().required(),
   email: yup.string().email(),
   experience: yup.string().nullable(),
@@ -10,8 +10,18 @@ const schema = yup.object().shape({
   telegramUsername: yup.string().required(),
 })
 
+const rateLimitLog = {}
+
 export default async (req, res) => {
-  await schema.validate(req.body)
+  await bodySchema.validate(req.body)
+
+  try {
+    validateRateLimit('any request', 500)
+    validateRateLimit(req.body['mentorAirtableId'], 1000)
+  } catch (e) {
+    res.status(429).json({ success: false, error: 'Rate limit reached.' })
+    return
+  }
 
   await createClientRequest({
     Email: req.body['email'],
@@ -23,4 +33,19 @@ export default async (req, res) => {
   })
 
   res.status(200).json({ success: true })
+}
+
+/**
+ * @param {string} limitKey
+ * @param {number} timeout
+ */
+function validateRateLimit(limitKey, timeout) {
+  const latestRequestTime = rateLimitLog[limitKey]
+  const isValidRequest = !latestRequestTime || latestRequestTime < Date.now() - timeout
+
+  if (isValidRequest) {
+    rateLimitLog[limitKey] = Date.now()
+  } else {
+    throw new Error('Rate limit reached')
+  }
 }
