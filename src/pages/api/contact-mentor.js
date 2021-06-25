@@ -15,7 +15,7 @@ const rateLimitLog = {}
 export default async (req, res) => {
   await bodySchema.validate(req.body)
 
-  let url = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_V3_SECRET_KEY}&response=${req.body['recaptchaToken']}`
+  let url = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_V2_SECRET_KEY}&response=${req.body['recaptchaToken']}`
 
   let captchaResult = await fetch(url, {
     method: 'POST',
@@ -31,7 +31,7 @@ export default async (req, res) => {
       return
     })
 
-  if (captchaResult && captchaResult.success && captchaResult.score > 0.3) {
+  if (captchaResult && captchaResult.success) {
     await createClientRequest({
       Email: req.body['email'],
       Name: req.body['name'],
@@ -43,6 +43,6 @@ export default async (req, res) => {
 
     res.status(200).json({ success: true })
   } else {
-    res.status(429).json({ success: false, error: 'Captcha failed.' })
+    res.status(400).json({ success: false, error: 'Captcha failed.' })
   }
 }
