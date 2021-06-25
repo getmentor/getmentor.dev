@@ -9,7 +9,7 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
     formState: { errors },
   } = useForm()
 
-  function handleCaptchaOnChange(token) {
+  const handleCaptchaOnChange = (token) => {
     setValue('recaptchaToken', token)
   }
 
@@ -18,9 +18,10 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
       <div>
         <label htmlFor="email" className="block mb-2 font-medium text-gray-700">
           Ваша почта
+          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
         </label>
 
-        {errors.email && (
+        {errors.email && errors.email.type === 'required' && (
           <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
         )}
 
@@ -36,9 +37,10 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
       <div>
         <label htmlFor="name" className="block mb-2 font-medium text-gray-700">
           Ваше имя и фамилия
+          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
         </label>
 
-        {errors.name && (
+        {errors.name && errors.name.type === 'required' && (
           <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
         )}
 
@@ -54,15 +56,22 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
       <div>
         <label htmlFor="intro" className="block mb-2 font-medium text-gray-700">
           О чём хотите поговорить?
+          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
         </label>
 
-        {errors.intro && (
+        {errors.intro && errors.intro.type === 'maxLength' && (
+          <div className="text-sm text-red-700 mt-3 mb-2">
+            Превышен лимит символов (не более 4000).
+          </div>
+        )}
+
+        {errors.intro && errors.intro.type === 'required' && (
           <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
         )}
 
         <div className="mt-1">
           <textarea
-            {...register('intro', { required: true })}
+            {...register('intro', { required: true, maxLength: 4000 })}
             id="intro"
             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"
             rows="3"
@@ -97,9 +106,10 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
       <div>
         <label htmlFor="telegramUsername" className="block mb-2 font-medium text-gray-700">
           Telegram @username
+          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
         </label>
 
-        {errors.telegramUsername && (
+        {errors.telegramUsername && errors.telegramUsername.type === 'required' && (
           <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
         )}
 
@@ -111,18 +121,18 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
         />
 
-        <input
-          type="hidden"
-          {...register('recaptchaToken', { required: true })}
-          id="recaptchaToken"
-        />
-
         <p className="mt-2 text-sm text-gray-500">
           Для того, чтобы ментор смог быстрее с вами связаться. Мы используем Telegram в качестве
-          основного средства связи. Если у вас его нет, то напишите в строке ниже, как ещё ментор
+          основного средства связи. Если у вас его нет, то напишите в строке выше, как ещё ментор
           может с вами связаться.
         </p>
       </div>
+
+      <input
+        type="hidden"
+        {...register('recaptchaToken', { required: true })}
+        id="recaptchaToken"
+      />
 
       <ReCAPTCHA
         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY}

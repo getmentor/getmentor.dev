@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import classNames from 'classnames'
 import Head from 'next/head'
-import Link from 'next/link'
 import NavHeader from '../../components/NavHeader'
 import Footer from '../../components/Footer'
 import { getMentors } from '../../server/cached-mentors'
 import Section from '../../components/Section'
+import ContactMentorModalPopup from '../../components/ContactMentorModalPopup'
 import Interweave from 'interweave'
 <<<<<<< HEAD:src/pages/mentor/[slug].js
 import allFilters from '../../config/filters'
@@ -100,9 +100,7 @@ export default function Mentor(props) {
 
             {mentor.isVisible && (
               <div className="mb-6">
-                <Link href={'/' + mentor.slug + '/contact'} prefetch={true}>
-                  <a className="button">Оставить заявку</a>
-                </Link>
+                <ContactMentorModalPopup mentor={mentor} titleText="Оставить заявку" />
               </div>
             )}
 
