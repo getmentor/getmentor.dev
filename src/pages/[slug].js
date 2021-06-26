@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 import classNames from 'classnames'
 import Head from 'next/head'
-import NavHeader from '../../components/NavHeader'
-import Footer from '../../components/Footer'
-import { getMentors } from '../../server/cached-mentors'
-import Section from '../../components/Section'
-import ContactMentorModalPopup from '../../components/ContactMentorModalPopup'
+import NavHeader from '../components/NavHeader'
+import Footer from '../components/Footer'
+import { getMentors } from '../server/cached-mentors'
+import Section from '../components/Section'
+import ContactMentorModalPopup from '../components/ContactMentorModalPopup'
 import Interweave from 'interweave'
+<<<<<<< HEAD:src/pages/[slug]/index.js
 <<<<<<< HEAD:src/pages/mentor/[slug].js
 import allFilters from '../../config/filters'
 import analytics from '../../lib/analytics'
@@ -17,6 +18,11 @@ import seo from '../../config/seo'
 import allFilters from '../../config/filters'
 import analytics from '../../lib/analytics'
 >>>>>>> a80eb80 (Sample contact page):src/pages/[slug]/index.js
+=======
+import seo from '../config/seo'
+import allFilters from '../config/filters'
+import analytics from '../lib/analytics'
+>>>>>>> 0d2324b (moved [slug] into pages/):src/pages/[slug].js
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
