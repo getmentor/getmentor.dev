@@ -8,10 +8,10 @@ import Image from 'next/image'
 
 export default function Donate() {
   const supporters = [
+    { name: 'Денис Бесков', level: 4, url: 'https://systems.education/' },
     { name: 'Михаил Князев', level: 3 },
     { name: 'Иван Круглов', level: 3 },
     { name: 'Artem Grygorenko', level: 2 },
-    { name: 'Денис Бесков', level: 1 },
     { name: 'София Мамаева', level: 1 },
     { name: 'Денис Инешин', level: 1 },
     { name: 'Дмитрий Симонов', level: 1 },
@@ -95,9 +95,19 @@ export default function Donate() {
             <div className="flex justify-between">
               <div>
                 <h3 className="text-lg">{supporter.name}</h3>
-
                 {supporter.level === 3 && (
                   <div className="text-sm pt-1 text-gray-600">Меценат 👑</div>
+                )}
+
+                {supporter.level === 4 && (
+                  <>
+                    <div className="text-sm pt-1 text-gray-600">Мини-спонсор 💰</div>
+                    <div className="text-sm pt-1 text-gray-600">
+                      <a href={supporter.url} target="_blank" rel="nofollow noreferrer">
+                        {supporter.url}
+                      </a>
+                    </div>
+                  </>
                 )}
               </div>
 
