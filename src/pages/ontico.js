@@ -27,7 +27,6 @@ export async function getServerSideProps() {
   }
 }
 
-const pageTitle = 'Конференции Онтико'
 const pageDescription =
   'Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии'
 
@@ -77,10 +76,8 @@ export default function Ontico({ pageMentors }) {
   return (
     <>
       <Head>
-        <MetaHeader
-          customTitle="Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии"
-          customDescription={pageDescription}
-        />
+        <title>Конференции Онтико | {seo.title}</title> =
+        <MetaHeader customTitle="Конференции Онтико" customDescription={pageDescription} />
       </Head>
 
       <NavHeader />

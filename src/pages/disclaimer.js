@@ -3,11 +3,13 @@ import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
 import MetaHeader from '../components/MetaHeader'
+import seo from '../config/seo'
 
 export default function Disclaimer() {
   return (
     <>
       <Head>
+        <title>Отказ от ответственности | {seo.title}</title>
         <MetaHeader customTitle="Отказ от ответственности" />
       </Head>
 

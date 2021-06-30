@@ -15,6 +15,7 @@ import donates from '../config/donates'
 import { useEffect } from 'react'
 import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
+import seo from '../config/seo'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -63,6 +64,7 @@ export default function Home({ pageMentors }) {
   return (
     <>
       <Head>
+        <title>{seo.title}</title>
         <MetaHeader />
       </Head>
 

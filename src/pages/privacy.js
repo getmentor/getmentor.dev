@@ -3,11 +3,13 @@ import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
 import MetaHeader from '../components/MetaHeader'
+import seo from '../config/seo'
 
 export default function Privacy() {
   return (
     <>
       <Head>
+        <title>Политика в отношении обработки персональных данных | {seo.title}</title>
         <MetaHeader customTitle="Политика в отношении обработки персональных данных" />
       </Head>
 

@@ -9,6 +9,7 @@ import Interweave from 'interweave'
 import allFilters from '../../config/filters'
 import analytics from '../../lib/analytics'
 import MetaHeader from '../../components/MetaHeader'
+import seo from '../../config/seo'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -42,6 +43,9 @@ export default function Mentor(props) {
   return (
     <>
       <Head>
+        <title>
+          {mentor.name} | {seo.title}
+        </title>
         <MetaHeader
           customTitle={mentor.name}
           customDescription={mentor.job}

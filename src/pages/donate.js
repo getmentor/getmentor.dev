@@ -5,6 +5,7 @@ import Section from '../components/Section'
 import donates from '../config/donates'
 import Image from 'next/image'
 import MetaHeader from '../components/MetaHeader'
+import seo from '../config/seo'
 
 export default function Donate() {
   const supporters = [
@@ -25,6 +26,7 @@ export default function Donate() {
   return (
     <>
       <Head>
+        <title>Донат | {seo.title}</title>
         <MetaHeader customTitle="Донат" />
       </Head>
 

@@ -5,6 +5,7 @@ import Section from '../components/Section'
 import { useEffect } from 'react'
 import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
+import seo from '../config/seo'
 
 export default function Bementor() {
   useEffect(() => {
@@ -14,6 +15,7 @@ export default function Bementor() {
   return (
     <>
       <Head>
+        <title>Стань частью нашей команды | {seo.title}</title>
         <MetaHeader customTitle="Стань частью нашей команды" />
       </Head>
 
