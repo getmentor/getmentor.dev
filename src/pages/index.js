@@ -11,10 +11,10 @@ import MentorsList from '../components/MentorsList'
 import MentorsSearch from '../components/MentorsSearch'
 import Section from '../components/Section'
 import useMentors from '../components/useMentors'
-import seo from '../config/seo'
 import donates from '../config/donates'
 import { useEffect } from 'react'
 import analytics from '../lib/analytics'
+import MetaHeader from '../components/MetaHeader'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -63,18 +63,7 @@ export default function Home({ pageMentors }) {
   return (
     <>
       <Head>
-        <title>{seo.title}</title>
-        <meta name="description" content={seo.description} />
-
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={seo.title} />
-        <meta name="twitter:description" content={seo.description} />
-        <meta name="twitter:image.src" content={seo.imageUrl} />
-
-        <meta name="og:site_name" content={seo.title} />
-        <meta name="og:type" content="website" />
-        <meta name="og:description" content={seo.description} />
-        <meta name="og:image" content={seo.imageUrl} />
+        <MetaHeader />
       </Head>
 
       <NavHeader className="bg-primary-100" />

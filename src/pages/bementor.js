@@ -2,9 +2,9 @@ import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
-import seo from '../config/seo'
 import { useEffect } from 'react'
 import analytics from '../lib/analytics'
+import MetaHeader from '../components/MetaHeader'
 
 export default function Bementor() {
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function Bementor() {
   return (
     <>
       <Head>
-        <title>Стань частью нашей команды | {seo.title}</title>
+        <MetaHeader customTitle="Стань частью нашей команды" />
       </Head>
 
       <NavHeader className="bg-primary-100" />

@@ -11,6 +11,7 @@ import MentorsList from '../components/MentorsList'
 import useMentors from '../components/useMentors'
 import Footer from '../components/Footer'
 import MentorsSearch from '../components/MentorsSearch'
+import MetaHeader from '../components/MetaHeader'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -76,18 +77,10 @@ export default function Ontico({ pageMentors }) {
   return (
     <>
       <Head>
-        <title>
-          {pageTitle} | {seo.title}
-        </title>
-        <meta name="description" content={pageDescription} />
-
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={'Конференции Онтико | ' + seo.title} />
-        <meta name="twitter:description" content={pageDescription} />
-
-        <meta name="og:site_name" content={'Конференции Онтико | ' + seo.title} />
-        <meta name="og:type" content="website" />
-        <meta name="og:description" content={pageDescription} />
+        <MetaHeader
+          customTitle="Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии"
+          customDescription={pageDescription}
+        />
       </Head>
 
       <NavHeader />

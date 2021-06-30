@@ -6,9 +6,9 @@ import Footer from '../../components/Footer'
 import { getMentors } from '../../server/cached-mentors'
 import Section from '../../components/Section'
 import Interweave from 'interweave'
-import seo from '../../config/seo'
 import allFilters from '../../config/filters'
 import analytics from '../../lib/analytics'
+import MetaHeader from '../../components/MetaHeader'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -42,22 +42,11 @@ export default function Mentor(props) {
   return (
     <>
       <Head>
-        <title>
-          {mentor.name} | {seo.title}
-        </title>
-
-        <meta name="description" content={mentor.job + '\n' + seo.description} />
-
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={mentor.name + ' | ' + seo.title} />
-        <meta name="twitter:description" content={mentor.job} />
-        <meta name="twitter:image.src" content={mentor.photo_url} />
-
-        <meta name="og:site_name" content={mentor.name + ' | ' + seo.title} />
-        <meta name="og:type" content="website" />
-        <meta name="og:description" content={mentor.job + '\n' + seo.description} />
-        <meta name="og:image" content={mentor.photo_url} />
-        <meta name="og:image:alt" content={mentor.name + ' | ' + mentor.job} />
+        <MetaHeader
+          customTitle={mentor.name}
+          customDescription={mentor.job}
+          customImage={mentor.photo_url}
+        />
       </Head>
 
       <NavHeader className="bg-primary-100" />

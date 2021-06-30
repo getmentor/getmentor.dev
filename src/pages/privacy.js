@@ -2,13 +2,13 @@ import Head from 'next/head'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
-import seo from '../config/seo'
+import MetaHeader from '../components/MetaHeader'
 
 export default function Privacy() {
   return (
     <>
       <Head>
-        <title>Политика в отношении обработки персональных данных | {seo.title}</title>
+        <MetaHeader customTitle="Политика в отношении обработки персональных данных" />
       </Head>
 
       <NavHeader className="bg-primary-100" />
