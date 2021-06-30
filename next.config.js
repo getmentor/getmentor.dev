@@ -20,6 +20,16 @@ module.exports = {
     ]
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/:slug([a-z-]+\\d+)',
+        destination: '/mentor/:slug', // Matched parameters can be used in the destination
+        permanent: true,
+      },
+    ]
+  },
+
   onDemandEntries: {
     // period (in ms) where the server will keep pages in the buffer
     maxInactiveAge: 60 * 60 * 1000,

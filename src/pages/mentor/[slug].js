@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import classNames from 'classnames'
 import Head from 'next/head'
-import NavHeader from '../components/NavHeader'
-import Footer from '../components/Footer'
-import { getMentors } from '../server/cached-mentors'
-import Section from '../components/Section'
+import NavHeader from '../../components/NavHeader'
+import Footer from '../../components/Footer'
+import { getMentors } from '../../server/cached-mentors'
+import Section from '../../components/Section'
 import Interweave from 'interweave'
-import seo from '../config/seo'
-import allFilters from '../config/filters'
-import analytics from '../lib/analytics'
+import seo from '../../config/seo'
+import allFilters from '../../config/filters'
+import analytics from '../../lib/analytics'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
