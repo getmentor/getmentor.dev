@@ -10,8 +10,9 @@ import seo from '../config/seo'
 export default function Donate() {
   const supporters = [
     { name: 'Денис Бесков', level: 4, url: 'https://systems.education/' },
-    { name: 'Михаил Князев', level: 3 },
-    { name: 'Иван Круглов', level: 3 },
+    { name: 'Марина Гладышева', level: 2 },
+    //{ name: 'Михаил Князев', level: 3 },
+    //{ name: 'Иван Круглов', level: 3 },
     { name: 'Artem Grygorenko', level: 2 },
     { name: 'София Мамаева', level: 1 },
     { name: 'Денис Инешин', level: 1 },
