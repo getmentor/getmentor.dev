@@ -21,7 +21,6 @@ let mentorsHash
  */
 let mentorsLoadedAt
 
-
 // this hack prevent this functions to me called during build time and etc
 // be sure you set APP_ENV in production deployment
 if (process.env.APP_ENV === 'production') {
@@ -33,13 +32,11 @@ if (process.env.APP_ENV === 'production') {
  */
 function init() {
   // warm up cache on start
-  getMentors()
-    .catch(console.error)
+  getMentors().catch(console.error)
 
   // fetch new data periodically
   setInterval(() => {
-    loadMentorsToCache()
-      .catch(console.error)
+    loadMentorsToCache().catch(console.error)
   }, 10 * 60 * 1000)
 }
 
@@ -52,8 +49,8 @@ async function loadMentorsToCache() {
   if (newHash !== mentorsHash) {
     mentors = newMentors
     mentorsHash = newHash
-    mentorsLoadedAt = Date.now()
   }
+  mentorsLoadedAt = Date.now()
 }
 
 /**
