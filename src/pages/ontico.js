@@ -27,6 +27,9 @@ export async function getServerSideProps() {
   }
 }
 
+const ontico_landing_url =
+  'https://ontico.ru/?utm_source=getmentor&utm_medium=cpc&utm_campaign=landing'
+
 const pageDescription =
   'Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии'
 
@@ -97,7 +100,7 @@ export default function Ontico({ pageMentors }) {
 
           <a
             className="button bg-primary-900 mt-6"
-            href="https://conf.ontico.ru/"
+            href={ontico_landing_url}
             rel="noreferrer"
             target="_blank"
           >
@@ -242,7 +245,7 @@ export default function Ontico({ pageMentors }) {
           <a
             className="button bg-primary-900"
             target="_blank"
-            href="https://conf.ontico.ru/"
+            href={ontico_landing_url}
             rel="noreferrer"
           >
             Все наши конференции
