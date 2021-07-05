@@ -5,17 +5,12 @@ import NavHeader from '../../components/NavHeader'
 import Footer from '../../components/Footer'
 import { getMentors } from '../../server/cached-mentors'
 import Section from '../../components/Section'
+import ContactMentorModalPopup from '../../components/ContactMentorModalPopup'
 import Interweave from 'interweave'
-<<<<<<< HEAD:src/pages/mentor/[slug].js
-import allFilters from '../../config/filters'
-import analytics from '../../lib/analytics'
 import MetaHeader from '../../components/MetaHeader'
 import seo from '../../config/seo'
-=======
-import seo from '../../config/seo'
 import allFilters from '../../config/filters'
 import analytics from '../../lib/analytics'
->>>>>>> a80eb80 (Sample contact page):src/pages/[slug]/index.js
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -52,6 +47,7 @@ export default function Mentor(props) {
         <title>
           {mentor.name} | {seo.title}
         </title>
+
         <MetaHeader
           customTitle={mentor.name}
           customDescription={mentor.job}
@@ -99,20 +95,7 @@ export default function Mentor(props) {
 
             {mentor.isVisible && (
               <div className="mb-6">
-                <a
-                  className="button"
-                  href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
-                  onClick={() => {
-                    analytics.event('Request a Mentor', {
-                      id: mentor.id,
-                      name: mentor.name,
-                      experience: mentor.experience,
-                      price: mentor.price,
-                    })
-                  }}
-                >
-                  Оставить заявку
-                </a>
+                <ContactMentorModalPopup mentor={mentor} titleText="Оставить заявку" />
               </div>
             )}
 
