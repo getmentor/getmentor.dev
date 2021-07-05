@@ -27,7 +27,8 @@ export default async (req, res) => {
       return res.json()
     })
     .catch((e) => {
-      res.status(429).json({ success: false, error: 'Captcha failed.' })
+      console.error(e)
+      res.status(400).json({ success: false, error: 'Captcha failed.' })
       return
     })
 
@@ -43,6 +44,7 @@ export default async (req, res) => {
 
     res.status(200).json({ success: true })
   } else {
-    res.status(400).json({ success: false, error: 'Captcha failed.' })
+    console.warn('Captcha validation failed')
+    res.status(400).json({ success: false, error: 'Captcha validation failed' })
   }
 }

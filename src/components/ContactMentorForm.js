@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
+import analytics from '../lib/analytics'
 
-export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
+export default function ContactMentorForm({ mentor, isLoading, isError, onSubmit }) {
   const {
     register,
     handleSubmit,
@@ -12,6 +14,15 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
   const handleCaptchaOnChange = (token) => {
     setValue('recaptchaToken', token)
   }
+
+  useEffect(() => {
+    analytics.event('Request a Mentor', {
+      id: mentor.id,
+      name: mentor.name,
+      experience: mentor.experience,
+      price: mentor.price,
+    })
+  }, [])
 
   return (
     <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>

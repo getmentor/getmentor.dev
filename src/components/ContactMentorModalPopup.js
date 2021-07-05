@@ -89,6 +89,7 @@ export default function ContactMentorModalPopup({ mentor, titleText }) {
                   <div className="container py-6">
                     <div className="max-w-md mx-auto">
                       <ContactMentorForm
+                        mentor={mentor}
                         isLoading={readyStatus === 'loading'}
                         isError={readyStatus === 'error'}
                         onSubmit={onSubmit}
