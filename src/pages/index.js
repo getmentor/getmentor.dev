@@ -74,7 +74,7 @@ export default function Home({ pageMentors }) {
         <div className="text-center py-14 lg:w-3/4 mx-auto">
           <h1>Найди своего ментора</h1>
 
-          <p>
+          <p className="lg:w-3/4 mx-auto">
             GetMentor&nbsp;— это открытое сообщество IT-наставников, готовых делиться знаниями и
             опытом.
             <br />
