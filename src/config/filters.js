@@ -13,7 +13,7 @@ export default {
     'Databases',
     'Data Science/ML',
     'Аналитика',
-    'Network',
+    'Сети',
     'Cloud',
     'DevOps/SRE',
     'Agile',
