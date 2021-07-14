@@ -1,6 +1,11 @@
 const { withSentryConfig } = require('@sentry/nextjs')
 
 const moduleExports = {
+  sentry: {
+    disableServerWebpackPlugin: process.env.BUILD_ON_GITHUB === '1',
+    disableClientWebpackPlugin: process.env.BUILD_ON_GITHUB === '1',
+  },
+
   images: {
     domains: ['dl.airtable.com'],
   },
