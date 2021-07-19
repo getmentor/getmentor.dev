@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 export default function ContactMentorModalPopup({ mentor, titleText }) {
   const [showModal, setShowModal] = useState(false)
-
+  const [firstLoad, setFirstLoad] = useState(true)
   const [readyStatus, setReadyStatus] = useState('')
 
   const addScrollLock = () => {
@@ -18,7 +18,8 @@ export default function ContactMentorModalPopup({ mentor, titleText }) {
   }
 
   useEffect(() => {
-    if (window?.location?.hash === '#contact') {
+    if (window?.location?.hash === '#contact' && firstLoad) {
+      setFirstLoad(false)
       onShowModal()
     }
   })
@@ -28,9 +29,9 @@ export default function ContactMentorModalPopup({ mentor, titleText }) {
     addScrollLock()
   }
 
-  const onCloseModal = () => {
+  const onCloseModal = (rs) => {
     setShowModal(false)
-    setReadyStatus(null)
+    setReadyStatus(rs)
     removeScrollLock()
   }
 
@@ -57,6 +58,7 @@ export default function ContactMentorModalPopup({ mentor, titleText }) {
       .then((data) => {
         if (data.success) {
           setReadyStatus('success')
+          onCloseModal('success')
         } else {
           setReadyStatus('error')
         }
@@ -69,11 +71,16 @@ export default function ContactMentorModalPopup({ mentor, titleText }) {
 
   return (
     <>
-      <Link href="#contact" shallow>
-        <button className="button" type="button" onClick={onShowModal}>
-          {titleText}
-        </button>
-      </Link>
+      {/*body*/}
+      {readyStatus === 'success' ? (
+        <SuccessMessage mentor={mentor} />
+      ) : (
+        <Link href="#contact" shallow>
+          <button className="button" type="button" onClick={onShowModal}>
+            {titleText}
+          </button>
+        </Link>
+      )}
       {showModal ? (
         <>
           <div className="justify-center items-center  overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -82,16 +89,14 @@ export default function ContactMentorModalPopup({ mentor, titleText }) {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex items-start justify-between rounded-t">
-                  <Link href="#" shallow>
-                    <button
-                      className="p-1 ml-auto bg-transparent opacity-60 border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                      onClick={onCloseModal}
-                    >
-                      <span className="text-black pb-0 h-6 w-6 text-4xl pr-6 block outline-none focus:outline-none">
-                        ×
-                      </span>
-                    </button>
-                  </Link>
+                  <button
+                    className="p-1 ml-auto bg-transparent opacity-60 border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    onClick={onCloseModal}
+                  >
+                    <span className="text-black pb-0 h-6 w-6 text-4xl pr-6 block outline-none focus:outline-none">
+                      ×
+                    </span>
+                  </button>
                 </div>
 
                 {/*body*/}
@@ -134,11 +139,9 @@ function SuccessMessage({ mentor }) {
 
   return (
     <div className="text-center">
-      <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-green-100 text-green-500">
-        <FontAwesomeIcon icon={faCheck} size="2x" />
+      <div className="text-xl bg-green-100 py-5 px-4">
+        <FontAwesomeIcon icon={faCheck} /> Ваша заявка принята
       </div>
-      <h3 className="text-2xl mt-6">Ваша заявка принята</h3>
-      <p>Скоро ментор свяжется с вами.</p>
     </div>
   )
 }

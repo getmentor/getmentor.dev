@@ -33,14 +33,16 @@ export default async (req, res) => {
     })
 
   if (captchaResult && captchaResult.success) {
-    await createClientRequest({
-      Email: req.body['email'],
-      Name: req.body['name'],
-      Level: req.body['experience'] || null,
-      Mentor: [req.body['mentorAirtableId']],
-      Description: req.body['intro'],
-      Telegram: req.body['telegramUsername'],
-    })
+    if (process.env.NODE_ENV !== 'development') {
+      await createClientRequest({
+        Email: req.body['email'],
+        Name: req.body['name'],
+        Level: req.body['experience'] || null,
+        Mentor: [req.body['mentorAirtableId']],
+        Description: req.body['intro'],
+        Telegram: req.body['telegramUsername'],
+      })
+    }
 
     res.status(200).json({ success: true })
   } else {
