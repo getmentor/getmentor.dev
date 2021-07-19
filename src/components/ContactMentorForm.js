@@ -11,6 +11,8 @@ export default function ContactMentorForm({ mentor, isLoading, isError, onSubmit
     formState: { errors },
   } = useForm()
 
+  const requiredText = 'Это поле обязательно для заполнения.'
+
   const handleCaptchaOnChange = (token) => {
     setValue('recaptchaToken', token)
   }
@@ -34,7 +36,7 @@ export default function ContactMentorForm({ mentor, isLoading, isError, onSubmit
         </label>
 
         {errors.email && errors.email.type === 'required' && (
-          <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
+          <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>
         )}
 
         <input
@@ -53,7 +55,7 @@ export default function ContactMentorForm({ mentor, isLoading, isError, onSubmit
         </label>
 
         {errors.name && errors.name.type === 'required' && (
-          <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
+          <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>
         )}
 
         <input
@@ -78,7 +80,7 @@ export default function ContactMentorForm({ mentor, isLoading, isError, onSubmit
         )}
 
         {errors.intro && errors.intro.type === 'required' && (
-          <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
+          <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>
         )}
 
         <div className="mt-1">
@@ -122,7 +124,7 @@ export default function ContactMentorForm({ mentor, isLoading, isError, onSubmit
         </label>
 
         {errors.telegramUsername && errors.telegramUsername.type === 'required' && (
-          <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
+          <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>
         )}
 
         <input

@@ -1,3 +1,4 @@
+//import { withSentry } from '@sentry/nextjs'
 import * as yup from 'yup'
 import { createClientRequest } from '../../server/airtable-client-requests'
 
@@ -10,9 +11,7 @@ const bodySchema = yup.object().shape({
   telegramUsername: yup.string().required(),
 })
 
-const rateLimitLog = {}
-
-export default async (req, res) => {
+const handler = async (req, res) => {
   await bodySchema.validate(req.body)
 
   let url = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_V2_SECRET_KEY}&response=${req.body['recaptchaToken']}`
@@ -50,3 +49,6 @@ export default async (req, res) => {
     res.status(400).json({ success: false, error: 'Captcha validation failed' })
   }
 }
+
+export default handler
+//export default withSentry(handler)
