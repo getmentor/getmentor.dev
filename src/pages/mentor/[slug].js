@@ -38,6 +38,7 @@ export default function Mentor(props) {
       name: mentor.name,
       experience: mentor.experience,
       price: mentor.price,
+      menteeCount: mentor.menteeCount,
     })
   }, [])
 

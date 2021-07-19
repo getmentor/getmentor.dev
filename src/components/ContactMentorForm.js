@@ -21,6 +21,7 @@ export default function ContactMentorForm({ mentor, isLoading, isError, onSubmit
       name: mentor.name,
       experience: mentor.experience,
       price: mentor.price,
+      menteeCount: mentor.menteeCount,
     })
   }, [])
 
