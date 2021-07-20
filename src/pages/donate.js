@@ -101,7 +101,7 @@ export default function Donate() {
                   <>
                     <div className="text-sm pt-1 text-gray-600">Мини-спонсор 💰</div>
                     <div className="text-sm pt-1 text-gray-600">
-                      <a href={supporter.url} target="_blank" rel="nofollow">
+                      <a href={supporter.url} target="_blank" rel="nofollow noreferrer">
                         {supporter.url}
                       </a>
                     </div>
