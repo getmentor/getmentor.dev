@@ -14,6 +14,7 @@ export default function Donate() {
     //{ name: 'Михаил Князев', level: 3 },
     //{ name: 'Иван Круглов', level: 3 },
     { name: 'Artem Grygorenko', level: 2 },
+    { name: 'Михаил Куклин', level: 2 },
     { name: 'София Мамаева', level: 1 },
     { name: 'Денис Инешин', level: 1 },
     { name: 'Дмитрий Симонов', level: 1 },
@@ -100,7 +101,7 @@ export default function Donate() {
                   <>
                     <div className="text-sm pt-1 text-gray-600">Мини-спонсор 💰</div>
                     <div className="text-sm pt-1 text-gray-600">
-                      <a href={supporter.url} target="_blank" rel="nofollow noreferrer">
+                      <a href={supporter.url} target="_blank" rel="nofollow">
                         {supporter.url}
                       </a>
                     </div>
