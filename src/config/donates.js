@@ -12,7 +12,7 @@ export default [
   {
     name: 'Tinkoff',
     description: 'Перевод на карту',
-    linkUrl: 'https://www.tinkoff.ru/rm/mogelashvili.georgiy1/llaLa45003',
+    linkUrl: 'https://www.tinkoff.ru/sl/sVXu3fk6nL',
     image: {
       url: '/images/tinkoff.png',
       width: 200,
