@@ -186,7 +186,7 @@ export default function Home({ pageMentors }) {
         <div className="text-center mt-4">
           <a
             className="link"
-            href="https://www.notion.so/GetMentor-dev-1c6b882718154fc0961be132cab354a4"
+            href="https://glamcoder.notion.site/GetMentor-dev-1c6b882718154fc0961be132cab354a4"
             target="_blank"
             rel="noreferrer"
           >
