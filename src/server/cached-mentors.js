@@ -77,3 +77,11 @@ export async function getMentors() {
 
   return mentors
 }
+
+/**
+ * @returns {Promise<Mentor[]>}
+ */
+export async function forceResetCache() {
+  await loadMentorsToCache()
+  return mentors
+}
