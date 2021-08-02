@@ -1,3 +1,4 @@
+import Multiselect from 'multiselect-react-dropdown'
 import { useForm } from 'react-hook-form'
 import filters from '../config/filters'
 
@@ -85,6 +86,52 @@ export default function ProfileForm({ isLoading, isError, onSubmit }) {
             ))}
           </select>
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="tags" className="block mb-2 font-medium text-gray-700">
+          Теги
+        </label>
+
+        <Multiselect
+          id="tags"
+          options={filters.tags}
+          isObject={false}
+          placeholder=""
+          closeIcon="cancel"
+          avoidHighlightFirstOption={true}
+          closeOnSelect={false}
+          style={{
+            multiselectContainer: {},
+            searchBox: {
+              border: '1px solid rgb(209, 213, 219)',
+              padding: '0.5rem 0.75rem',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '0.375rem',
+            },
+            inputField: {
+              fontSize: '0.875rem',
+              lineHeight: '1.25rem',
+              padding: 'unset',
+              margin: 'unset',
+            },
+            chips: {
+              fontSize: '0.875rem',
+              lineHeight: '1.25rem',
+              margin: 'unset',
+            },
+            optionContainer: {
+              border: '1px solid rgb(209, 213, 219)',
+            },
+            option: {
+              fontSize: '0.875rem',
+              lineHeight: '1.25rem',
+              padding: '0.5rem 0.75rem',
+            },
+            groupHeading: {},
+          }}
+        />
       </div>
 
       <div>
