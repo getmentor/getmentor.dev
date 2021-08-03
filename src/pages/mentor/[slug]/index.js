@@ -1,20 +1,22 @@
 import { useEffect } from 'react'
 import classNames from 'classnames'
+import Link from 'next/link'
 import Head from 'next/head'
-import NavHeader from '../../components/NavHeader'
-import Footer from '../../components/Footer'
-import { getMentors } from '../../server/cached-mentors'
-import Section from '../../components/Section'
-import ContactMentorModalPopup from '../../components/ContactMentorModalPopup'
+import NavHeader from '../../../components/NavHeader'
+import Footer from '../../../components/Footer'
+import { getMentors } from '../../../server/cached-mentors'
+import Section from '../../../components/Section'
 import Interweave from 'interweave'
-import MetaHeader from '../../components/MetaHeader'
-import seo from '../../config/seo'
-import allFilters from '../../config/filters'
-import analytics from '../../lib/analytics'
+import MetaHeader from '../../../components/MetaHeader'
+import seo from '../../../config/seo'
+import allFilters from '../../../config/filters'
+import analytics from '../../../lib/analytics'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
   const mentor = allMentors.find((mentor) => mentor.slug === context.params.slug)
+
+  const new_version = context.query.new_version === process.env.NEW_CONTACT_FORM_SECRET
 
   if (!mentor) {
     return {
@@ -25,12 +27,13 @@ export async function getServerSideProps(context) {
   return {
     props: {
       mentor,
+      new_version,
     },
   }
 }
 
 export default function Mentor(props) {
-  const { mentor } = props
+  const { mentor, new_version } = props
 
   useEffect(() => {
     analytics.event('View Mentor Page', {
@@ -94,9 +97,30 @@ export default function Mentor(props) {
               <br />
             </div>
 
-            {mentor.isVisible && (
+            {mentor.isVisible && new_version && (
               <div className="mb-6">
-                <ContactMentorModalPopup mentor={mentor} titleText="Оставить заявку" />
+                <Link href={'/mentor/' + mentor.slug + '/contact'}>
+                  <a className="button">Оставить заявку</a>
+                </Link>
+              </div>
+            )}
+
+            {mentor.isVisible && !new_version && (
+              <div className="mb-6">
+                <a
+                  className="button"
+                  href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
+                  onClick={() => {
+                    analytics.event('Request a Mentor', {
+                      id: mentor.id,
+                      name: mentor.name,
+                      experience: mentor.experience,
+                      price: mentor.price,
+                    })
+                  }}
+                >
+                  Оставить заявку
+                </a>
               </div>
             )}
 
