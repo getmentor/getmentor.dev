@@ -62,7 +62,7 @@ export async function getMentors() {
       menteeCount: item.fields['Done Sessions Count'],
       photo: item.fields['Image_Attachment'][0],
       photo_url: item.fields['Image'],
-      tags: item.fields['Tags'].split(','),
+      tags: item.fields['Tags'].split(',').map((tag) => tag.trim()),
       sortOrder: item.fields['SortOrder'],
       isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
     }
