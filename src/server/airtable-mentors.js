@@ -6,19 +6,20 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
 
 /**
  * @typedef Mentor
- * @param {number} id
- * @param {string} slug
- * @param {string} name
- * @param {string} job
- * @param {string} description
- * @param {string} experience
- * @param {string} price
- * @param {number} menteeCount
- * @param {Object} photo
- * @param {string} photo_url
- * @param {string[]} tags
- * @param {number} sortOrder
- * @param {boolean} isVisible
+ * @property {number} id
+ * @property {string} airtableId
+ * @property {string} slug
+ * @property {string} name
+ * @property {string} job
+ * @property {string} description
+ * @property {string} experience
+ * @property {string} price
+ * @property {number} menteeCount
+ * @property {Object} photo
+ * @property {string} photo_url
+ * @property {string[]} tags
+ * @property {number} sortOrder
+ * @property {boolean} isVisible
  */
 
 /**
@@ -29,6 +30,7 @@ export async function getMentors() {
     .select({
       filterByFormula: 'OR(Status = "active", Status = "inactive")',
       fields: [
+        'Id',
         'Alias',
         'Title',
         'Description',
@@ -49,7 +51,8 @@ export async function getMentors() {
   /** @var {Mentor[]} mentors */
   const mentors = mentorsRaw.map((item) => {
     return {
-      id: item.id,
+      id: item.fields['Id'],
+      airtableId: item.id,
       slug: item.fields['Alias'],
       name: item.fields['Title'],
       job: item.fields['Description'],
@@ -70,4 +73,21 @@ export async function getMentors() {
   })
 
   return mentors
+}
+
+/**
+ * @param {string} recordId
+ * @param {Mentor} mentor
+ * @returns {Promise<Record>}
+ */
+export async function updateMentor(recordId, mentor) {
+  return base('Mentors').update(recordId, {
+    Alias: mentor.slug,
+    Title: mentor.name,
+    Description: mentor.job,
+    Details: mentor.description,
+    Experience: mentor.experience,
+    Price: mentor.price,
+    Tags: mentor.tags.join(', '),
+  })
 }

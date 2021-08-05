@@ -166,7 +166,7 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
 
       {isError && (
         <div className="text-red-700">
-          Ошибка. Скорее всего мы уже чиним, попробуйте отправить заявку позже.
+          Ошибка. Скорее всего мы уже чиним, попробуйте сохранить форму позже.
         </div>
       )}
 

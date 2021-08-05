@@ -33,7 +33,7 @@ export default function Mentor(props) {
 
   useEffect(() => {
     analytics.event('View Mentor Page', {
-      id: mentor.id,
+      id: mentor.airtableId,
       name: mentor.name,
       experience: mentor.experience,
       price: mentor.price,
@@ -95,10 +95,12 @@ export default function Mentor(props) {
               <div className="mb-6">
                 <a
                   className="button"
-                  href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
+                  href={
+                    'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.airtableId
+                  }
                   onClick={() => {
                     analytics.event('Request a Mentor', {
-                      id: mentor.id,
+                      id: mentor.airtableId,
                       name: mentor.name,
                       experience: mentor.experience,
                       price: mentor.price,

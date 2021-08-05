@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Head from 'next/head'
 import ProfileForm from '../components/ProfileForm'
 import NavHeader from '../components/NavHeader'
@@ -8,7 +9,7 @@ import seo from '../config/seo'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
-  const mentor = allMentors.find((mentor) => mentor.id === context.query.token)
+  const mentor = allMentors.find((mentor) => mentor.airtableId === context.query.token) // TODO mentor token
 
   if (!mentor) {
     return {
@@ -24,8 +25,37 @@ export async function getServerSideProps(context) {
 }
 
 export default function Profile({ mentor }) {
+  const [readyStatus, setReadyStatus] = useState('')
+
   const onSubmit = (data) => {
-    console.log(data)
+    if (readyStatus === 'loading') {
+      return
+    }
+
+    setReadyStatus('loading')
+
+    // TODO mentor token
+    fetch('/api/save-profile?token=' + mentor.airtableId, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+        if (data.success) {
+          setReadyStatus('success')
+        } else {
+          setReadyStatus('error')
+        }
+      })
+      .catch((e) => {
+        setReadyStatus('error')
+        console.error(e)
+      })
   }
 
   return (
@@ -42,7 +72,12 @@ export default function Profile({ mentor }) {
 
       <Section>
         <div className="max-w-screen-md mx-auto">
-          <ProfileForm mentor={mentor} isLoading={false} isError={false} onSubmit={onSubmit} />
+          <ProfileForm
+            mentor={mentor}
+            isLoading={readyStatus === 'loading'}
+            isError={readyStatus === 'error'}
+            onSubmit={onSubmit}
+          />
         </div>
       </Section>
 
