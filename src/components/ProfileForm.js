@@ -1,9 +1,10 @@
 import Multiselect from 'multiselect-react-dropdown'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import filters from '../config/filters'
 
-export default function ProfileForm({ isLoading, isError, onSubmit }) {
+export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -23,6 +24,7 @@ export default function ProfileForm({ isLoading, isError, onSubmit }) {
         <input
           type="text"
           {...register('name', { required: true })}
+          defaultValue={mentor.name}
           id="name"
           autoComplete="name"
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
@@ -41,6 +43,7 @@ export default function ProfileForm({ isLoading, isError, onSubmit }) {
         <input
           type="text"
           {...register('job', { required: true })}
+          defaultValue={mentor.job}
           id="job"
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
         />
@@ -54,14 +57,13 @@ export default function ProfileForm({ isLoading, isError, onSubmit }) {
 
           <select
             {...register('experience')}
+            defaultValue={mentor.experience}
             id="experience"
             className="block w-full py-2 pl-3 pr-8 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
-            <option></option>
-
             {filters.experience.map((item) => (
-              <option key={item} value={item}>
-                {item}
+              <option key={item.airtableKey} value={item.airtableKey}>
+                {item.label}
               </option>
             ))}
           </select>
@@ -74,11 +76,10 @@ export default function ProfileForm({ isLoading, isError, onSubmit }) {
 
           <select
             {...register('price')}
+            defaultValue={mentor.price}
             id="price"
             className="block w-full py-2 pl-3 pr-8 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
-            <option></option>
-
             {filters.price.map((item) => (
               <option key={item} value={item}>
                 {item}
@@ -93,62 +94,72 @@ export default function ProfileForm({ isLoading, isError, onSubmit }) {
           Теги
         </label>
 
-        <Multiselect
-          id="tags"
-          options={filters.tags}
-          isObject={false}
-          placeholder=""
-          closeIcon="cancel"
-          avoidHighlightFirstOption={true}
-          closeOnSelect={false}
-          style={{
-            multiselectContainer: {},
-            searchBox: {
-              border: '1px solid rgb(209, 213, 219)',
-              padding: '0.5rem 0.75rem',
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.375rem',
-            },
-            inputField: {
-              fontSize: '0.875rem',
-              lineHeight: '1.25rem',
-              padding: 'unset',
-              margin: 'unset',
-            },
-            chips: {
-              fontSize: '0.875rem',
-              lineHeight: '1.25rem',
-              margin: 'unset',
-            },
-            optionContainer: {
-              border: '1px solid rgb(209, 213, 219)',
-            },
-            option: {
-              fontSize: '0.875rem',
-              lineHeight: '1.25rem',
-              padding: '0.5rem 0.75rem',
-            },
-            groupHeading: {},
-          }}
+        <Controller
+          name="tags"
+          control={control}
+          defaultValue={mentor.tags}
+          render={({ field }) => (
+            <Multiselect
+              selectedValues={field.value}
+              onSelect={(selectedList, selectedItem) => field.onChange(selectedList)}
+              onRemove={(selectedList, removedItem) => field.onChange(selectedList)}
+              options={filters.tags}
+              isObject={false}
+              placeholder=""
+              closeIcon="cancel"
+              avoidHighlightFirstOption={true}
+              closeOnSelect={false}
+              style={{
+                multiselectContainer: {},
+                searchBox: {
+                  border: '1px solid rgb(209, 213, 219)',
+                  padding: '0.5rem 0.75rem',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '0.375rem',
+                },
+                inputField: {
+                  fontSize: '0.875rem',
+                  lineHeight: '1.25rem',
+                  padding: 'unset',
+                  margin: 'unset',
+                },
+                chips: {
+                  fontSize: '0.875rem',
+                  lineHeight: '1.25rem',
+                  margin: 'unset',
+                },
+                optionContainer: {
+                  border: '1px solid rgb(209, 213, 219)',
+                },
+                option: {
+                  fontSize: '0.875rem',
+                  lineHeight: '1.25rem',
+                  padding: '0.5rem 0.75rem',
+                },
+                groupHeading: {},
+              }}
+            />
+          )}
         />
       </div>
 
       <div>
-        <label htmlFor="intro" className="block mb-2 font-medium text-gray-700">
+        <label htmlFor="description" className="block mb-2 font-medium text-gray-700">
           Описание
         </label>
 
-        {errors.intro && (
+        {errors.description && (
           <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
         )}
 
         <div className="mt-1">
           <textarea
-            {...register('intro', { required: true })}
+            {...register('description', { required: true })}
+            defaultValue={mentor.description}
             id="intro"
             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"
-            rows="10"
+            rows="16"
           ></textarea>
         </div>
       </div>
