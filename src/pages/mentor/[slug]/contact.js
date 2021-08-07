@@ -9,6 +9,7 @@ import NavHeader from '../../../components/NavHeader'
 import { getMentors } from '../../../server/cached-mentors'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
+import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -88,15 +89,25 @@ export default function OrderMentor({ mentor }) {
 
       <Section>
         <div className="flex justify-center">
-          <div className="flex">
-            <img className="w-32 mr-10" src={mentor.photo.url} />
+          <div className="max-w-screen-md flex justify-center space-y-7 flex-wrap sm:flex-nowrap sm:space-y-0 sm:space-x-5">
+            <div className="w-full sm:w-32">
+              <div className="aspect-w-1 aspect-h-1 relative">
+                <Image
+                  src={mentor.photo.thumbnails?.large.url || mentor.photo_url}
+                  alt={mentor.name}
+                  layout="fill"
+                  objectFit="cover"
+                  unoptimized={true}
+                />
+              </div>
+            </div>
 
-            <div>
+            <div style={{ wordBreak: 'break-word' }}>
               <h2 className="mb-2">{mentor.name}</h2>
               <div className="mb-3">{mentor.job}</div>
 
               <div className="mb-4">
-                <b>Опыт:</b> {mentor.experience}
+                <b>Опыт:</b> {mentor.experience} лет
                 <br />
                 <b>Цена:</b> {mentor.price}
                 <br />
