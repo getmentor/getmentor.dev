@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form'
 import ReCAPTCHA from 'react-google-recaptcha'
+import TextareaAutosize from 'react-textarea-autosize'
 
 export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
   const {
@@ -72,12 +73,12 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
         )}
 
         <div className="mt-1">
-          <textarea
+          <TextareaAutosize
             {...register('intro', { required: true, maxLength: 4000 })}
             id="intro"
             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"
-            rows="3"
-          ></textarea>
+            minRows={3}
+          />
         </div>
 
         <p className="mt-2 text-sm text-gray-500">
