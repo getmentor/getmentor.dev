@@ -137,6 +137,7 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
                   fontSize: '0.875rem',
                   lineHeight: '1.25rem',
                   padding: '0.5rem 0.75rem',
+                  borderRadius: '1rem',
                 },
                 groupHeading: {},
               }}
