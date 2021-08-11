@@ -67,4 +67,8 @@
   .bg-primary-100 {
     background-color: #fcf8f2;
   }
+
+  .scroll-lock {
+    overflow: hidden;
+  }
 }
