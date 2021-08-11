@@ -9,7 +9,7 @@ import seo from '../config/seo'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
-  const mentor = allMentors.find((mentor) => mentor.airtableId === context.query.token) // TODO mentor token
+  const mentor = allMentors.find((mentor) => mentor.slug === context.query.token) // TODO mentor token
 
   if (!mentor) {
     return {

@@ -1,5 +1,6 @@
 import Multiselect from 'multiselect-react-dropdown'
 import { useForm, Controller } from 'react-hook-form'
+import Wysiwyg from './Wysiwyg'
 import filters from '../config/filters'
 
 export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
@@ -154,13 +155,18 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
         )}
 
         <div className="mt-1">
-          <textarea
-            {...register('description', { required: true })}
+          <Controller
+            name="description"
+            control={control}
             defaultValue={mentor.description}
-            id="intro"
-            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"
-            rows="16"
-          ></textarea>
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Wysiwyg
+                content={field.value}
+                onUpdate={(editor) => field.onChange(editor.getHTML())}
+              />
+            )}
+          />
         </div>
       </div>
 
