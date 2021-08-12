@@ -17,7 +17,8 @@ export async function getServerSideProps(context) {
   const allMentors = await getMentors()
   const mentor = allMentors.find((mentor) => mentor.slug === context.params.slug)
 
-  const new_version = context.query.new_version === process.env.NEW_CONTACT_FORM_SECRET
+  // const new_version = context.query.new_version === process.env.NEW_CONTACT_FORM_SECRET
+  const new_version = true
 
   if (!mentor) {
     return {
