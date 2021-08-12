@@ -11,6 +11,7 @@ import Notification from '../components/Notification'
 import { AUTH_TOKEN } from '../lib/entities'
 import Error from 'next/error'
 import analytics from '../lib/analytics'
+import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -33,12 +34,14 @@ export async function getServerSideProps(context) {
 
 export default function Profile({ errorCode, mentor }) {
   useEffect(() => {
-    analytics.event('Open Profile', {
-      'Mentor Id': mentor.airtableId,
-      'Mentor Name': mentor.name,
-      'Mentor Experience': mentor.experience,
-      'Mentor Price': mentor.price,
-    })
+    if (mentor) {
+      analytics.event('Open Profile', {
+        'Mentor Id': mentor.airtableId,
+        'Mentor Name': mentor.name,
+        'Mentor Experience': mentor.experience,
+        'Mentor Price': mentor.price,
+      })
+    }
   }, [])
 
   const [readyStatus, setReadyStatus] = useState('')
@@ -52,7 +55,7 @@ export default function Profile({ errorCode, mentor }) {
       timer = setTimeout(() => setShowSuccess(false), 3000)
     }
     return () => {
-      clearInterval(timer)
+      clearTimeout(timer)
     }
   }, [readyStatus])
 
@@ -102,7 +105,12 @@ export default function Profile({ errorCode, mentor }) {
       <NavHeader />
 
       <Section>
-        <h1 className="text-center">Профиль</h1>
+        <div className="text-center">
+          <h1 className="mb-6">Профиль</h1>
+          <Link href={'/mentor/' + mentor.slug}>
+            <a className="link text-sm">Открыть личную страницу</a>
+          </Link>
+        </div>
       </Section>
 
       <Section>
