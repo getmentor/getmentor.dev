@@ -149,13 +149,9 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
         </div>
       )}
 
-      {!isLoading ? (
-        <button className="button" type="submit">
-          Отправить заявку
-        </button>
-      ) : (
-        <div className="py-6">Отправляю заявку...</div>
-      )}
+      <button className="button" type="submit" disabled={isLoading}>
+        Отправить заявку
+      </button>
     </form>
   )
 }

@@ -113,7 +113,6 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
               style={{
                 multiselectContainer: {},
                 searchBox: {
-                  border: '1px solid rgb(209, 213, 219)',
                   padding: '0.5rem 0.75rem',
                   display: 'flex',
                   flexWrap: 'wrap',
@@ -128,6 +127,7 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
                 chips: {
                   fontSize: '0.875rem',
                   lineHeight: '1.25rem',
+                  borderRadius: '1rem',
                   margin: 'unset',
                 },
                 optionContainer: {
@@ -137,7 +137,6 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
                   fontSize: '0.875rem',
                   lineHeight: '1.25rem',
                   padding: '0.5rem 0.75rem',
-                  borderRadius: '1rem',
                 },
                 groupHeading: {},
               }}

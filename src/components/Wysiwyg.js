@@ -19,7 +19,7 @@ export default function Wysiwyg({ content, onUpdate }) {
   })
 
   return (
-    <div className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md">
+    <div className="block w-full sm:text-sm border border-gray-300 rounded-md shadow-sm">
       <MenuBar editor={editor} />
       <EditorContent editor={editor} />
     </div>
