@@ -177,13 +177,9 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
         </div>
       )}
 
-      {!isLoading ? (
-        <button className="button" type="submit">
-          Сохранить
-        </button>
-      ) : (
-        <div className="py-6">Сохраняю...</div>
-      )}
+      <button type="submit" className="button" disabled={isLoading}>
+        Сохранить
+      </button>
     </form>
   )
 }

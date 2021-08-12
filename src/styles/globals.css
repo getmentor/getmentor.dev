@@ -41,7 +41,11 @@
     outline: 0
   }
 
-  .button:hover {
+  .button[disabled] {
+    opacity: .5;
+  }
+
+  .button:not([disabled]):hover {
     transform: scale(1.05);
     opacity: 1
   }
