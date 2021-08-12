@@ -8,25 +8,29 @@ import Footer from '../components/Footer'
 import { getMentors } from '../server/cached-mentors'
 import seo from '../config/seo'
 import Notification from '../components/Notification'
+import { AUTH_TOKEN } from '../lib/entities'
+import Error from 'next/error'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
-  const mentor = allMentors.find((mentor) => mentor.slug === context.query.token) // TODO mentor token
 
+  const mentor = allMentors.find((mentor) => String(mentor.id) === context.query.id)
   if (!mentor) {
+    return { notFound: true }
+  }
+
+  if (!context.query.token || mentor[AUTH_TOKEN] !== context.query.token) {
     return {
-      notFound: true,
+      props: { errorCode: 403, mentor: null },
     }
   }
 
   return {
-    props: {
-      mentor,
-    },
+    props: { errorCode: 0, mentor },
   }
 }
 
-export default function Profile({ mentor }) {
+export default function Profile({ errorCode, mentor }) {
   const [readyStatus, setReadyStatus] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
 
@@ -48,8 +52,7 @@ export default function Profile({ mentor }) {
 
     setReadyStatus('loading')
 
-    // TODO mentor token
-    fetch('/api/save-profile?token=' + mentor.airtableId, {
+    fetch('/api/save-profile' + location.search, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -66,6 +69,10 @@ export default function Profile({ mentor }) {
         setReadyStatus('error')
         console.error(e)
       })
+  }
+
+  if (errorCode) {
+    return <Error statusCode={403} title="Access denied" />
   }
 
   return (

@@ -1,26 +1,9 @@
 import Airtable from 'airtable'
+import { AUTH_TOKEN } from '../lib/entities'
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
   process.env.AIRTABLE_BASE_ID
 )
-
-/**
- * @typedef Mentor
- * @property {number} id
- * @property {string} airtableId
- * @property {string} slug
- * @property {string} name
- * @property {string} job
- * @property {string} description
- * @property {string} experience
- * @property {string} price
- * @property {number} menteeCount
- * @property {Object} photo
- * @property {string} photo_url
- * @property {string[]} tags
- * @property {number} sortOrder
- * @property {boolean} isVisible
- */
 
 /**
  * @returns {Promise<Mentor[]>}
@@ -44,6 +27,7 @@ export async function getMentors() {
         'SortOrder',
         'OnSite',
         'Status',
+        'AuthToken',
       ],
     })
     .all()
@@ -65,6 +49,10 @@ export async function getMentors() {
       tags: item.fields['Tags'].split(',').map((tag) => tag.trim()),
       sortOrder: item.fields['SortOrder'],
       isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
+
+      // symbol props will not be serialized and sent to client
+      // TODO token will not be serialized event you will want save it to cache
+      [AUTH_TOKEN]: item.fields['AuthToken'],
     }
   })
 

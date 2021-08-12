@@ -2,6 +2,7 @@ import { withSentry } from '@sentry/nextjs'
 import * as yup from 'yup'
 import { updateMentor } from '../../server/airtable-mentors'
 import { getMentors, forceResetCache } from '../../server/cached-mentors'
+import { AUTH_TOKEN } from '../../lib/entities'
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
@@ -26,9 +27,12 @@ const saveProfileHandler = async (req, res) => {
   }
 
   const mentors = await getMentors()
-  const mentor = mentors.find((mentor) => mentor.airtableId === req.query.token) // TODO mentor token
+  const mentor = mentors.find((mentor) => String(mentor.id) === req.query.id)
   if (!mentor) {
-    return res.status(400).send({ success: false, error: 'Mentor not found.' })
+    return res.status(404).send({ success: false, error: 'Mentor not found.' })
+  }
+  if (!req.query.token || mentor[AUTH_TOKEN] !== req.query.token) {
+    return res.status(403).send({ success: false, error: 'Access denied.' })
   }
 
   await updateMentor(mentor.airtableId, req.body)
