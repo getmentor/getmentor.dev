@@ -37,6 +37,7 @@ export default function Profile({ errorCode, mentor }) {
   useEffect(() => {
     let timer
     if (readyStatus === 'success') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       setShowSuccess(true)
       timer = setTimeout(() => setShowSuccess(false), 3000)
     }

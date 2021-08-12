@@ -2,6 +2,8 @@ import Multiselect from 'multiselect-react-dropdown'
 import { useForm, Controller } from 'react-hook-form'
 import Wysiwyg from './Wysiwyg'
 import filters from '../config/filters'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
   const {
@@ -177,7 +179,14 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
       )}
 
       <button type="submit" className="button" disabled={isLoading}>
-        Сохранить
+        {isLoading ? (
+          <>
+            <FontAwesomeIcon className="animate-spin" icon={faCircleNotch} />
+            <span className="ml-2">Сохраняю</span>
+          </>
+        ) : (
+          <span>Сохранить</span>
+        )}
       </button>
     </form>
   )
