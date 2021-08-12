@@ -14,6 +14,7 @@
     "@appsignal/nextjs": "^1.0.11",
     "@appsignal/nodejs": "^1.2.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@sentry/nextjs": "^6.9.0",
