@@ -10,6 +10,7 @@ import seo from '../config/seo'
 import Notification from '../components/Notification'
 import { AUTH_TOKEN } from '../lib/entities'
 import Error from 'next/error'
+import analytics from '../lib/analytics'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -31,6 +32,15 @@ export async function getServerSideProps(context) {
 }
 
 export default function Profile({ errorCode, mentor }) {
+  useEffect(() => {
+    analytics.event('Open Profile', {
+      'Mentor Id': mentor.airtableId,
+      'Mentor Name': mentor.name,
+      'Mentor Experience': mentor.experience,
+      'Mentor Price': mentor.price,
+    })
+  }, [])
+
   const [readyStatus, setReadyStatus] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
 
@@ -52,6 +62,13 @@ export default function Profile({ errorCode, mentor }) {
     }
 
     setReadyStatus('loading')
+
+    analytics.event('Save Profile', {
+      'Mentor Id': mentor.airtableId,
+      'Mentor Name': mentor.name,
+      'Mentor Experience': mentor.experience,
+      'Mentor Price': mentor.price,
+    })
 
     fetch('/api/save-profile' + location.search, {
       method: 'POST',

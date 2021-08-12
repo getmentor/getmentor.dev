@@ -39,6 +39,12 @@ export default function Mentor(props) {
 
   useEffect(() => {
     analytics.event('View Mentor Page', {
+      'Mentor Id': mentor.airtableId,
+      'Mentor Name': mentor.name,
+      'Mentor Experience': mentor.experience,
+      'Mentor Price': mentor.price,
+
+      // legacy props
       id: mentor.airtableId,
       name: mentor.name,
       experience: mentor.experience,
@@ -116,6 +122,12 @@ export default function Mentor(props) {
                   }
                   onClick={() => {
                     analytics.event('Request a Mentor', {
+                      'Mentor Id': mentor.airtableId,
+                      'Mentor Name': mentor.name,
+                      'Mentor Experience': mentor.experience,
+                      'Mentor Price': mentor.price,
+
+                      // legacy props
                       id: mentor.airtableId,
                       name: mentor.name,
                       experience: mentor.experience,
