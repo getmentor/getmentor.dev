@@ -11,7 +11,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@appsignal/nextjs": "^1.0.11",
+    "@appsignal/nextjs": "^2.0.0",
     "@appsignal/nodejs": "^1.2.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
@@ -53,7 +53,7 @@
     "eslint-config-next": "^11.0.0",
     "eslint-plugin-react": "^7.24.0",
     "lint-staged": "^11.0.0",
-    "prettier": "2.3.1",
+    "prettier": "^2.3.2",
     "simple-git-hooks": "^2.4.1"
   },
   "simple-git-hooks": {
