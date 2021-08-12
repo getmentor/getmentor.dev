@@ -1,6 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import classNames from 'classnames'
+import htmlContent from '../lib/html-content'
 
 export default function Wysiwyg({ content, onUpdate }) {
   const editor = useEditor({
@@ -10,9 +11,7 @@ export default function Wysiwyg({ content, onUpdate }) {
         class: 'prose prose-sm max-w-full my-2 mx-3 focus:outline-none',
       },
     },
-    content: !content.startsWith('<p>')
-      ? '<p>' + content.replace(/\n+([0-9-])/g, '<br/>$1').replace(/\n+/g, '</p><p>') + '</p>'
-      : content,
+    content: htmlContent(content),
     onUpdate() {
       onUpdate(this)
     },

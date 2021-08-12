@@ -11,6 +11,7 @@ import MetaHeader from '../../../components/MetaHeader'
 import seo from '../../../config/seo'
 import allFilters from '../../../config/filters'
 import analytics from '../../../lib/analytics'
+import htmlContent from '../../../lib/html-content'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -127,7 +128,7 @@ export default function Mentor(props) {
             )}
 
             <div className="prose my-4">
-              <Interweave noWrap={true} content={mentor.description.replace(/\n/gi, '</br/>')} />
+              <Interweave noWrap={true} content={htmlContent(mentor.description)} />
             </div>
           </div>
 
