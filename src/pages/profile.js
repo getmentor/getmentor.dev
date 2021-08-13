@@ -14,9 +14,13 @@ import analytics from '../lib/analytics'
 import Link from 'next/link'
 
 export async function getServerSideProps(context) {
-  const allMentors = await getMentors()
+  context.query.id = parseInt(context.query.id, 10)
+  if (isNaN(context.query.id)) {
+    return { notFound: true }
+  }
 
-  const mentor = allMentors.find((mentor) => String(mentor.id) === context.query.id)
+  const allMentors = await getMentors()
+  const mentor = allMentors.find((mentor) => mentor.id === context.query.id)
   if (!mentor) {
     return { notFound: true }
   }
@@ -36,7 +40,7 @@ export default function Profile({ errorCode, mentor }) {
   useEffect(() => {
     if (mentor) {
       analytics.event('Open Profile', {
-        'Mentor Id': mentor.airtableId,
+        'Mentor Id': mentor.id,
         'Mentor Name': mentor.name,
         'Mentor Experience': mentor.experience,
         'Mentor Price': mentor.price,
@@ -67,7 +71,7 @@ export default function Profile({ errorCode, mentor }) {
     setReadyStatus('loading')
 
     analytics.event('Save Profile', {
-      'Mentor Id': mentor.airtableId,
+      'Mentor Id': mentor.id,
       'Mentor Name': mentor.name,
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,

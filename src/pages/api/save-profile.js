@@ -14,6 +14,11 @@ const bodySchema = yup.object().shape({
 })
 
 const saveProfileHandler = async (req, res) => {
+  req.query.id = parseInt(req.query.id, 10)
+  if (isNaN(req.query.id)) {
+    return res.status(404).send({ success: false, error: 'Mentor not found.' })
+  }
+
   try {
     await bodySchema.validate(req.body)
   } catch (e) {
@@ -27,7 +32,7 @@ const saveProfileHandler = async (req, res) => {
   }
 
   const mentors = await getMentors()
-  const mentor = mentors.find((mentor) => String(mentor.id) === req.query.id)
+  const mentor = mentors.find((mentor) => mentor.id === req.query.id)
   if (!mentor) {
     return res.status(404).send({ success: false, error: 'Mentor not found.' })
   }

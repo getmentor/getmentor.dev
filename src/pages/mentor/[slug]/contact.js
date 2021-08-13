@@ -31,7 +31,7 @@ export async function getServerSideProps(context) {
 export default function OrderMentor({ mentor }) {
   useEffect(() => {
     analytics.event('Request a Mentor', {
-      'Mentor Id': mentor.airtableId,
+      'Mentor Id': mentor.id,
       'Mentor Name': mentor.name,
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
@@ -147,7 +147,7 @@ export default function OrderMentor({ mentor }) {
 function SuccessMessage({ mentor }) {
   useEffect(() => {
     analytics.event('Mentor Request Sent', {
-      'Mentor Id': mentor.airtableId,
+      'Mentor Id': mentor.id,
       'Mentor Name': mentor.name,
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
