@@ -1,6 +1,7 @@
 User-agent: *
 Disallow: /[slug]
 Disallow: /mentor/[slug]
+Disallow: /profile
 
 User-agent: *
 Allow: /
