@@ -100,7 +100,7 @@ export default function Mentor(props) {
 
             {mentor.isVisible && new_version && (
               <div className="mb-6">
-                <Link href={'/mentor/' + mentor.slug + '/contact'} prefetch>
+                <Link href={'/mentor/' + mentor.slug + '/contact'}>
                   <a className="button">Оставить заявку</a>
                 </Link>
               </div>
