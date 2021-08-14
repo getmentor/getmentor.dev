@@ -69,6 +69,14 @@ export async function getMentors() {
  * @returns {Promise<Record>}
  */
 export async function updateMentor(recordId, mentor) {
+  const tags = await base('Tags').select().all()
+
+  // we want tags to be in same order that user selected
+  let tagsRecordIdsByName = {}
+  for (const tag of tags) {
+    tagsRecordIdsByName[tag.fields['Name']] = tag.id
+  }
+
   return base('Mentors').update(recordId, {
     Alias: mentor.slug,
     Title: mentor.name,
@@ -76,6 +84,6 @@ export async function updateMentor(recordId, mentor) {
     Details: mentor.description,
     Experience: mentor.experience,
     Price: mentor.price,
-    Tags: mentor.tags.join(', '),
+    'Tags Links': mentor.tags.map((tagName) => tagsRecordIdsByName[tagName]),
   })
 }
