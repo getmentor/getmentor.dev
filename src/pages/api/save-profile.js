@@ -41,7 +41,14 @@ const saveProfileHandler = async (req, res) => {
   }
 
   await updateMentor(mentor.airtableId, req.body)
-  await forceResetCache()
+
+  // Updating the obj in the cache so that the visitor sees new info straightaway
+  mentor.name = req.body.name
+  mentor.job = req.body.job
+  mentor.experience = req.body.experience
+  mentor.price = req.body.price
+  mentor.description = req.body.description
+  mentor.tags = req.body.tags
 
   res.send({ success: true })
 }
