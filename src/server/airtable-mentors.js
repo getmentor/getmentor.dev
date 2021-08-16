@@ -1,5 +1,6 @@
 import Airtable from 'airtable'
 import { AUTH_TOKEN } from '../lib/entities'
+import { getAllTags } from './airtable-tags'
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
   process.env.AIRTABLE_BASE_ID
@@ -69,13 +70,7 @@ export async function getMentors() {
  * @returns {Promise<Record>}
  */
 export async function updateMentor(recordId, mentor) {
-  const tags = await base('Tags').select().all()
-
-  // we want tags to be in same order that user selected
-  let tagsRecordIdsByName = {}
-  for (const tag of tags) {
-    tagsRecordIdsByName[tag.fields['Name']] = tag.id
-  }
+  let allTags = await getAllTags()
 
   return base('Mentors').update(recordId, {
     Alias: mentor.slug,
@@ -84,6 +79,6 @@ export async function updateMentor(recordId, mentor) {
     Details: mentor.description,
     Experience: mentor.experience,
     Price: mentor.price,
-    'Tags Links': mentor.tags.map((tagName) => tagsRecordIdsByName[tagName]),
+    'Tags Links': mentor.tags.map((tagName) => allTags[tagName]),
   })
 }
