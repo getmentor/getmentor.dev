@@ -41,7 +41,7 @@ const saveProfileHandler = async (req, res) => {
   }
 
   await updateMentor(mentor.airtableId, req.body)
-  forceResetCache()
+  await forceResetCache()
 
   res.send({ success: true })
 }
