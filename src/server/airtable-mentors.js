@@ -1,16 +1,12 @@
-import Airtable from 'airtable'
+import { airtableBase } from './airtable-base'
 import { AUTH_TOKEN } from '../lib/entities'
 import { getAllTagsCached } from './airtable-tags'
-
-const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
-  process.env.AIRTABLE_BASE_ID
-)
 
 /**
  * @returns {Promise<Mentor[]>}
  */
 export async function getMentors() {
-  const mentorsRaw = await base('Mentors')
+  const mentorsRaw = await airtableBase('Mentors')
     .select({
       filterByFormula: 'OR(Status = "active", Status = "inactive")',
       fields: [
@@ -72,7 +68,7 @@ export async function getMentors() {
 export async function updateMentor(recordId, mentor) {
   let allTags = await getAllTagsCached()
 
-  return base('Mentors').update(recordId, {
+  return airtableBase('Mentors').update(recordId, {
     Alias: mentor.slug,
     Title: mentor.name,
     Description: mentor.job,

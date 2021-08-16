@@ -1,4 +1,4 @@
-import Airtable from 'airtable'
+import { airtableBase } from './airtable-base'
 const NodeCache = require('node-cache')
 
 // let default TTL be 24 hours
@@ -6,12 +6,8 @@ const tagsCache = new NodeCache({ stdTTL: 24 * 60 * 60, checkperiod: 60 * 60 })
 const cacheKeyByName = 'tags_by_name'
 const cacheKeyRaw = 'tags_raw'
 
-const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
-  process.env.AIRTABLE_BASE_ID
-)
-
 export async function getAllTags() {
-  return await base('Tags').select().all()
+  return await airtableBase('Tags').select().all()
 }
 
 export async function getAllTagsCached() {

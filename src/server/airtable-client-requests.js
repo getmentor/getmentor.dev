@@ -1,8 +1,4 @@
-import Airtable from 'airtable'
-
-const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
-  process.env.AIRTABLE_BASE_ID
-)
+import { airtableBase } from './airtable-base'
 
 /**
  * @typedef ClientRequest
@@ -19,5 +15,5 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
  * @returns {Promise<Record>}
  */
 export async function createClientRequest(request) {
-  return base('Client Requests').create(request)
+  return airtableBase('Client Requests').create(request)
 }
