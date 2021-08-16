@@ -11,12 +11,16 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
 )
 
 export async function getAllTags() {
+  return await base('Tags').select().all()
+}
+
+export async function getAllTagsCached() {
   var tagsFromCache = tagsCache.get(cacheKeyByName)
   if (tagsFromCache) {
     return tagsFromCache
   }
 
-  const tags = await base('Tags').select().all()
+  const tags = await getAllTags()
   let tagsRecordIdsByName = {}
   for (const tag of tags) {
     tagsRecordIdsByName[tag.fields['Name']] = tag.id
@@ -28,11 +32,11 @@ export async function getAllTags() {
 }
 
 export async function getTagIdByName(tagName) {
-  var tags = await getAllTags()
+  var tags = await getAllTagsCached()
   return tags[tagName]
 }
 
 export async function getAllTagsNames() {
-  var tags = await getAllTags()
+  var tags = await getAllTagsCached()
   return tags.keys()
 }

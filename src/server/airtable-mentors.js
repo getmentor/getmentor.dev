@@ -1,6 +1,6 @@
 import Airtable from 'airtable'
 import { AUTH_TOKEN } from '../lib/entities'
-import { getAllTags } from './airtable-tags'
+import { getAllTagsCached } from './airtable-tags'
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
   process.env.AIRTABLE_BASE_ID
@@ -70,7 +70,7 @@ export async function getMentors() {
  * @returns {Promise<Record>}
  */
 export async function updateMentor(recordId, mentor) {
-  let allTags = await getAllTags()
+  let allTags = await getAllTagsCached()
 
   return base('Mentors').update(recordId, {
     Alias: mentor.slug,
