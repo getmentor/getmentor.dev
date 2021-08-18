@@ -7,6 +7,7 @@ import Section from '../components/Section'
 import Footer from '../components/Footer'
 import { getMentors } from '../server/cached-mentors'
 import seo from '../config/seo'
+import filters from '../config/filters'
 import Notification from '../components/Notification'
 import { AUTH_TOKEN } from '../lib/entities'
 import Error from 'next/error'
@@ -120,7 +121,10 @@ export default function Profile({ errorCode, mentor }) {
       <Section>
         <div className="max-w-screen-md mx-auto">
           <ProfileForm
-            mentor={mentor}
+            mentor={{
+              ...mentor,
+              tags: mentor.tags.filter((tag) => !filters.sponsors.includes(tag)),
+            }}
             isLoading={readyStatus === 'loading'}
             isError={readyStatus === 'error'}
             onSubmit={onSubmit}

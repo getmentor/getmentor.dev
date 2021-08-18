@@ -79,6 +79,24 @@ export async function getMentors() {
 }
 
 /**
+ * @param {string} recordId
+ * @param {Mentor} newProps
+ * @returns {Mentor|null}
+ */
+export function updateMentor(recordId, newProps) {
+  const oldMentor = mentors.find((mentor) => mentor.airtableId === recordId)
+  if (!oldMentor) {
+    return null
+  }
+
+  for (const key in newProps) {
+    oldMentor[key] = newProps[key]
+  }
+
+  return oldMentor
+}
+
+/**
  * @returns {Promise<Mentor[]>}
  */
 export async function forceResetCache() {

@@ -1,8 +1,9 @@
 import { withSentry } from '@sentry/nextjs'
 import * as yup from 'yup'
-import { updateMentor } from '../../server/airtable-mentors'
-import { getMentors, forceResetCache } from '../../server/cached-mentors'
+import * as airtableMentors from '../../server/airtable-mentors'
+import * as cachedMentors from '../../server/cached-mentors'
 import { AUTH_TOKEN } from '../../lib/entities'
+import filters from '../../config/filters'
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
@@ -31,7 +32,7 @@ const saveProfileHandler = async (req, res) => {
     }
   }
 
-  const mentors = await getMentors()
+  const mentors = await cachedMentors.getMentors()
   const mentor = mentors.find((mentor) => mentor.id === req.query.id)
   if (!mentor) {
     return res.status(404).send({ success: false, error: 'Mentor not found.' })
@@ -40,15 +41,19 @@ const saveProfileHandler = async (req, res) => {
     return res.status(403).send({ success: false, error: 'Access denied.' })
   }
 
-  await updateMentor(mentor.airtableId, req.body)
+  /** @var {Mentor} newProps */
+  const newProps = {
+    ...req.body,
 
-  // Updating the obj in the cache so that the visitor sees new info straightaway
-  mentor.name = req.body.name
-  mentor.job = req.body.job
-  mentor.experience = req.body.experience
-  mentor.price = req.body.price
-  mentor.description = req.body.description
-  mentor.tags = req.body.tags
+    // sponsor tags will not be shown in profile edit form
+    // add them back if mentor had any
+    tags: [...req.body.tags, ...mentor.tags.filter((tag) => filters.sponsors.includes(tag))],
+  }
+
+  await airtableMentors.updateMentor(mentor.airtableId, newProps)
+
+  cachedMentors.updateMentor(mentor.airtableId, newProps)
+  cachedMentors.forceResetCache().catch(console.error)
 
   res.send({ success: true })
 }
