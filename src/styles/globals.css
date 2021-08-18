@@ -57,7 +57,7 @@
     box-shadow: none !important;
   }
   .multiSelectContainer .optionListContainer {
-    @apply shadow-lg mt-1;
+    @apply shadow-lg mt-1 z-20;
   }
   .multiSelectContainer .optionListContainer li:hover {
     @apply bg-gray-100 text-current;

@@ -35,7 +35,7 @@ function MenuBar({ editor }) {
   }
 
   return (
-    <div className="flex divide-x divide-gray-300 border-b border-gray-300">
+    <div className="flex flex-wrap sm:flex-nowrap sm:divide-x sm:divide-gray-300 border-b border-gray-300">
       <div className="px-2 my-2 pl-1">
         <div className="-my-1 space-x-1">
           <button

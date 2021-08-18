@@ -55,7 +55,6 @@ export default function Profile({ errorCode, mentor }) {
   useEffect(() => {
     let timer
     if (readyStatus === 'success') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
       setShowSuccess(true)
       timer = setTimeout(() => setShowSuccess(false), 3000)
     }
@@ -134,7 +133,7 @@ export default function Profile({ errorCode, mentor }) {
 
       <div
         aria-live="assertive"
-        className="fixed z-10 inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start"
+        className="fixed z-10 inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6"
       >
         <div className="w-full flex flex-col items-center space-y-4 sm:items-end">
           <Transition
