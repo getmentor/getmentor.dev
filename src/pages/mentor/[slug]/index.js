@@ -12,6 +12,10 @@ import seo from '../../../config/seo'
 import allFilters from '../../../config/filters'
 import analytics from '../../../lib/analytics'
 import htmlContent from '../../../lib/html-content'
+import { polyfill } from 'interweave-ssr'
+
+// This enables rendering profile HTML on server
+polyfill()
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -141,7 +145,7 @@ export default function Mentor(props) {
             )}
 
             <div className="prose my-4">
-              <Interweave noWrap={true} content={htmlContent(mentor.description)} />
+              <Interweave content={htmlContent(mentor.description)} noWrap={true} />
             </div>
           </div>
 

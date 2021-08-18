@@ -29,6 +29,7 @@
     "autoprefixer": "^10.2.6",
     "classnames": "^2.3.1",
     "interweave": "^12.7.2",
+    "interweave-ssr": "^1.2.1",
     "multiselect-react-dropdown": "^2.0.5",
     "next": "^11.0.0",
     "node-cache": "^5.1.2",
