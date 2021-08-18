@@ -52,15 +52,15 @@ function onSponsorsShown(isVisible) {
 }
 
 export default function Home({ pageMentors }) {
-  const [
+  const {
     mentors,
-    searchInput,
+    searchQuery,
     selectedTags,
     hasMoreMentors,
-    setSearchInput,
+    setSearchQuery,
     setSelectedTags,
     showMoreMentors,
-  ] = useMentors(pageMentors)
+  } = useMentors(pageMentors)
 
   useEffect(() => {
     analytics.event('Visit Index Page')
@@ -154,7 +154,7 @@ export default function Home({ pageMentors }) {
         <Section.Title>Наши менторы</Section.Title>
 
         <div className="mb-6">
-          <MentorsSearch value={searchInput} onChange={setSearchInput} />
+          <MentorsSearch value={searchQuery} onChange={setSearchQuery} />
         </div>
 
         <div className="mb-8">

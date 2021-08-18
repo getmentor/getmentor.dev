@@ -12,6 +12,8 @@ import useMentors from '../components/useMentors'
 import Footer from '../components/Footer'
 import MentorsSearch from '../components/MentorsSearch'
 import MetaHeader from '../components/MetaHeader'
+import { useEffect } from 'react'
+import analytics from '../lib/analytics'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -66,15 +68,19 @@ function Feature({ title, text, imageUrl }) {
 }
 
 export default function Ontico({ pageMentors }) {
-  const [
+  const {
     mentors,
-    searchInput,
+    searchQuery,
     selectedTags,
     hasMoreMentors,
-    setSearchInput,
+    setSearchQuery,
     setSelectedTags,
     showMoreMentors,
-  ] = useMentors(pageMentors)
+  } = useMentors(pageMentors)
+
+  useEffect(() => {
+    analytics.event('Visit Ontico Page')
+  }, [])
 
   return (
     <>
@@ -224,7 +230,7 @@ export default function Ontico({ pageMentors }) {
         <Section.Title>Наши менторы</Section.Title>
 
         <div className="mb-6">
-          <MentorsSearch value={searchInput} onChange={setSearchInput} />
+          <MentorsSearch value={searchQuery} onChange={setSearchQuery} />
         </div>
 
         <div className="mb-8">

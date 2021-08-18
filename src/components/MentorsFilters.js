@@ -18,20 +18,21 @@ export default function MentorsFilters(props) {
   const onClickTag = (tag) => {
     if (tag === TAG_ALL) {
       onChangeTags([])
+      console.log('reset tags') // TODO
     } else if (selectedTags.includes(tag)) {
-      onChangeTags(selectedTags.filter(item => item !== tag))
+      onChangeTags(selectedTags.filter((item) => item !== tag))
+      console.log('remove tag', tag) // TODO
     } else {
-      onChangeTags([ ...selectedTags, tag ])
+      onChangeTags([...selectedTags, tag])
+      console.log('select tag', tag) // TODO
     }
   }
 
   return (
     <div className="text-center">
       <ul className="flex flex-wrap justify-center -m-1 mb-3">
-        {[ TAG_ALL ].map(tag => {
-          const isActive = (tag !== TAG_ALL)
-            ? selectedTags.includes(tag)
-            : (selectedTags.length === 0)
+        {[TAG_ALL].map((tag) => {
+          const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
 
           return (
             <li
@@ -41,16 +42,17 @@ export default function MentorsFilters(props) {
               })}
               key={tag}
               onClick={() => onClickTag(tag)}
-            >{tag}</li>
+            >
+              {tag}
+            </li>
           )
         })}
 
         {allowSponsors && (
           <>
-            {allFilters.sponsors.map(tag => {
-              const isActive = (tag !== TAG_ALL)
-                ? selectedTags.includes(tag)
-                : (selectedTags.length === 0)
+            {allFilters.sponsors.map((tag) => {
+              const isActive =
+                tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
 
               return (
                 <li
@@ -60,16 +62,16 @@ export default function MentorsFilters(props) {
                   })}
                   key={tag}
                   onClick={() => onClickTag(tag)}
-                >{tag}</li>
+                >
+                  {tag}
+                </li>
               )
             })}
           </>
         )}
 
-        {allFilters.tags.map(tag => {
-          const isActive = (tag !== TAG_ALL)
-            ? selectedTags.includes(tag)
-            : (selectedTags.length === 0)
+        {allFilters.tags.map((tag) => {
+          const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
 
           return (
             <li
@@ -79,7 +81,9 @@ export default function MentorsFilters(props) {
               })}
               key={tag}
               onClick={() => onClickTag(tag)}
-            >{tag}</li>
+            >
+              {tag}
+            </li>
           )
         })}
       </ul>
