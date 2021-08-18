@@ -1,11 +1,12 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import { Link } from '@tiptap/extension-link'
 import classNames from 'classnames'
 import htmlContent from '../lib/html-content'
 
 export default function Wysiwyg({ content, onUpdate }) {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, Link.configure({ openOnClick: false })],
     editorProps: {
       attributes: {
         class: 'prose prose-sm max-w-full my-2 mx-3 focus:outline-none',
@@ -18,8 +19,11 @@ export default function Wysiwyg({ content, onUpdate }) {
   })
 
   return (
-    <div className="block w-full sm:text-sm border border-gray-300 rounded-md shadow-sm">
-      <MenuBar editor={editor} />
+    <div className="block w-full sm:text-sm border border-gray-300 rounded-md shadow-sm relative">
+      <div className="bg-white sticky top-0 z-10 rounded-t-md">
+        <MenuBar editor={editor} />
+      </div>
+
       <EditorContent editor={editor} />
     </div>
   )
@@ -79,6 +83,45 @@ function MenuBar({ editor }) {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
               <path fill="none" d="M0 0h24v24H0z" />
               <path d="M17.154 14c.23.516.346 1.09.346 1.72 0 1.342-.524 2.392-1.571 3.147C14.88 19.622 13.433 20 11.586 20c-1.64 0-3.263-.381-4.87-1.144V16.6c1.52.877 3.075 1.316 4.666 1.316 2.551 0 3.83-.732 3.839-2.197a2.21 2.21 0 0 0-.648-1.603l-.12-.117H3v-2h18v2h-3.846zm-4.078-3H7.629a4.086 4.086 0 0 1-.481-.522C6.716 9.92 6.5 9.246 6.5 8.452c0-1.236.466-2.287 1.397-3.153C8.83 4.433 10.271 4 12.222 4c1.471 0 2.879.328 4.222.984v2.152c-1.2-.687-2.515-1.03-3.946-1.03-2.48 0-3.719.782-3.719 2.346 0 .42.218.786.654 1.099.436.313.974.562 1.613.75.62.18 1.297.414 2.03.699z" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            title="Link"
+            className={classNames('rounded p-1 hover:bg-gray-200', {
+              'bg-gray-200': editor.isActive('link'),
+            })}
+            onClick={() => {
+              const { from, to } = editor.state.selection
+
+              let existingUrl = ''
+              editor.state.doc.nodesBetween(from, to, (node) => {
+                if (existingUrl !== '') {
+                  return
+                }
+
+                for (const mark of node.marks) {
+                  if (mark.type.name === 'link') {
+                    existingUrl = mark.attrs.href
+                    break
+                  }
+                }
+              })
+
+              const url = window.prompt('URL', existingUrl)
+              if (url === null) {
+                return // user canceled
+              } else if (url === '') {
+                editor.chain().focus().extendMarkRange('link').unsetLink().run()
+              } else {
+                editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+              }
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
+              <path fill="none" d="M0 0h24v24H0z" />
+              <path d="M18.364 15.536L16.95 14.12l1.414-1.414a5 5 0 1 0-7.071-7.071L9.879 7.05 8.464 5.636 9.88 4.222a7 7 0 0 1 9.9 9.9l-1.415 1.414zm-2.828 2.828l-1.415 1.414a7 7 0 0 1-9.9-9.9l1.415-1.414L7.05 9.88l-1.414 1.414a5 5 0 1 0 7.071 7.071l1.414-1.414 1.415 1.414zm-.708-10.607l1.415 1.415-7.071 7.07-1.415-1.414 7.071-7.07z" />
             </svg>
           </button>
         </div>
