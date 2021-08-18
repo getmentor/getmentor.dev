@@ -6,6 +6,11 @@ const tagsCache = new NodeCache({ stdTTL: 24 * 60 * 60, checkperiod: 60 * 60 })
 const cacheKeyByName = 'tags_by_name'
 const cacheKeyRaw = 'tags_raw'
 
+// init the cache on startup
+if (process.env.APP_ENV === 'production') {
+  getAllTagsCached()
+}
+
 export async function getAllTags() {
   return await airtableBase('Tags').select().all()
 }
