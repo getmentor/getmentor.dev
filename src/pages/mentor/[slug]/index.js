@@ -11,6 +11,11 @@ import MetaHeader from '../../../components/MetaHeader'
 import seo from '../../../config/seo'
 import allFilters from '../../../config/filters'
 import analytics from '../../../lib/analytics'
+import htmlContent from '../../../lib/html-content'
+import { polyfill } from 'interweave-ssr'
+
+// This enables rendering profile HTML on server
+polyfill()
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -38,7 +43,13 @@ export default function Mentor(props) {
 
   useEffect(() => {
     analytics.event('View Mentor Page', {
-      id: mentor.id,
+      'Mentor Id': mentor.id,
+      'Mentor Name': mentor.name,
+      'Mentor Experience': mentor.experience,
+      'Mentor Price': mentor.price,
+
+      // legacy props
+      id: mentor.airtableId,
       name: mentor.name,
       experience: mentor.experience,
       price: mentor.price,
@@ -110,10 +121,18 @@ export default function Mentor(props) {
               <div className="mb-6">
                 <a
                   className="button"
-                  href={'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.id}
+                  href={
+                    'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.airtableId
+                  }
                   onClick={() => {
                     analytics.event('Request a Mentor', {
-                      id: mentor.id,
+                      'Mentor Id': mentor.id,
+                      'Mentor Name': mentor.name,
+                      'Mentor Experience': mentor.experience,
+                      'Mentor Price': mentor.price,
+
+                      // legacy props
+                      id: mentor.airtableId,
                       name: mentor.name,
                       experience: mentor.experience,
                       price: mentor.price,
@@ -126,7 +145,7 @@ export default function Mentor(props) {
             )}
 
             <div className="prose my-4">
-              <Interweave noWrap={true} content={mentor.description.replace(/\n/gi, '</br/>')} />
+              <Interweave content={htmlContent(mentor.description)} noWrap={true} />
             </div>
           </div>
 

@@ -40,10 +40,27 @@
     cursor: pointer;
     outline: 0
   }
-
-  .button:hover {
+  .button[disabled] {
+    opacity: .5;
+    pointer-events: none;
+  }
+  .button:not([disabled]):hover {
     transform: scale(1.05);
     opacity: 1
+  }
+
+  .multiSelectContainer .searchWrapper {
+    @apply border border-gray-300 shadow-sm rounded-md focus-within:border-opacity-0 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500;
+  }
+  .multiSelectContainer input:focus {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .multiSelectContainer .optionListContainer {
+    @apply shadow-lg mt-1 z-20;
+  }
+  .multiSelectContainer .optionListContainer li:hover {
+    @apply bg-gray-100 text-current;
   }
 }
 
