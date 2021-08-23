@@ -53,7 +53,9 @@ const saveProfileHandler = async (req, res) => {
   await airtableMentors.updateMentor(mentor.airtableId, newProps)
 
   cachedMentors.updateMentor(mentor.airtableId, newProps)
-  cachedMentors.forceResetCache().catch(console.error)
+  // This may be required in case there are issues with data inconsistency,
+  // however it's highly unlikely. Commenting out the line to save on API call.
+  // cachedMentors.forceResetCache().catch(console.error)
 
   res.send({ success: true })
 }
