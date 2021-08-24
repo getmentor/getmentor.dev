@@ -1,4 +1,4 @@
-import { withSentry } from '@sentry/nextjs'
+import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import { createClientRequest } from '../../server/airtable-client-requests'
 
@@ -26,28 +26,32 @@ const handler = async (req, res) => {
       return res.json()
     })
     .catch((e) => {
-      console.error(e)
-      res.status(400).json({ success: false, error: 'Captcha failed.' })
-      return
+      Sentry.captureException('Captcha exception: ' + JSON.stringify(e))
+      return res.status(400).json({ success: false, error: 'Captcha failed.' })
     })
 
   if (captchaResult && captchaResult.success) {
     if (process.env.NODE_ENV !== 'development') {
-      await createClientRequest({
-        Email: req.body['email'],
-        Name: req.body['name'],
-        Level: req.body['experience'] || null,
-        Mentor: [req.body['mentorAirtableId']],
-        Description: req.body['intro'],
-        Telegram: req.body['telegramUsername'],
-      })
+      try {
+        await createClientRequest({
+          Email: req.body['email'],
+          Name: req.body['name'],
+          Level: req.body['experience'] || null,
+          Mentor: [req.body['mentorAirtableId']],
+          Description: req.body['intro'],
+          Telegram: req.body['telegramUsername'],
+        })
+      } catch (e) {
+        Sentry.captureException('Create request failed: ' + JSON.stringify(e))
+        return res.status(400).json({ success: false, error: 'Save to storage failed' })
+      }
     }
-
-    res.status(200).json({ success: true })
   } else {
     console.warn('Captcha validation failed')
-    res.status(400).json({ success: false, error: 'Captcha validation failed' })
+    return res.status(400).json({ success: false, error: 'Captcha validation failed' })
   }
+
+  res.status(200).json({ success: true })
 }
 
-export default withSentry(handler)
+export default Sentry.withSentry(handler)
