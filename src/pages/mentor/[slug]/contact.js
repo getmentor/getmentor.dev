@@ -10,6 +10,7 @@ import { getMentors } from '../../../server/cached-mentors'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
 import Image from 'next/image'
+import { InlineWidget } from 'react-calendly'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -68,6 +69,7 @@ export default function OrderMentor({ mentor }) {
       })
       .then((data) => {
         if (data.success) {
+          mentor.calendarUrl = data.calendar_url
           setReadyStatus('success')
         } else {
           setReadyStatus('error')
@@ -167,6 +169,9 @@ function SuccessMessage({ mentor }) {
       </div>
       <h3 className="text-2xl mt-6">Ваша заявка принята</h3>
       <p>Скоро ментор свяжется с вами.</p>
+
+      <br />
+      <InlineWidget url={mentor.calendarUrl} />
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { airtableBase } from './airtable-base'
-import { AUTH_TOKEN } from '../lib/entities'
+import { AUTH_TOKEN, CALENDAR_URL } from '../lib/entities'
 import { getAllTagsCached } from './airtable-tags'
 
 /**
@@ -25,6 +25,7 @@ export async function getMentors() {
         'OnSite',
         'Status',
         'AuthToken',
+        'Calendly Url',
       ],
     })
     .all()
@@ -50,6 +51,7 @@ export async function getMentors() {
       // symbol props will not be serialized and sent to client
       // TODO token will not be serialized event you will want save it to cache
       [AUTH_TOKEN]: item.fields['AuthToken'],
+      [CALENDAR_URL]: item.fields['Calendly Url'],
     }
   })
 

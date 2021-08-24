@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import { createClientRequest } from '../../server/airtable-client-requests'
+import * as cachedMentors from '../../server/cached-mentors'
+import { CALENDAR_URL } from '../../lib/entities'
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
@@ -51,7 +53,10 @@ const handler = async (req, res) => {
     return res.status(400).json({ success: false, error: 'Captcha validation failed' })
   }
 
-  res.status(200).json({ success: true })
+  const mentors = await cachedMentors.getMentors()
+  const mentor = mentors.find((mentor) => mentor.airtableId === req.body['mentorAirtableId'])
+  var calendarUrl = mentor[CALENDAR_URL]
+  res.status(200).json({ success: true, calendar_url: calendarUrl })
 }
 
 export default Sentry.withSentry(handler)
