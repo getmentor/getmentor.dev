@@ -1,4 +1,4 @@
-import { withSentry } from '@sentry/nextjs'
+import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import * as airtableMentors from '../../server/airtable-mentors'
 import * as cachedMentors from '../../server/cached-mentors'
@@ -50,9 +50,14 @@ const saveProfileHandler = async (req, res) => {
     tags: [...req.body.tags, ...mentor.tags.filter((tag) => filters.sponsors.includes(tag))],
   }
 
-  await airtableMentors.updateMentor(mentor.airtableId, newProps)
+  try {
+    await airtableMentors.updateMentor(mentor.airtableId, newProps)
+    cachedMentors.updateMentor(mentor.airtableId, newProps)
+  } catch (e) {
+    Sentry.captureException(`Error: ${e.message}; ErrorCode: ${e.error}; Status: ${e.statusCode}`)
+    return res.status(503).send({ success: false })
+  }
 
-  cachedMentors.updateMentor(mentor.airtableId, newProps)
   // This may be required in case there are issues with data inconsistency,
   // however it's highly unlikely. Commenting out the line to save on API call.
   // cachedMentors.forceResetCache().catch(console.error)
@@ -60,4 +65,4 @@ const saveProfileHandler = async (req, res) => {
   res.send({ success: true })
 }
 
-export default withSentry(saveProfileHandler)
+export default Sentry.withSentry(saveProfileHandler)
