@@ -57,7 +57,7 @@ export default function OrderMentor({ mentor }) {
       method: 'POST',
       body: JSON.stringify({
         ...data,
-        mentorAirtableId: mentor.id,
+        mentorAirtableId: mentor.airtableId,
       }),
       headers: {
         'Content-Type': 'application/json',
