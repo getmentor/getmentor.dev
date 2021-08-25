@@ -47,6 +47,7 @@ export async function getMentors() {
       tags: item.fields['Tags'].split(',').map((tag) => tag.trim()),
       sortOrder: item.fields['SortOrder'],
       isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
+      calendarType: calendarType(item.fields['Calendly Url']),
 
       // symbol props will not be serialized and sent to client
       // TODO token will not be serialized event you will want save it to cache
@@ -79,4 +80,10 @@ export async function updateMentor(recordId, mentor) {
     Price: mentor.price,
     'Tags Links': mentor.tags.map((tagName) => allTags[tagName]),
   })
+}
+
+function calendarType(url) {
+  if (!url) return 'none'
+  if (url.startsWith('https://calendly.com')) return 'calendly'
+  else return 'url'
 }

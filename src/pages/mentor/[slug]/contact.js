@@ -10,7 +10,7 @@ import { getMentors } from '../../../server/cached-mentors'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
 import Image from 'next/image'
-import { InlineWidget } from 'react-calendly'
+import { PopupButton } from 'react-calendly'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -167,11 +167,32 @@ function SuccessMessage({ mentor }) {
       <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-green-100 text-green-500">
         <FontAwesomeIcon icon={faCheck} size="2x" />
       </div>
-      <h3 className="text-2xl mt-6">Ваша заявка принята</h3>
-      <p>Скоро ментор свяжется с вами.</p>
+      <p className="text-xl mt-6">Ваша заявка принята</p>
 
-      <br />
-      <InlineWidget url={mentor.calendarUrl} />
+      <div className="flex justify-center">
+        {mentor.calendarType !== 'none' ? (
+          <div className="max-w-screen-md justify-center space-y-7 flex-wrap sm:flex-nowrap sm:space-y-0 sm:space-x-5">
+            <p className="text-xl mt-6">
+              Ментор получил вашу заявку и скоро с вами свяжется. Но вы можете выбрать удобное время
+              для встречи уже сейчас, нажав на кнопку ниже.
+            </p>
+            <br />
+            {mentor.calendarType === 'calendly' ? (
+              <PopupButton
+                url={mentor.calendarUrl}
+                text="Записаться на встречу"
+                className="button"
+              />
+            ) : (
+              <a className="button" href={mentor.calendarUrl} target="_blank" rel="noreferrer">
+                Записаться на встречу
+              </a>
+            )}
+          </div>
+        ) : (
+          <p>Скоро ментор свяжется с вами.</p>
+        )}
+      </div>
     </div>
   )
 }
