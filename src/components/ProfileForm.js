@@ -74,7 +74,7 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
 
         <div>
           <label htmlFor="price" className="block mb-2 font-medium text-gray-700">
-            Цена
+            Цена за часовую встречу
           </label>
 
           <select
