@@ -4,6 +4,7 @@ import Wysiwyg from './Wysiwyg'
 import filters from '../config/filters'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+const Url = require('url')
 
 export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
   const {
@@ -170,6 +171,36 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
             )}
           />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="calendarUrl" className="block mb-2 font-medium text-gray-700">
+          Ссылка на запись в ваш календарь
+        </label>
+
+        {errors.calendarUrl && (
+          <div className="text-sm text-red-700 mt-3 mb-2">Здесь должна быть валидная ссылка</div>
+        )}
+
+        <input
+          type="text"
+          {...register('calendarUrl', {
+            validate: {
+              checkUrl: (v) => {
+                if (!v) return true
+                try {
+                  var url = Url.parse(v)
+                  return url.protocol === 'http:' || url.protocol === 'https:'
+                } catch (e) {
+                  return false
+                }
+              },
+            },
+          })}
+          defaultValue={mentor.calendarUrl}
+          id="calendarUrl"
+          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+        />
       </div>
 
       {isError && (

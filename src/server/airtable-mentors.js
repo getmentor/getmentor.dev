@@ -1,6 +1,7 @@
 import { airtableBase } from './airtable-base'
 import { AUTH_TOKEN, CALENDAR_URL } from '../lib/entities'
 import { getAllTagsCached } from './airtable-tags'
+const Url = require('url')
 
 /**
  * @returns {Promise<Mentor[]>}
@@ -78,12 +79,17 @@ export async function updateMentor(recordId, mentor) {
     Details: mentor.description,
     Experience: mentor.experience,
     Price: mentor.price,
+    'Calendly Url': mentor.calendarUrl,
     'Tags Links': mentor.tags.map((tagName) => allTags[tagName]),
   })
 }
 
 function calendarType(url) {
-  if (!url) return 'none'
-  if (url.startsWith('https://calendly.com')) return 'calendly'
-  else return 'url'
+  try {
+    var u = Url.parse(url)
+    if (u.hostname === 'calendly.com') return 'calendly'
+    else return 'url'
+  } catch (_) {
+    return 'none'
+  }
 }
