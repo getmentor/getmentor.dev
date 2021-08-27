@@ -24,17 +24,49 @@ export default function useMentors(allMentors, pageSize = 48) {
   }
   let filteredMentors = allMentors
   if (searchInput.length >= 2) {
-    filteredMentors = filteredMentors.filter(mentor => {
-      const searchContent = mentor.name + ' ' + mentor.job + ' ' + mentor.description
-      return searchContent.toLowerCase().includes(searchInput.toLowerCase())
+    filteredMentors = filteredMentors.filter((mentor) => {
+      const searchContent = (
+        mentor.name +
+        ' ' +
+        mentor.job +
+        ' ' +
+        mentor.description
+      ).toLowerCase()
+      const tokens = searchInput
+        .toLowerCase()
+        .split(',')
+        .map((t) => t.trim())
+      return hasAllInArray(tokens, searchContent)
     })
   }
   if (selectedTags.length) {
-    filteredMentors = filteredMentors.filter(mentor => hasAllTags(mentor.tags, selectedTags))
+    filteredMentors = filteredMentors.filter((mentor) => hasAllTags(mentor.tags, selectedTags))
   }
 
   const mentors = filteredMentors.slice(0, mentorsCount)
-  const hasMoreMentors = (filteredMentors.length > mentorsCount)
+  const hasMoreMentors = filteredMentors.length > mentorsCount
 
-  return [mentors, searchInput, selectedTags, hasMoreMentors, setSearchInput, setSelectedTags, showMoreMentors]
+  return [
+    mentors,
+    searchInput,
+    selectedTags,
+    hasMoreMentors,
+    setSearchInput,
+    setSelectedTags,
+    showMoreMentors,
+  ]
+}
+
+/**
+ * @param {Array} needles
+ * @param {Array} haystack
+ * @returns {boolean}
+ */
+function hasAllInArray(needles, haystack) {
+  for (const needle of needles) {
+    if (!haystack.includes(needle)) {
+      return false
+    }
+  }
+  return true
 }
