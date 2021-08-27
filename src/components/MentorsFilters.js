@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import allFilters from '../config/filters'
+import analytics from '../lib/analytics'
 
 export default function MentorsFilters(props) {
   const defaultProps = {
@@ -18,13 +19,17 @@ export default function MentorsFilters(props) {
   const onClickTag = (tag) => {
     if (tag === TAG_ALL) {
       onChangeTags([])
-      console.log('reset tags') // TODO
+      analytics.event('Filter Reset Tags')
     } else if (selectedTags.includes(tag)) {
       onChangeTags(selectedTags.filter((item) => item !== tag))
-      console.log('remove tag', tag) // TODO
+      analytics.event('Filter Removed Tag', {
+        tagName: tag,
+      })
     } else {
       onChangeTags([...selectedTags, tag])
-      console.log('select tag', tag) // TODO
+      analytics.event('Filter Added Tag', {
+        tagName: tag,
+      })
     }
   }
 
