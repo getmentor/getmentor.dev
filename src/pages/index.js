@@ -16,6 +16,7 @@ import { useEffect } from 'react'
 import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
+import VisibilitySensor from 'react-visibility-sensor'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -44,6 +45,10 @@ function Feature(props) {
       </div>
     </div>
   )
+}
+
+function onSponsorsShown(isVisible) {
+  if (isVisible) analytics.event('Sponsors Banner Shown')
 }
 
 export default function Home({ pageMentors }) {
@@ -164,7 +169,9 @@ export default function Home({ pageMentors }) {
       </Section>
 
       <Section className="bg-gray-100" id="sponsors">
-        <Section.Title>Нас поддерживают</Section.Title>
+        <VisibilitySensor onChange={onSponsorsShown}>
+          <Section.Title>Нас поддерживают</Section.Title>
+        </VisibilitySensor>
 
         <div className="flex justify-center items-center">
           <a

@@ -40,6 +40,7 @@
     "react-google-recaptcha": "^2.1.0",
     "react-hook-form": "^7.9.0",
     "react-textarea-autosize": "^8.3.3",
+    "react-visibility-sensor": "^5.1.1",
     "tailwindcss": "^2.0.4",
     "typescript": "^4.3.4",
     "yup": "^0.32.9"
