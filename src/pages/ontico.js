@@ -12,6 +12,8 @@ import useMentors from '../components/useMentors'
 import Footer from '../components/Footer'
 import MentorsSearch from '../components/MentorsSearch'
 import MetaHeader from '../components/MetaHeader'
+import analytics from '../lib/analytics'
+import { useEffect } from 'react'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -75,6 +77,10 @@ export default function Ontico({ pageMentors }) {
     setSelectedTags,
     showMoreMentors,
   ] = useMentors(pageMentors)
+
+  useEffect(() => {
+    analytics.event('Visit Ontico Page')
+  }, [])
 
   return (
     <>
