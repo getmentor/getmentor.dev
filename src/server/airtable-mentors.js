@@ -88,6 +88,7 @@ function calendarType(url) {
   try {
     var u = Url.parse(url)
     if (u.hostname === 'calendly.com') return 'calendly'
+    if (u.hostname === 'koalendar.com') return 'koalendar'
     else return 'url'
   } catch (_) {
     return 'none'

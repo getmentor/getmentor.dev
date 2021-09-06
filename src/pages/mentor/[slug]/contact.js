@@ -10,7 +10,8 @@ import { getMentors } from '../../../server/cached-mentors'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
 import Image from 'next/image'
-import { PopupButton } from 'react-calendly'
+import { InlineWidget } from 'react-calendly'
+import Koalendar from '../../../components/Koalendar'
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -46,6 +47,7 @@ export default function OrderMentor({ mentor }) {
   }, [])
 
   const [readyStatus, setReadyStatus] = useState('')
+  const [formData, setFormData] = useState()
 
   const onSubmit = (data) => {
     if (readyStatus === 'loading') {
@@ -53,6 +55,8 @@ export default function OrderMentor({ mentor }) {
     }
 
     setReadyStatus('loading')
+
+    setFormData({ ...data })
 
     fetch('/api/contact-mentor', {
       method: 'POST',
@@ -127,7 +131,7 @@ export default function OrderMentor({ mentor }) {
 
       {readyStatus === 'success' ? (
         <Section>
-          <SuccessMessage mentor={mentor} />
+          <SuccessMessage mentor={mentor} formData={formData} />
         </Section>
       ) : (
         <Section>
@@ -146,7 +150,7 @@ export default function OrderMentor({ mentor }) {
   )
 }
 
-function SuccessMessage({ mentor }) {
+function SuccessMessage({ mentor, formData }) {
   useEffect(() => {
     analytics.event('Mentor Request Sent', {
       'Mentor Id': mentor.id,
@@ -174,15 +178,22 @@ function SuccessMessage({ mentor }) {
           <div className="max-w-screen-md justify-center space-y-7 flex-wrap sm:flex-nowrap sm:space-y-0 sm:space-x-5">
             <p className="text-xl mt-6">
               Ментор получил вашу заявку и скоро с вами свяжется. Но вы можете выбрать удобное время
-              для встречи уже сейчас, нажав на кнопку ниже.
+              для встречи уже сейчас в форме ниже.
             </p>
             <br />
             {mentor.calendarType === 'calendly' ? (
-              <PopupButton
+              <InlineWidget
                 url={mentor.calendarUrl}
-                text="Записаться на встречу"
-                className="button"
+                prefill={{
+                  name: formData?.name,
+                  email: formData?.email,
+                  customAnswers: {
+                    a1: formData?.intro,
+                  },
+                }}
               />
+            ) : mentor.calendarType === 'koalendar' ? (
+              <Koalendar url={mentor.calendarUrl} />
             ) : (
               <a className="button" href={mentor.calendarUrl} target="_blank" rel="noreferrer">
                 Записаться на встречу
