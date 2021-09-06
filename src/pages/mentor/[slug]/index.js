@@ -47,6 +47,7 @@ export default function Mentor(props) {
       'Mentor Name': mentor.name,
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
+      'Mentor Sponsors': mentor.sponsors,
 
       // legacy props
       id: mentor.airtableId,
@@ -130,6 +131,7 @@ export default function Mentor(props) {
                       'Mentor Name': mentor.name,
                       'Mentor Experience': mentor.experience,
                       'Mentor Price': mentor.price,
+                      'Mentor Sponsors': mentor.sponsors,
 
                       // legacy props
                       id: mentor.airtableId,

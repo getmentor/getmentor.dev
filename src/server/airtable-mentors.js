@@ -1,6 +1,7 @@
 import { airtableBase } from './airtable-base'
 import { AUTH_TOKEN } from '../lib/entities'
 import { getAllTagsCached } from './airtable-tags'
+import allFilters from '../config/filters'
 
 /**
  * @returns {Promise<Mentor[]>}
@@ -31,6 +32,8 @@ export async function getMentors() {
 
   /** @var {Mentor[]} mentors */
   const mentors = mentorsRaw.map((item) => {
+    const tags = item.fields['Tags'].split(',').map((tag) => tag.trim())
+
     return {
       id: item.fields['Id'],
       airtableId: item.id,
@@ -43,9 +46,10 @@ export async function getMentors() {
       menteeCount: item.fields['Done Sessions Count'],
       photo: item.fields['Image_Attachment'][0],
       photo_url: item.fields['Image'],
-      tags: item.fields['Tags'].split(',').map((tag) => tag.trim()),
+      tags: tags,
       sortOrder: item.fields['SortOrder'],
       isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
+      sponsors: getMentorSponsor(tags),
 
       // symbol props will not be serialized and sent to client
       // TODO token will not be serialized event you will want save it to cache
@@ -77,4 +81,15 @@ export async function updateMentor(recordId, mentor) {
     Price: mentor.price,
     'Tags Links': mentor.tags.map((tagName) => allTags[tagName]),
   })
+}
+
+function getMentorSponsor(tags) {
+  const sponsors = []
+  tags.forEach((t) => {
+    if (allFilters.sponsors.includes(t)) {
+      sponsors.push(t)
+    }
+  })
+
+  return sponsors.length === 0 ? 'none' : sponsors.join('|')
 }
