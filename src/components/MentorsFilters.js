@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import allFilters from '../config/filters'
 import analytics from '../lib/analytics'
+import { useEffect } from 'react'
 
 export default function MentorsFilters(props) {
   const defaultProps = {
@@ -16,26 +17,47 @@ export default function MentorsFilters(props) {
 
   const TAG_ALL = 'All'
 
+  useEffect(() => {
+    if (window?.location?.hash?.startsWith('#tags:')) {
+      let data = window?.location?.hash.split(':')
+      let newTags = data[1] ? data[1].split('|').map((t) => decodeURI(t)) : []
+      newTags = newTags.filter(
+        (item) => allFilters.tags.includes(item) || allFilters.sponsors.includes(item)
+      )
+
+      onChangeTags(newTags)
+
+      if (newTags.length > 0) {
+        analytics.event('Landed With Selected Tags', {
+          tags: newTags,
+        })
+      }
+    }
+  }, [])
+
   const onClickTag = (tag) => {
+    let newTags = []
+
     if (tag === TAG_ALL) {
-      onChangeTags([])
-      console.log('all')
       analytics.event('Filter Reset Tags')
     } else if (selectedTags.includes(tag)) {
-      onChangeTags(selectedTags.filter((item) => item !== tag))
+      newTags = selectedTags.filter((item) => item !== tag)
 
       analytics.event('Filter Removed Tag', {
         tagName: tag,
         sponsored: allFilters.sponsors.includes(tag),
       })
     } else {
-      onChangeTags([...selectedTags, tag])
+      newTags = [...selectedTags, tag]
 
       analytics.event('Filter Added Tag', {
         tagName: tag,
         sponsored: allFilters.sponsors.includes(tag),
       })
     }
+
+    onChangeTags(newTags)
+    history.replaceState(null, null, '#tags:' + newTags.join('|'))
   }
 
   return (
