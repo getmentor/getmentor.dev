@@ -32,7 +32,10 @@ export async function getMentors() {
 
   /** @var {Mentor[]} mentors */
   const mentors = mentorsRaw.map((item) => {
-    const tags = item.fields['Tags'].split(',').map((tag) => tag.trim())
+    let tags = []
+    if (item.fields['Tags']) {
+      tags = item.fields['Tags'].split(',').map((tag) => tag.trim())
+    }
 
     return {
       id: item.fields['Id'],
