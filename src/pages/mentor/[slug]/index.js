@@ -108,7 +108,7 @@ export default function Mentor(props) {
             <div className="mb-4">
               <b>Опыт:</b> {mentor.experience} лет
               <br />
-              <b>Цена:</b> {mentor.price}
+              <b>Цена (за час):</b> {mentor.price}
               <br />
             </div>
 
