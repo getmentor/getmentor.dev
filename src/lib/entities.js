@@ -5,6 +5,7 @@
  * @property {string} slug
  * @property {string} name
  * @property {string} job
+ * @property {string} workplace
  * @property {string} description
  * @property {string} experience
  * @property {string} price

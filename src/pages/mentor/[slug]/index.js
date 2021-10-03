@@ -67,7 +67,7 @@ export default function Mentor(props) {
 
         <MetaHeader
           customTitle={mentor.name}
-          customDescription={mentor.job}
+          customDescription={mentor.job + ' @ ' + mentor.workplace}
           customImage={mentor.photo_url}
         />
       </Head>
@@ -78,7 +78,9 @@ export default function Mentor(props) {
         <div className="flex">
           <div className="flex-1">
             <h1 className="mb-2">{mentor.name}</h1>
-            <div className="mb-3">{mentor.job}</div>
+            <div className="mb-3">
+              {mentor.job} @ {mentor.workplace}
+            </div>
 
             <div className="flex flex-wrap -m-1 mb-5">
               {mentor.tags.map((tag) => (

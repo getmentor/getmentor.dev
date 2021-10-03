@@ -36,7 +36,7 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
 
       <div>
         <label htmlFor="job" className="block mb-2 font-medium text-gray-700">
-          Должность @ Компания
+          Должность
         </label>
 
         {errors.job && (
@@ -48,6 +48,26 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
           {...register('job', { required: true })}
           defaultValue={mentor.job}
           id="job"
+          autoComplete="organization-title"
+          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="workplace" className="block mb-2 font-medium text-gray-700">
+          Компания
+        </label>
+
+        {errors.workplace && (
+          <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
+        )}
+
+        <input
+          type="text"
+          {...register('workplace', { required: true })}
+          defaultValue={mentor.workplace}
+          id="workplace"
+          autoComplete="organization"
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
         />
       </div>

@@ -111,7 +111,9 @@ export default function OrderMentor({ mentor }) {
 
             <div style={{ wordBreak: 'break-word' }}>
               <h2 className="mb-2">{mentor.name}</h2>
-              <div className="mb-3">{mentor.job}</div>
+              <div className="mb-3">
+                {mentor.job} @ {mentor.workplace}
+              </div>
 
               <div className="mb-4">
                 <b>Опыт:</b> {mentor.experience} лет

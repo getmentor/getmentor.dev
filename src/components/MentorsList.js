@@ -23,7 +23,9 @@ export default function MentorsList(props) {
 
               <div className="mt-3 mb-5">
                 <div className="text-2xl mb-1">{mentor.name}</div>
-                <div className="mb-2">{mentor.job}</div>
+                <div className="mb-2">
+                  {mentor.job} @ {mentor.workplace}
+                </div>
 
                 <div>😎 {mentor.experience} лет опыта</div>
                 <div>💰 {mentor.price}</div>

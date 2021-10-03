@@ -8,6 +8,7 @@ import filters from '../../config/filters'
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
   job: yup.string().required(),
+  workplace: yup.string().required(),
   experience: yup.string().required(),
   price: yup.string().required(),
   tags: yup.array().of(yup.string()).required(),

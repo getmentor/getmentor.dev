@@ -30,6 +30,8 @@ export default function useMentors(allMentors, pageSize = 48) {
         ' ' +
         mentor.job +
         ' ' +
+        mentor.workplace +
+        ' ' +
         mentor.description
       ).toLowerCase()
       const tokens = searchInput
