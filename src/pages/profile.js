@@ -112,7 +112,9 @@ export default function Profile({ errorCode, mentor }) {
         <div className="text-center">
           <h1 className="mb-6">Профиль</h1>
           <Link href={'/mentor/' + mentor.slug}>
-            <a className="link text-sm">Открыть личную страницу</a>
+            <a className="link text-sm" target="_blank">
+              Открыть личную страницу
+            </a>
           </Link>
         </div>
       </Section>
