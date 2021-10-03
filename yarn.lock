@@ -9982,6 +9982,11 @@ react-async-script@^1.1.1:
     hoist-non-react-statics "^3.3.0"
     prop-types "^15.5.0"
 
+react-calendly@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-calendly/-/react-calendly-2.2.1.tgz#7c35f7747e01045dbd77e18ea1eb18adddf373cf"
+  integrity sha512-r9WJ2WNr3hjBFnE8UyFCtJiTy7InME0lghw3gA5BqAMOFe70OtLDINDRAKDSS8O1tTSxJJrFdmZ1PpFSL0NAJA==
+
 react-colorful@^5.1.2:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/react-colorful/-/react-colorful-5.5.0.tgz#8359f218984a927095477a190ab9927eaf865c0c"

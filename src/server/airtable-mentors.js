@@ -1,7 +1,8 @@
 import { airtableBase } from './airtable-base'
-import { AUTH_TOKEN } from '../lib/entities'
+import { AUTH_TOKEN, CALENDAR_URL } from '../lib/entities'
 import { getAllTagsCached } from './airtable-tags'
 import allFilters from '../config/filters'
+const Url = require('url')
 
 /**
  * @returns {Promise<Mentor[]>}
@@ -30,6 +31,7 @@ export async function getMentors() {
         'OnSite',
         'Status',
         'AuthToken',
+        'Calendly Url',
       ],
     })
     .all()
@@ -60,10 +62,12 @@ export async function getMentors() {
       sortOrder: item.fields['SortOrder'],
       isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
       sponsors: getMentorSponsor(tags),
+      calendarType: calendarType(item.fields['Calendly Url']),
 
       // symbol props will not be serialized and sent to client
       // TODO token will not be serialized event you will want save it to cache
       [AUTH_TOKEN]: item.fields['AuthToken'],
+      [CALENDAR_URL]: item.fields['Calendly Url'],
     }
   })
 
@@ -92,6 +96,7 @@ export async function updateMentor(recordId, mentor) {
     Competencies: mentor.competencies,
     Experience: mentor.experience,
     Price: mentor.price,
+    'Calendly Url': mentor.calendarUrl,
     'Tags Links': mentor.tags.map((tagName) => allTags[tagName]),
   })
 }
@@ -105,4 +110,15 @@ function getMentorSponsor(tags) {
   })
 
   return sponsors.length === 0 ? 'none' : sponsors.join('|')
+}
+
+function calendarType(url) {
+  try {
+    var u = Url.parse(url)
+    if (u.hostname === 'calendly.com') return 'calendly'
+    if (u.hostname === 'koalendar.com') return 'koalendar'
+    else return 'url'
+  } catch (_) {
+    return 'none'
+  }
 }

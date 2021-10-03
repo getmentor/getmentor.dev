@@ -9,7 +9,7 @@ import { getMentors } from '../server/cached-mentors'
 import seo from '../config/seo'
 import filters from '../config/filters'
 import Notification from '../components/Notification'
-import { AUTH_TOKEN } from '../lib/entities'
+import { AUTH_TOKEN, CALENDAR_URL } from '../lib/entities'
 import Error from 'next/error'
 import analytics from '../lib/analytics'
 import Link from 'next/link'
@@ -31,6 +31,8 @@ export async function getServerSideProps(context) {
       props: { errorCode: 403, mentor: null },
     }
   }
+
+  mentor.calendarUrl = mentor[CALENDAR_URL]
 
   return {
     props: { errorCode: 0, mentor },
