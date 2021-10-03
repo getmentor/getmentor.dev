@@ -12,18 +12,3 @@ export function htmlContent(html) {
 
   return html
 }
-
-export function getMentorFullProfileDescription(mentor) {
-  var description = ''
-
-  if (mentor.about) {
-    description = htmlContent(mentor.about)
-  }
-  if (mentor.description) {
-    description += htmlContent(mentor.description)
-  }
-  if (mentor.competencies) {
-    description += '<p><b>Основные компетенции:</b><br/>' + mentor.competencies + '</p>'
-  }
-  return description
-}

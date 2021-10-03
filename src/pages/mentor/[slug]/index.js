@@ -148,9 +148,27 @@ export default function Mentor(props) {
               </div>
             )}
 
-            <div className="prose my-4">
-              <Interweave content={getMentorFullProfileDescription(mentor)} noWrap={true} />
-            </div>
+            {mentor.about && (
+              <div className="prose my-4">
+                <b>О себе</b>
+                <Interweave content={htmlContent(mentor.about)} noWrap={true} />
+              </div>
+            )}
+
+            {mentor.description && (
+              <div className="prose my-4">
+                <b>С чем помогу</b>
+                <Interweave content={htmlContent(mentor.description)} noWrap={true} />
+              </div>
+            )}
+
+            {mentor.competencies && (
+              <div className="prose my-4">
+                <b>Компетенции</b>
+                <br />
+                <i>{mentor.competencies}</i>
+              </div>
+            )}
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
