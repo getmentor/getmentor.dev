@@ -1,5 +1,6 @@
 import hash from 'object-hash'
 import { getMentors as getMentorsFromAirtable } from './airtable-mentors'
+import { CALENDAR_URL } from '../lib/entities'
 
 /**
  * @var {Promise<Mentor[]>}
@@ -92,6 +93,9 @@ export function updateMentor(recordId, newProps) {
   for (const key in newProps) {
     oldMentor[key] = newProps[key]
   }
+
+  // Update calendar link in SYMBOL
+  oldMentor[CALENDAR_URL] = newProps.calendarUrl
 
   return oldMentor
 }

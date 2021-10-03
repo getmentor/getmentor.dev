@@ -85,6 +85,7 @@ export async function getMentors() {
  */
 export async function updateMentor(recordId, mentor) {
   let allTags = await getAllTagsCached()
+  mentor.calendarType = calendarType(mentor.calendarUrl)
 
   return airtableBase('Mentors').update(recordId, {
     Alias: mentor.slug,
@@ -113,6 +114,10 @@ function getMentorSponsor(tags) {
 }
 
 function calendarType(url) {
+  if (!url) {
+    return 'none'
+  }
+
   try {
     var u = Url.parse(url)
     if (u.hostname === 'calendly.com') return 'calendly'
