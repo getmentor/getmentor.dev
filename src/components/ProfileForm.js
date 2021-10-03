@@ -238,7 +238,15 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
 
       <div>
         <label htmlFor="calendarUrl" className="block mb-2 font-medium text-gray-700">
-          Ссылка на запись в ваш календарь
+          Ссылка на запись в ваш календарь (
+          <a href="https://calendly.com" target="_blank" className="link" rel="noreferrer">
+            Calendly
+          </a>
+          ,{' '}
+          <a href="https://koalendar.com" target="_blank" className="link" rel="noreferrer">
+            Koalendar
+          </a>{' '}
+          или что-то ещё)
         </label>
 
         {errors.calendarUrl && (
