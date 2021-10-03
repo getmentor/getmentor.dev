@@ -6,7 +6,10 @@ const appsignal = new Appsignal({
   apiKey: process.env.APPSIGNAL_PUSH_API_KEY,
 })
 
-const { getRequestHandler } = require('@appsignal/nextjs')
+const {
+  getRequestHandler,
+  EXPERIMENTAL: { getWebVitalsHandler },
+} = require('@appsignal/nextjs')
 
 const url = require('url')
 const next = require('next')
@@ -18,6 +21,8 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = getRequestHandler(appsignal, app)
 
+const vitals = getWebVitalsHandler(appsignal)
+
 app.prepare().then(() => {
   createServer((req, res) => {
     // Be sure to pass `true` as the second argument to `url.parse`.
@@ -27,7 +32,11 @@ app.prepare().then(() => {
 
     // You might want to handle other routes here too, see
     // https://nextjs.org/docs/advanced-features/custom-server
-    handle(req, res, parsedUrl)
+    if (pathname === '/__appsignal-web-vitals') {
+      vitals(req, res)
+    } else {
+      handle(req, res, parsedUrl)
+    }
   }).listen(PORT, (err) => {
     if (err) throw err
     console.log(`> Ready on http://localhost:${PORT}`)
