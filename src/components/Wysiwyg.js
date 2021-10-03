@@ -2,7 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Link } from '@tiptap/extension-link'
 import classNames from 'classnames'
-import htmlContent from '../lib/html-content'
+import { htmlContent } from '../lib/html-content'
 
 export default function Wysiwyg({ content, onUpdate }) {
   const editor = useEditor({

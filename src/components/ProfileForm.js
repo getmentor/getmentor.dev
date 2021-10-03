@@ -114,7 +114,7 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
 
       <div>
         <label htmlFor="tags" className="block mb-2 font-medium text-gray-700">
-          Теги
+          Специализация
         </label>
 
         <Controller
@@ -168,8 +168,33 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
       </div>
 
       <div>
+        <label htmlFor="about" className="block mb-2 font-medium text-gray-700">
+          Расскажите о себе
+        </label>
+
+        {errors.about && (
+          <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
+        )}
+
+        <div className="mt-1">
+          <Controller
+            name="about"
+            control={control}
+            defaultValue={mentor.about}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Wysiwyg
+                content={field.value}
+                onUpdate={(editor) => field.onChange(editor.getHTML())}
+              />
+            )}
+          />
+        </div>
+      </div>
+
+      <div>
         <label htmlFor="description" className="block mb-2 font-medium text-gray-700">
-          Описание
+          С чем вы можете помочь?
         </label>
 
         {errors.description && (
@@ -190,6 +215,24 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
             )}
           />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="competencies" className="block mb-2 font-medium text-gray-700">
+          Компетенции и технологии (через запятую)
+        </label>
+
+        {errors.competencies && (
+          <div className="text-sm text-red-700 mt-3 mb-2">Это поле обязательно для заполнения.</div>
+        )}
+
+        <input
+          type="text"
+          {...register('competencies', { required: true })}
+          defaultValue={mentor.competencies}
+          id="competencies"
+          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+        />
       </div>
 
       {isError && (

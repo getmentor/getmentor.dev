@@ -32,7 +32,11 @@ export default function useMentors(allMentors, pageSize = 48) {
         ' ' +
         mentor.workplace +
         ' ' +
-        mentor.description
+        mentor.description +
+        ' ' +
+        mentor.about +
+        ' ' +
+        mentor.competencies
       ).toLowerCase()
       const tokens = searchInput
         .toLowerCase()

@@ -11,7 +11,7 @@ import MetaHeader from '../../../components/MetaHeader'
 import seo from '../../../config/seo'
 import allFilters from '../../../config/filters'
 import analytics from '../../../lib/analytics'
-import htmlContent from '../../../lib/html-content'
+import { htmlContent, getMentorFullProfileDescription } from '../../../lib/html-content'
 import { polyfill } from 'interweave-ssr'
 
 // This enables rendering profile HTML on server
@@ -149,7 +149,7 @@ export default function Mentor(props) {
             )}
 
             <div className="prose my-4">
-              <Interweave content={htmlContent(mentor.description)} noWrap={true} />
+              <Interweave content={getMentorFullProfileDescription(mentor)} noWrap={true} />
             </div>
           </div>
 

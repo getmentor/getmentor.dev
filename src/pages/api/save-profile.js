@@ -13,6 +13,8 @@ const bodySchema = yup.object().shape({
   price: yup.string().required(),
   tags: yup.array().of(yup.string()).required(),
   description: yup.string().required(),
+  about: yup.string().required(),
+  competencies: yup.string().required(),
 })
 
 const saveProfileHandler = async (req, res) => {
