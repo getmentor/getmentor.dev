@@ -2,6 +2,7 @@ User-agent: *
 Disallow: /[slug]
 Disallow: /mentor/[slug]
 Disallow: /profile
+Disallow: /api/*
 
 User-agent: *
 Allow: /
