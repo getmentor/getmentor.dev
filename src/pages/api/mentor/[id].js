@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
 import { getMentors } from '../../../server/cached-mentors'
+import seo from '../../../config/seo'
 
 const handler = async (req, res) => {
   // Only allow GET
@@ -29,6 +30,7 @@ const handler = async (req, res) => {
       doneSessions: m.menteeCount,
       photo: m.photo_url,
       tags: m.tags.join(','),
+      link: `${seo.domain}/mentor/${m.slug}`,
     })
   } else {
     return res.status(404).json({})
