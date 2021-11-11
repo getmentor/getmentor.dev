@@ -47,11 +47,47 @@ export default function OrderMentor({ mentor }) {
     })
   }, [])
 
+  const today = new Date().toISOString().slice(0, 10)
+  const REQUESTS_PER_DAY_KEY = 'requests_per_day'
+
   const [readyStatus, setReadyStatus] = useState('')
   const [formData, setFormData] = useState()
 
+  const hasRequestPerDayLeft = () => {
+    const MAX_REQUESTS_PER_DAY = 5
+    const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
+
+    if (storage !== null) {
+      const nr_requests = JSON.parse(storage)
+
+      if (nr_requests[today] !== null && nr_requests[today] >= MAX_REQUESTS_PER_DAY) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  const incerementRequestsPerDay = () => {
+    const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
+    const nr_requests = storage === null ? {} : JSON.parse(storage)
+
+    if (nr_requests[today]) {
+      nr_requests[today]++
+    } else {
+      nr_requests[today] = 1
+    }
+
+    window.localStorage.setItem('requests_per_day', JSON.stringify(nr_requests))
+  }
+
   const onSubmit = (data) => {
     if (readyStatus === 'loading') {
+      return
+    }
+
+    if (!hasRequestPerDayLeft()) {
+      setReadyStatus('error')
       return
     }
 
@@ -76,6 +112,7 @@ export default function OrderMentor({ mentor }) {
         if (data.success) {
           mentor.calendarUrl = data.calendar_url
           setReadyStatus('success')
+          incerementRequestsPerDay()
         } else {
           setReadyStatus('error')
         }
