@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import Section from '../../../components/Section'
 import ContactMentorForm from '../../../components/ContactMentorForm'
 import seo from '../../../config/seo'
@@ -31,7 +31,24 @@ export async function getServerSideProps(context) {
 }
 
 export default function OrderMentor({ mentor }) {
+  const [readyStatus, setReadyStatus] = useState('')
+  const [formData, setFormData] = useState()
+
+  const REQUESTS_PER_DAY_KEY = 'requests_per_day'
+  const today = new Date().toISOString().slice(0, 10)
+  const MAX_REQUESTS_PER_DAY = 5
+
+  var requestsToday = 0
+
   useEffect(() => {
+    const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
+    if (storage !== null) {
+      const nr_requests = JSON.parse(storage)
+      if (nr_requests[today]) {
+        requestsToday = nr_requests[today]
+      }
+    }
+
     analytics.event('Request a Mentor', {
       'Mentor Id': mentor.id,
       'Mentor Name': mentor.name,
@@ -47,36 +64,21 @@ export default function OrderMentor({ mentor }) {
     })
   }, [])
 
-  const today = new Date().toISOString().slice(0, 10)
-  const REQUESTS_PER_DAY_KEY = 'requests_per_day'
-
-  const [readyStatus, setReadyStatus] = useState('')
-  const [formData, setFormData] = useState()
+  useEffect(() => {
+    if (!hasRequestPerDayLeft()) {
+      setReadyStatus('limit')
+      return
+    }
+  }, [])
 
   const hasRequestPerDayLeft = () => {
-    const MAX_REQUESTS_PER_DAY = 5
-    const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
-
-    if (storage !== null) {
-      const nr_requests = JSON.parse(storage)
-
-      if (nr_requests[today] !== null && nr_requests[today] >= MAX_REQUESTS_PER_DAY) {
-        return false
-      }
-    }
-
-    return true
+    return requestsToday && requestsToday >= MAX_REQUESTS_PER_DAY ? false : true
   }
 
   const incerementRequestsPerDay = () => {
-    const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
-    const nr_requests = storage === null ? {} : JSON.parse(storage)
-
-    if (nr_requests[today]) {
-      nr_requests[today]++
-    } else {
-      nr_requests[today] = 1
-    }
+    const nr_requests = {}
+    requestsToday++
+    nr_requests[today] = requestsToday
 
     window.localStorage.setItem('requests_per_day', JSON.stringify(nr_requests))
   }
@@ -87,7 +89,7 @@ export default function OrderMentor({ mentor }) {
     }
 
     if (!hasRequestPerDayLeft()) {
-      setReadyStatus('error')
+      setReadyStatus('limit')
       return
     }
 
@@ -169,11 +171,19 @@ export default function OrderMentor({ mentor }) {
         </div>
       </Section>
 
-      {readyStatus === 'success' ? (
+      {readyStatus === 'success' && (
         <Section>
           <SuccessMessage mentor={mentor} formData={formData} />
         </Section>
-      ) : (
+      )}
+
+      {readyStatus !== 'success' && readyStatus === 'limit' && (
+        <Section>
+          <LimitMessage mentor={mentor} />
+        </Section>
+      )}
+
+      {readyStatus !== 'success' && readyStatus !== 'limit' && (
         <Section>
           <div className="max-w-md mx-auto">
             <ContactMentorForm
@@ -184,7 +194,6 @@ export default function OrderMentor({ mentor }) {
           </div>
         </Section>
       )}
-
       <Footer />
     </>
   )
@@ -245,6 +254,36 @@ function SuccessMessage({ mentor, formData }) {
           <p>Скоро ментор свяжется с вами.</p>
         )}
       </div>
+    </div>
+  )
+}
+
+function LimitMessage({ mentor }) {
+  useEffect(() => {
+    analytics.event('Mentor Request Limit Exceeded', {
+      'Mentor Id': mentor.id,
+      'Mentor Name': mentor.name,
+      'Mentor Experience': mentor.experience,
+      'Mentor Price': mentor.price,
+      'Mentor Sponsors': mentor.sponsors,
+
+      // legacy props
+      id: mentor.airtableId,
+      name: mentor.name,
+      experience: mentor.experience,
+      price: mentor.price,
+    })
+  }, [])
+
+  return (
+    <div className="text-center">
+      <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-red-100 text-red-500">
+        <FontAwesomeIcon icon={faExclamationTriangle} size="2x" />
+      </div>
+      <p className="text-xl mt-6">
+        Превышено количество заявок на сегодня. Чтобы связаться с новым ментором, возвращайтесь
+        завтра.
+      </p>
     </div>
   )
 }
