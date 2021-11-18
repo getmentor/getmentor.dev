@@ -72,9 +72,13 @@ export default function Ontico({ pageMentors }) {
     mentors,
     searchInput,
     selectedTags,
+    selectedExperience,
+    selectedPrice,
     hasMoreMentors,
     setSearchInput,
     setSelectedTags,
+    setSelectedExperience,
+    setSelectedPrice,
     showMoreMentors,
   ] = useMentors(pageMentors)
 
@@ -234,7 +238,15 @@ export default function Ontico({ pageMentors }) {
         </div>
 
         <div className="mb-8">
-          <MentorsFilters tags={selectedTags} onChange={setSelectedTags} allowSponsors={false} />
+          <MentorsFilters
+            tags={selectedTags}
+            experiences={selectedExperience}
+            prices={selectedPrice}
+            onChangeTags={setSelectedTags}
+            onChangeExperience={setSelectedExperience}
+            onChangePrice={setSelectedPrice}
+            allowSponsors={false}
+          />
         </div>
 
         <MentorsList

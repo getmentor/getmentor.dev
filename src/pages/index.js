@@ -57,9 +57,13 @@ export default function Home({ pageMentors }) {
     mentors,
     searchInput,
     selectedTags,
+    selectedExperience,
+    selectedPrice,
     hasMoreMentors,
     setSearchInput,
     setSelectedTags,
+    setSelectedExperience,
+    setSelectedPrice,
     showMoreMentors,
   ] = useMentors(pageMentors)
 
@@ -182,7 +186,14 @@ export default function Home({ pageMentors }) {
 
         <div className="mb-8">
           <Collapse isOpened={open}>
-            <MentorsFilters tags={selectedTags} onChange={setSelectedTags} />
+            <MentorsFilters
+              tags={selectedTags}
+              experiences={selectedExperience}
+              prices={selectedPrice}
+              onChangeTags={setSelectedTags}
+              onChangeExperience={setSelectedExperience}
+              onChangePrice={setSelectedPrice}
+            />
           </Collapse>
         </div>
 

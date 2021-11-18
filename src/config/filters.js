@@ -53,7 +53,6 @@ export default {
     'По договоренности',
   ],
   experience: [
-    // { label: '<2 лет', airtableKey: '0-2' },
     { label: '2-5 лет', airtableKey: '2-5' },
     { label: '5-10 лет', airtableKey: '5-10' },
     { label: '10+ лет', airtableKey: '10+' },

@@ -7,16 +7,19 @@ import FilterGroupDropdown from './FilterGroupDropdown'
 export default function MentorsFilters(props) {
   const defaultProps = {
     tags: [],
+    experiences: [],
     allowSponsors: true,
   }
 
   const {
     tags: selectedTags,
-    onChange: onChangeTags,
+    experiences: selectedExperience,
+    prices: selectedPrice,
+    onChangeTags,
+    onChangeExperience,
+    onChangePrice,
     allowSponsors,
   } = { ...defaultProps, ...props }
-
-  const TAG_ALL = 'All'
 
   useEffect(() => {
     if (window?.location?.hash?.startsWith('#tags:')) {
@@ -36,56 +39,77 @@ export default function MentorsFilters(props) {
     }
   }, [])
 
+  const onResetAll = () => {
+    onChangeTags([])
+    onChangeExperience([])
+    onChangePrice([])
+
+    analytics.event('Reset All Filters')
+  }
+
   const onClickTag = (tag) => {
-    let newTags = []
+    const newTags = onClickFilter(tag, selectedTags, onChangeTags, {
+      onReset: 'Filter Reset Tags',
+      onRemove: 'Filter Removed Tag',
+      onAdd: 'Filter Added Tag',
+    })
 
-    if (tag === TAG_ALL) {
-      analytics.event('Filter Reset Tags')
-    } else if (selectedTags.includes(tag)) {
-      newTags = selectedTags.filter((item) => item !== tag)
+    history.replaceState(null, null, '#tags:' + newTags.join('|'))
+  }
 
-      analytics.event('Filter Removed Tag', {
-        tagName: tag,
-        sponsored: allFilters.sponsors.includes(tag),
+  const onClickExperience = (experience) => {
+    const newExperiences = onClickFilter(experience, selectedExperience, onChangeExperience, {
+      onReset: 'Filter Reset Experience',
+      onRemove: 'Filter Removed Experience',
+      onAdd: 'Filter Added Experience',
+    })
+  }
+
+  const onClickPrice = (price) => {
+    const newPrice = onClickFilter(price, selectedPrice, onChangePrice, {
+      onReset: 'Filter Reset Price',
+      onRemove: 'Filter Removed Price',
+      onAdd: 'Filter Added Price',
+    })
+  }
+
+  const onClickFilter = (newValue, allValues, setValues, analyticsEvents) => {
+    let newValues = []
+
+    if (allValues.includes(newValue)) {
+      newValues = allValues.filter((item) => item !== newValue)
+
+      analytics.event(analyticsEvents.onRemove, {
+        tagName: newValue,
       })
     } else {
-      newTags = [...selectedTags, tag]
+      newValues = [...allValues, newValue]
 
-      analytics.event('Filter Added Tag', {
-        tagName: tag,
-        sponsored: allFilters.sponsors.includes(tag),
+      analytics.event(analyticsEvents.onAdd, {
+        tagName: newValue,
       })
     }
 
-    onChangeTags(newTags)
-    history.replaceState(null, null, '#tags:' + newTags.join('|'))
+    setValues(newValues)
+
+    return newValues
   }
 
   return (
     <div className="text-center">
       <ul className="flex flex-wrap justify-center -m-1 mb-3">
-        {[TAG_ALL].map((tag) => {
-          const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
-
-          return (
-            <li
-              className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
-                'bg-gray-300 hover:bg-gray-200 text-gray-600': !isActive,
-                'bg-gray-700 text-white': isActive,
-              })}
-              key={tag}
-              onClick={() => onClickTag(tag)}
-            >
-              {tag}
-            </li>
-          )
-        })}
+        <li
+          className="text-sm rounded-full py-1 px-4 m-1 cursor-pointer bg-red-500 hover:bg-red-400 text-white"
+          key="reset"
+          onClick={onResetAll}
+        >
+          Сбросить все
+        </li>
 
         {allowSponsors && (
           <>
             {allFilters.sponsors.map((tag) => {
-              const isActive =
-                tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
+              const isActive = selectedTags.includes(tag)
 
               return (
                 <li
@@ -149,7 +173,7 @@ export default function MentorsFilters(props) {
         </li>
 
         {allFilters.t.rest.map((tag) => {
-          const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
+          const isActive = selectedTags.includes(tag)
 
           return (
             <li
@@ -164,6 +188,26 @@ export default function MentorsFilters(props) {
             </li>
           )
         })}
+      </ul>
+
+      <ul className="flex flex-wrap justify-center m-1 mb-3">
+        <li>
+          <FilterGroupDropdown
+            title="Цена"
+            values={allFilters.price}
+            onFilterSelect={onClickPrice}
+            allSelectedValues={selectedPrice}
+          />
+        </li>
+
+        <li>
+          <FilterGroupDropdown
+            title="Опыт"
+            values={allFilters.experience.map((e) => e.airtableKey)}
+            onFilterSelect={onClickExperience}
+            allSelectedValues={selectedExperience}
+          />
+        </li>
       </ul>
     </div>
   )

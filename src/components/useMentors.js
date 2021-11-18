@@ -5,6 +5,9 @@ export default function useMentors(allMentors, pageSize = 48) {
   const [selectedTags, setSelectedTags] = useState([])
   const [mentorsCount, setMentorsCount] = useState(pageSize)
 
+  const [selectedPrice, setSelectedPrice] = useState([])
+  const [selectedExperience, setSelectedExperience] = useState([])
+
   // reset pagination on filters change
   useEffect(() => {
     setMentorsCount(pageSize)
@@ -22,7 +25,9 @@ export default function useMentors(allMentors, pageSize = 48) {
     }
     return true
   }
+
   let filteredMentors = allMentors
+
   if (searchInput.length >= 2) {
     filteredMentors = filteredMentors.filter((mentor) => {
       const searchContent = (
@@ -45,8 +50,25 @@ export default function useMentors(allMentors, pageSize = 48) {
       return hasAllInArray(tokens, searchContent)
     })
   }
+
+  // filter by tags
   if (selectedTags.length) {
     filteredMentors = filteredMentors.filter((mentor) => hasAllTags(mentor.tags, selectedTags))
+  }
+
+  // filter by experience
+  if (selectedExperience.length) {
+    console.log('experience: ', selectedExperience)
+    console.log('filteredMentors: ', filteredMentors)
+
+    filteredMentors = filteredMentors.filter((mentor) =>
+      selectedExperience.includes(mentor.experience)
+    )
+  }
+
+  // filter by price
+  if (selectedPrice.length) {
+    filteredMentors = filteredMentors.filter((mentor) => selectedPrice.includes(mentor.price))
   }
 
   const mentors = filteredMentors.slice(0, mentorsCount)
@@ -56,9 +78,13 @@ export default function useMentors(allMentors, pageSize = 48) {
     mentors,
     searchInput,
     selectedTags,
+    selectedExperience,
+    selectedPrice,
     hasMoreMentors,
     setSearchInput,
     setSelectedTags,
+    setSelectedExperience,
+    setSelectedPrice,
     showMoreMentors,
   ]
 }
