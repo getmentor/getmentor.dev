@@ -45,6 +45,7 @@ export default function MentorsFilters(props) {
     onChangePrice([])
 
     analytics.event('Reset All Filters')
+    history.replaceState(null, null, '#')
   }
 
   const onClickTag = (tag) => {
