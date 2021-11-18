@@ -27,6 +27,18 @@ export default {
     'Собеседования',
     'Другое',
   ],
+  t: {
+    development: ['Backend', 'Frontend', 'iOS', 'Android', 'System Design', 'Code Review'],
+    design: ['UX/UI/Design'],
+    ops: ['DevOps/SRE', 'Databases', 'Сети', 'Cloud'],
+    hr: ['HR', 'Карьера', 'Собеседования', 'Entrepreneurship', 'DevRel'],
+    management: ['Agile', 'Team Lead/Management', 'Project Management', 'Product Management'],
+    qa: ['QA'],
+    marketing: ['Marketing', 'Content/Copy'],
+    analytics: ['Аналитика'],
+    ds: ['Data Science/ML'],
+    rest: ['Data Science/ML', 'UX/UI/Design', 'QA', 'Аналитика', 'Другое'],
+  },
   price: [
     'Бесплатно',
     '1000 руб',

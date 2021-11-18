@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import allFilters from '../config/filters'
 import analytics from '../lib/analytics'
 import { useEffect } from 'react'
+import FilterGroupDropdown from './FilterGroupDropdown'
 
 export default function MentorsFilters(props) {
   const defaultProps = {
@@ -102,7 +103,52 @@ export default function MentorsFilters(props) {
           </>
         )}
 
-        {allFilters.tags.map((tag) => {
+        <li>
+          <FilterGroupDropdown
+            title="Development"
+            values={allFilters.t.development}
+            onFilterSelect={onClickTag}
+            allSelectedValues={selectedTags}
+          />
+        </li>
+
+        <li>
+          <FilterGroupDropdown
+            title="Management"
+            values={allFilters.t.management}
+            onFilterSelect={onClickTag}
+            allSelectedValues={selectedTags}
+          />
+        </li>
+
+        <li>
+          <FilterGroupDropdown
+            title="DevOps"
+            values={allFilters.t.ops}
+            onFilterSelect={onClickTag}
+            allSelectedValues={selectedTags}
+          />
+        </li>
+
+        <li>
+          <FilterGroupDropdown
+            title="HR"
+            values={allFilters.t.hr}
+            onFilterSelect={onClickTag}
+            allSelectedValues={selectedTags}
+          />
+        </li>
+
+        <li>
+          <FilterGroupDropdown
+            title="Marketing"
+            values={allFilters.t.marketing}
+            onFilterSelect={onClickTag}
+            allSelectedValues={selectedTags}
+          />
+        </li>
+
+        {allFilters.t.rest.map((tag) => {
           const isActive = tag !== TAG_ALL ? selectedTags.includes(tag) : selectedTags.length === 0
 
           return (
