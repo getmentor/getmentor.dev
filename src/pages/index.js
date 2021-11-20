@@ -171,7 +171,7 @@ export default function Home({ pageMentors }) {
             <MentorsSearch value={searchInput} onChange={setSearchInput} />
           </div>
 
-          <div className="md:w-60 pt-2 md:pt-0 text-center">
+          {/* <div className="md:w-60 pt-2 md:pt-0 text-center">
             <button
               className="h-10 text-sm md:text-base md:h-12 px-5 ml-2 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
               onClick={onFiltersMenuClick}
@@ -181,20 +181,20 @@ export default function Home({ pageMentors }) {
                 {selectedTags.length}
               </span>
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="mb-8">
-          <Collapse isOpened={open}>
-            <MentorsFilters
-              tags={selectedTags}
-              experiences={selectedExperience}
-              prices={selectedPrice}
-              onChangeTags={setSelectedTags}
-              onChangeExperience={setSelectedExperience}
-              onChangePrice={setSelectedPrice}
-            />
-          </Collapse>
+          {/* <Collapse isOpened={open}> */}
+          <MentorsFilters
+            tags={selectedTags}
+            experiences={selectedExperience}
+            prices={selectedPrice}
+            onChangeTags={setSelectedTags}
+            onChangeExperience={setSelectedExperience}
+            onChangePrice={setSelectedPrice}
+          />
+          {/* </Collapse> */}
         </div>
 
         <MentorsList
