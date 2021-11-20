@@ -50,7 +50,6 @@ export default function MentorsFilters(props) {
 
   const onClickTag = (tag) => {
     const newTags = onClickFilter(tag, selectedTags, onChangeTags, {
-      onReset: 'Filter Reset Tags',
       onRemove: 'Filter Removed Tag',
       onAdd: 'Filter Added Tag',
     })
@@ -60,7 +59,6 @@ export default function MentorsFilters(props) {
 
   const onClickExperience = (experience) => {
     const newExperiences = onClickFilter(experience, selectedExperience, onChangeExperience, {
-      onReset: 'Filter Reset Experience',
       onRemove: 'Filter Removed Experience',
       onAdd: 'Filter Added Experience',
     })
@@ -68,7 +66,6 @@ export default function MentorsFilters(props) {
 
   const onClickPrice = (price) => {
     const newPrice = onClickFilter(price, selectedPrice, onChangePrice, {
-      onReset: 'Filter Reset Price',
       onRemove: 'Filter Removed Price',
       onAdd: 'Filter Added Price',
     })
@@ -100,7 +97,7 @@ export default function MentorsFilters(props) {
     <div className="text-center">
       <ul className="flex flex-wrap justify-center -m-1 mb-3">
         <li
-          className="text-sm rounded-full py-1 px-4 m-1 cursor-pointer bg-red-500 hover:bg-red-400 text-white"
+          className="text-sm rounded-full py-1 px-4 m-1 cursor-pointer bg-primary-900 hover:bg-red-500 text-white"
           key="reset"
           onClick={onResetAll}
         >
@@ -127,7 +124,9 @@ export default function MentorsFilters(props) {
             })}
           </>
         )}
+      </ul>
 
+      <ul className="flex flex-wrap justify-center -m-1 mb-3">
         <li>
           <FilterGroupDropdown
             title="Development"
@@ -172,7 +171,9 @@ export default function MentorsFilters(props) {
             allSelectedValues={selectedTags}
           />
         </li>
+      </ul>
 
+      <ul className="flex flex-wrap justify-center -m-1 mb-3">
         {allFilters.t.rest.map((tag) => {
           const isActive = selectedTags.includes(tag)
 
@@ -204,7 +205,7 @@ export default function MentorsFilters(props) {
         <li>
           <FilterGroupDropdown
             title="Опыт"
-            values={allFilters.experience.map((e) => e.airtableKey)}
+            values={Object.keys(allFilters.experience)}
             onFilterSelect={onClickExperience}
             allSelectedValues={selectedExperience}
           />

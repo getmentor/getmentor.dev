@@ -25,7 +25,6 @@ export default {
     'HR',
     'Карьера',
     'Собеседования',
-    'Другое',
   ],
   t: {
     development: ['Backend', 'Frontend', 'iOS', 'Android', 'System Design', 'Code Review'],
@@ -52,10 +51,10 @@ export default {
     '9000 руб',
     'По договоренности',
   ],
-  experience: [
-    { label: '2-5 лет', airtableKey: '2-5' },
-    { label: '5-10 лет', airtableKey: '5-10' },
-    { label: '10+ лет', airtableKey: '10+' },
-  ],
+  experience: {
+    '2-5 лет': '2-5',
+    '5-10 лет': '5-10',
+    '10+ лет': '10+',
+  },
   sponsors: ['Эксперт Авито', 'Сообщество Онтико', 'Наставник Яндекс.Практикума'],
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import filters from '../config/filters'
 
 export default function useMentors(allMentors, pageSize = 48) {
   const [searchInput, setSearchInput] = useState('')
@@ -58,11 +59,10 @@ export default function useMentors(allMentors, pageSize = 48) {
 
   // filter by experience
   if (selectedExperience.length) {
-    console.log('experience: ', selectedExperience)
-    console.log('filteredMentors: ', filteredMentors)
+    const selectedAirtableExperience = selectedExperience.map((e) => filters.experience[e])
 
     filteredMentors = filteredMentors.filter((mentor) =>
-      selectedExperience.includes(mentor.experience)
+      selectedAirtableExperience.includes(mentor.experience)
     )
   }
 

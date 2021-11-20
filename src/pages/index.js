@@ -176,7 +176,7 @@ export default function Home({ pageMentors }) {
               className="h-10 text-sm md:text-base md:h-12 px-5 ml-2 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
               onClick={onFiltersMenuClick}
             >
-              <span className="mr-2">Компетенции</span>
+              <span className="mr-2">Фильтры</span>
               <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
                 {selectedTags.length}
               </span>
