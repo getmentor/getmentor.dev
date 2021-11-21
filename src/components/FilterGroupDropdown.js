@@ -3,12 +3,19 @@ import Dropdown from 'rc-dropdown'
 
 import 'rc-dropdown/assets/index.css'
 
-export default function FilterGroupDropdown({ title, values, onFilterSelect, allSelectedValues }) {
+export default function FilterGroupDropdown({
+  title,
+  values,
+  onFilterSelect,
+  allSelectedValues,
+  multiSelect = true,
+}) {
   const produceMenuItems = (list) => {
     return (
       <ul className="text-center mb-3 bg-gray-200 w-max p-1 rounded">
         {list.map((tag) => {
-          const isActive = allSelectedValues.includes(tag)
+          const isActive = multiSelect ? allSelectedValues.includes(tag) : allSelectedValues === tag
+
           return (
             <li
               className={classNames(
@@ -29,7 +36,9 @@ export default function FilterGroupDropdown({ title, values, onFilterSelect, all
     )
   }
 
-  const selectedValuesCount = allSelectedValues.filter((t) => values.includes(t)).length
+  const selectedValuesCount = multiSelect
+    ? allSelectedValues.filter((t) => values.includes(t)).length
+    : allSelectedValues
 
   return (
     <Dropdown overlay={produceMenuItems(values)}>
@@ -50,9 +59,13 @@ export default function FilterGroupDropdown({ title, values, onFilterSelect, all
         >
           {title}
         </span>
-        <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded-full">
-          {selectedValuesCount}
-        </span>
+        {multiSelect || selectedValuesCount ? (
+          <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded-full">
+            {selectedValuesCount}
+          </span>
+        ) : (
+          <span />
+        )}
       </button>
     </Dropdown>
   )

@@ -9,7 +9,7 @@ export default function MentorsSearch({ value, onChange }) {
       </div>
 
       <input
-        type="text"
+        type="search"
         className="w-full border-gray-500 rounded-md focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-lg text-gray-500 font-medium placeholder-gray-400 pl-12 py-2"
         placeholder="Профессия, инструмент, компания, имя ментора или что угодно, через запятую"
         autoComplete="off"

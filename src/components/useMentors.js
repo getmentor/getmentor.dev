@@ -6,7 +6,7 @@ export default function useMentors(allMentors, pageSize = 48) {
   const [selectedTags, setSelectedTags] = useState([])
   const [mentorsCount, setMentorsCount] = useState(pageSize)
 
-  const [selectedPrice, setSelectedPrice] = useState([])
+  const [selectedPrice, setSelectedPrice] = useState(undefined)
   const [selectedExperience, setSelectedExperience] = useState([])
 
   // reset pagination on filters change
@@ -67,8 +67,10 @@ export default function useMentors(allMentors, pageSize = 48) {
   }
 
   // filter by price
-  if (selectedPrice.length) {
-    filteredMentors = filteredMentors.filter((mentor) => selectedPrice.includes(mentor.price))
+  if (selectedPrice) {
+    const priceFilters = filters.byPrice[selectedPrice]
+
+    filteredMentors = filteredMentors.filter((mentor) => priceFilters?.includes(mentor.price))
   }
 
   const mentors = filteredMentors.slice(0, mentorsCount)
@@ -77,15 +79,22 @@ export default function useMentors(allMentors, pageSize = 48) {
   return [
     mentors,
     searchInput,
-    selectedTags,
-    selectedExperience,
-    selectedPrice,
     hasMoreMentors,
     setSearchInput,
-    setSelectedTags,
-    setSelectedExperience,
-    setSelectedPrice,
     showMoreMentors,
+    {
+      tags: { values: selectedTags, set: setSelectedTags, reset: () => setSelectedTags([]) },
+      experience: {
+        values: selectedExperience,
+        set: setSelectedExperience,
+        reset: () => setSelectedExperience([]),
+      },
+      price: {
+        values: selectedPrice,
+        set: setSelectedPrice,
+        reset: () => setSelectedPrice(undefined),
+      },
+    },
   ]
 }
 

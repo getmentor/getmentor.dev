@@ -11,15 +11,7 @@ export default function MentorsFilters(props) {
     allowSponsors: true,
   }
 
-  const {
-    tags: selectedTags,
-    experiences: selectedExperience,
-    prices: selectedPrice,
-    onChangeTags,
-    onChangeExperience,
-    onChangePrice,
-    allowSponsors,
-  } = { ...defaultProps, ...props }
+  const { allowSponsors, appliedFilters } = { ...defaultProps, ...props }
 
   useEffect(() => {
     if (window?.location?.hash?.startsWith('#tags:')) {
@@ -29,7 +21,7 @@ export default function MentorsFilters(props) {
         (item) => allFilters.tags.includes(item) || allFilters.sponsors.includes(item)
       )
 
-      onChangeTags(newTags)
+      appliedFilters.tags.set(newTags)
 
       if (newTags.length > 0) {
         analytics.event('Landed With Selected Tags', {
@@ -40,16 +32,16 @@ export default function MentorsFilters(props) {
   }, [])
 
   const onResetAll = () => {
-    onChangeTags([])
-    onChangeExperience([])
-    onChangePrice([])
+    appliedFilters.tags.reset()
+    appliedFilters.experience.reset()
+    appliedFilters.price.reset()
 
     analytics.event('Reset All Filters')
     history.replaceState(null, null, '#')
   }
 
   const onClickTag = (tag) => {
-    const newTags = onClickFilter(tag, selectedTags, onChangeTags, {
+    const newTags = onClickFilterMultiple(tag, appliedFilters.tags, {
       onRemove: 'Filter Removed Tag',
       onAdd: 'Filter Added Tag',
     })
@@ -58,39 +50,57 @@ export default function MentorsFilters(props) {
   }
 
   const onClickExperience = (experience) => {
-    const newExperiences = onClickFilter(experience, selectedExperience, onChangeExperience, {
+    const newExperiences = onClickFilterMultiple(experience, appliedFilters.experience, {
       onRemove: 'Filter Removed Experience',
       onAdd: 'Filter Added Experience',
     })
   }
 
   const onClickPrice = (price) => {
-    const newPrice = onClickFilter(price, selectedPrice, onChangePrice, {
+    const newPrice = onClickFilterSingle(price, appliedFilters.price, {
       onRemove: 'Filter Removed Price',
       onAdd: 'Filter Added Price',
     })
   }
 
-  const onClickFilter = (newValue, allValues, setValues, analyticsEvents) => {
+  const onClickFilterMultiple = (newValue, filter, analyticsEvents) => {
     let newValues = []
 
-    if (allValues.includes(newValue)) {
-      newValues = allValues.filter((item) => item !== newValue)
+    if (filter.values.includes(newValue)) {
+      newValues = filter.values.filter((item) => item !== newValue)
 
       analytics.event(analyticsEvents.onRemove, {
         tagName: newValue,
       })
     } else {
-      newValues = [...allValues, newValue]
+      newValues = [...filter.values, newValue]
 
       analytics.event(analyticsEvents.onAdd, {
         tagName: newValue,
       })
     }
 
-    setValues(newValues)
+    filter.set(newValues)
 
     return newValues
+  }
+
+  const onClickFilterSingle = (newValue, filter, analyticsEvents) => {
+    if (filter.values === newValue) {
+      filter.set(undefined)
+
+      analytics.event(analyticsEvents.onRemove, {
+        tagName: newValue,
+      })
+    } else {
+      filter.set(newValue)
+
+      analytics.event(analyticsEvents.onAdd, {
+        tagName: newValue,
+      })
+    }
+
+    return newValue
   }
 
   return (
@@ -107,7 +117,7 @@ export default function MentorsFilters(props) {
         {allowSponsors && (
           <>
             {allFilters.sponsors.map((tag) => {
-              const isActive = selectedTags.includes(tag)
+              const isActive = appliedFilters.tags.values.includes(tag)
 
               return (
                 <li
@@ -130,52 +140,52 @@ export default function MentorsFilters(props) {
         <li>
           <FilterGroupDropdown
             title="Development"
-            values={allFilters.t.development}
+            values={allFilters.byTags.development}
             onFilterSelect={onClickTag}
-            allSelectedValues={selectedTags}
+            allSelectedValues={appliedFilters.tags.values}
           />
         </li>
 
         <li>
           <FilterGroupDropdown
             title="Management"
-            values={allFilters.t.management}
+            values={allFilters.byTags.management}
             onFilterSelect={onClickTag}
-            allSelectedValues={selectedTags}
+            allSelectedValues={appliedFilters.tags.values}
           />
         </li>
 
         <li>
           <FilterGroupDropdown
             title="DevOps"
-            values={allFilters.t.ops}
+            values={allFilters.byTags.ops}
             onFilterSelect={onClickTag}
-            allSelectedValues={selectedTags}
+            allSelectedValues={appliedFilters.tags.values}
           />
         </li>
 
         <li>
           <FilterGroupDropdown
             title="HR"
-            values={allFilters.t.hr}
+            values={allFilters.byTags.hr}
             onFilterSelect={onClickTag}
-            allSelectedValues={selectedTags}
+            allSelectedValues={appliedFilters.tags.values}
           />
         </li>
 
         <li>
           <FilterGroupDropdown
             title="Marketing"
-            values={allFilters.t.marketing}
+            values={allFilters.byTags.marketing}
             onFilterSelect={onClickTag}
-            allSelectedValues={selectedTags}
+            allSelectedValues={appliedFilters.tags.values}
           />
         </li>
       </ul>
 
       <ul className="flex flex-wrap justify-center -m-1 mb-3">
-        {allFilters.t.rest.map((tag) => {
-          const isActive = selectedTags.includes(tag)
+        {allFilters.byTags.rest.map((tag) => {
+          const isActive = appliedFilters.tags.values.includes(tag)
 
           return (
             <li
@@ -195,19 +205,20 @@ export default function MentorsFilters(props) {
       <ul className="flex flex-wrap justify-center m-1 mb-3">
         <li>
           <FilterGroupDropdown
-            title="Цена"
-            values={allFilters.price}
-            onFilterSelect={onClickPrice}
-            allSelectedValues={selectedPrice}
+            title="Опыт"
+            values={Object.keys(allFilters.experience)}
+            onFilterSelect={onClickExperience}
+            allSelectedValues={appliedFilters.experience.values}
           />
         </li>
 
         <li>
           <FilterGroupDropdown
-            title="Опыт"
-            values={Object.keys(allFilters.experience)}
-            onFilterSelect={onClickExperience}
-            allSelectedValues={selectedExperience}
+            title="Цена"
+            values={Object.keys(allFilters.byPrice)}
+            onFilterSelect={onClickPrice}
+            allSelectedValues={appliedFilters.price.values}
+            multiSelect={false}
           />
         </li>
       </ul>
