@@ -32,7 +32,7 @@ export default {
     ops: ['DevOps/SRE', 'Databases', 'Сети', 'Cloud'],
     hr: ['HR', 'Карьера', 'Собеседования', 'Entrepreneurship', 'DevRel'],
     marketing: ['Marketing', 'Content/Copy'],
-    rest: ['Data Science/ML', 'UX/UI/Design', 'QA', 'Аналитика', 'Другое'],
+    rest: ['Data Science/ML', 'UX/UI/Design', 'QA', 'Аналитика'],
   },
   price: [
     'Бесплатно',

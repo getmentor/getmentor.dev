@@ -104,8 +104,8 @@ export default function MentorsFilters(props) {
   }
 
   return (
-    <div className="text-center">
-      <ul className="flex flex-wrap justify-center -m-1 mb-3">
+    <div className="text-center md:w-3/4 mx-auto">
+      <ul className="flex flex-wrap justify-left -m-1 mb-3">
         <li
           className="text-sm rounded-full py-1 px-4 m-1 cursor-pointer bg-primary-900 hover:bg-red-500 text-white"
           key="reset"
@@ -136,7 +136,7 @@ export default function MentorsFilters(props) {
         )}
       </ul>
 
-      <ul className="flex flex-wrap justify-center -m-1 mb-3">
+      <ul className="flex flex-wrap justify-left -m-1 mb-3">
         <li>
           <FilterGroupDropdown
             title="Development"
@@ -183,7 +183,7 @@ export default function MentorsFilters(props) {
         </li>
       </ul>
 
-      <ul className="flex flex-wrap justify-center -m-1 mb-3">
+      <ul className="flex flex-wrap justify-left -m-1 mb-3">
         {allFilters.byTags.rest.map((tag) => {
           const isActive = appliedFilters.tags.values.includes(tag)
 
@@ -202,7 +202,9 @@ export default function MentorsFilters(props) {
         })}
       </ul>
 
-      <ul className="flex flex-wrap justify-center m-1 mb-3">
+      <hr />
+
+      <ul className="flex flex-wrap justify-left -mx-1 mb-1 mt-1">
         <li>
           <FilterGroupDropdown
             title="Опыт"
