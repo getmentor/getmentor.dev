@@ -94,6 +94,9 @@ export default function useMentors(allMentors, pageSize = 48) {
         set: setSelectedPrice,
         reset: () => setSelectedPrice(undefined),
       },
+      count: () => {
+        return selectedTags.length + selectedExperience.length + (selectedPrice ? 1 : 0)
+      },
     },
   ]
 }

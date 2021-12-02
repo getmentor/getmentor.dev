@@ -104,16 +104,8 @@ export default function MentorsFilters(props) {
   }
 
   return (
-    <div className="text-center md:w-3/4 mx-auto">
+    <div className="text-center">
       <ul className="flex flex-wrap justify-left -m-1 mb-3">
-        <li
-          className="text-sm rounded-full py-1 px-4 m-1 cursor-pointer bg-primary-900 hover:bg-red-500 text-white"
-          key="reset"
-          onClick={onResetAll}
-        >
-          Сбросить все
-        </li>
-
         {allowSponsors && (
           <>
             {allFilters.sponsors.map((tag) => {
@@ -134,9 +126,7 @@ export default function MentorsFilters(props) {
             })}
           </>
         )}
-      </ul>
 
-      <ul className="flex flex-wrap justify-left -m-1 mb-3">
         <li>
           <FilterGroupDropdown
             title="Development"
@@ -181,9 +171,9 @@ export default function MentorsFilters(props) {
             allSelectedValues={appliedFilters.tags.values}
           />
         </li>
-      </ul>
+        {/* </ul>
 
-      <ul className="flex flex-wrap justify-left -m-1 mb-3">
+      <ul className="flex flex-wrap justify-left -m-1 mb-3"> */}
         {allFilters.byTags.rest.map((tag) => {
           const isActive = appliedFilters.tags.values.includes(tag)
 
@@ -211,6 +201,7 @@ export default function MentorsFilters(props) {
             values={Object.keys(allFilters.experience)}
             onFilterSelect={onClickExperience}
             allSelectedValues={appliedFilters.experience.values}
+            theme="block"
           />
         </li>
 
@@ -221,7 +212,16 @@ export default function MentorsFilters(props) {
             onFilterSelect={onClickPrice}
             allSelectedValues={appliedFilters.price.values}
             multiSelect={false}
+            theme="block"
           />
+        </li>
+
+        <li
+          className="text-sm rounded-sm py-1 px-4 m-1 cursor-pointer bg-primary-900 hover:bg-red-500 text-white"
+          key="reset"
+          onClick={onResetAll}
+        >
+          Сбросить все
         </li>
       </ul>
     </div>
