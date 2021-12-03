@@ -8,10 +8,15 @@ function Nav() {
   return (
     <ul>
       <li>
-        <Link href="/bementor">➕ Стать ментором</Link>
+        <a
+          href="https://geekfactor.io/international?utm_source=getmentor&utm_medium=banner&utm_campaign=getmentor-promo"
+          target="_blank" rel="noreferrer"
+        >
+          🚀 Поиск работы зарубежом
+        </a>
       </li>
       <li>
-        <Link href="https://blog.getmentor.dev">📝 Наш блог</Link>
+        <Link href="/bementor">➕ Стать ментором</Link>
       </li>
       <li>
         <Link href="/donate">🍩 Донат</Link>
