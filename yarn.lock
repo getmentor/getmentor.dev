@@ -10126,11 +10126,6 @@ react-calendly@^2.2.1:
   resolved "https://registry.yarnpkg.com/react-calendly/-/react-calendly-2.2.2.tgz#5c5b00dc38fdfd1f963b18c11b3e92430772b17a"
   integrity sha512-sDXoLLd7aWm+MBnzLZ6xmRb17pSTVlID3G3kjqtqJByGIoWylfx2nXe9IkN644ZDFcLmCVlLvSdL/GmX1owTGw==
 
-react-collapse@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/react-collapse/-/react-collapse-5.1.0.tgz#36f69ecb0fe797f976aaf5e4f2b2c248d2760140"
-  integrity sha512-5v0ywsn9HjiR/odNzbRDs0RZfrnbdSippJebWOBCFFDA12Vx8DddrbI4qWVf1P2wTiVagrpcSy07AU0b6+gM9Q==
-
 react-colorful@^5.1.2:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/react-colorful/-/react-colorful-5.5.0.tgz#8359f218984a927095477a190ab9927eaf865c0c"

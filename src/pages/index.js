@@ -17,7 +17,6 @@ import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
-import { Collapse } from 'react-collapse'
 
 export async function getServerSideProps() {
   const allMentors = await getMentors()
@@ -55,14 +54,6 @@ function onSponsorsShown(isVisible) {
 export default function Home({ pageMentors }) {
   const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
     useMentors(pageMentors)
-
-  const [open, setOpen] = useState(false)
-
-  const onFiltersMenuClick = () => {
-    setOpen(!open)
-
-    open ? analytics.event('Filter Menu Close') : analytics.event('Filter Menu Open')
-  }
 
   useEffect(() => {
     analytics.event('Visit Index Page')
@@ -159,24 +150,10 @@ export default function Home({ pageMentors }) {
           <div className="w-full">
             <MentorsSearch value={searchInput} onChange={setSearchInput} />
           </div>
-
-          <div className="md:w-60 pt-2 md:pt-0 text-center">
-            <button
-              className="h-10 text-sm md:text-base md:h-12 px-5 ml-2 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
-              onClick={onFiltersMenuClick}
-            >
-              <span className="mr-2">Фильтры</span>
-              <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-                {appliedFilters.count()}
-              </span>
-            </button>
-          </div>
         </div>
 
         <div className="mb-8">
-          <Collapse isOpened={open}>
-            <MentorsFilters appliedFilters={appliedFilters} />
-          </Collapse>
+          <MentorsFilters appliedFilters={appliedFilters} />
         </div>
 
         <MentorsList
