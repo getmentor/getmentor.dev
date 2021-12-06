@@ -97,9 +97,9 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
             id="experience"
             className="block w-full py-2 pl-3 pr-8 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
-            {filters.experience.map((item) => (
-              <option key={item.airtableKey} value={item.airtableKey}>
-                {item.label}
+            {Object.keys(filters.experience).map((item) => (
+              <option key={filters.experience[item]} value={filters.experience[item]}>
+                {item}
               </option>
             ))}
           </select>

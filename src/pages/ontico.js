@@ -68,15 +68,8 @@ function Feature({ title, text, imageUrl }) {
 }
 
 export default function Ontico({ pageMentors }) {
-  const [
-    mentors,
-    searchInput,
-    selectedTags,
-    hasMoreMentors,
-    setSearchInput,
-    setSelectedTags,
-    showMoreMentors,
-  ] = useMentors(pageMentors)
+  const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
+    useMentors(pageMentors)
 
   useEffect(() => {
     analytics.event('Visit Ontico Page')
@@ -234,7 +227,7 @@ export default function Ontico({ pageMentors }) {
         </div>
 
         <div className="mb-8">
-          <MentorsFilters tags={selectedTags} onChange={setSelectedTags} allowSponsors={false} />
+          <MentorsFilters allowSponsors={false} appliedFilters={appliedFilters} />
         </div>
 
         <MentorsList

@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react'
+import filters from '../config/filters'
 
 export default function useMentors(allMentors, pageSize = 48) {
   const [searchInput, setSearchInput] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [mentorsCount, setMentorsCount] = useState(pageSize)
+
+  const [selectedPrice, setSelectedPrice] = useState(undefined)
+  const [selectedExperience, setSelectedExperience] = useState([])
 
   // reset pagination on filters change
   useEffect(() => {
@@ -22,7 +26,9 @@ export default function useMentors(allMentors, pageSize = 48) {
     }
     return true
   }
+
   let filteredMentors = allMentors
+
   if (searchInput.length >= 2) {
     filteredMentors = filteredMentors.filter((mentor) => {
       const searchContent = (
@@ -45,8 +51,26 @@ export default function useMentors(allMentors, pageSize = 48) {
       return hasAllInArray(tokens, searchContent)
     })
   }
+
+  // filter by tags
   if (selectedTags.length) {
     filteredMentors = filteredMentors.filter((mentor) => hasAllTags(mentor.tags, selectedTags))
+  }
+
+  // filter by experience
+  if (selectedExperience.length) {
+    const selectedAirtableExperience = selectedExperience.map((e) => filters.experience[e])
+
+    filteredMentors = filteredMentors.filter((mentor) =>
+      selectedAirtableExperience.includes(mentor.experience)
+    )
+  }
+
+  // filter by price
+  if (selectedPrice) {
+    const priceFilters = filters.byPrice[selectedPrice]
+
+    filteredMentors = filteredMentors.filter((mentor) => priceFilters?.includes(mentor.price))
   }
 
   const mentors = filteredMentors.slice(0, mentorsCount)
@@ -55,11 +79,25 @@ export default function useMentors(allMentors, pageSize = 48) {
   return [
     mentors,
     searchInput,
-    selectedTags,
     hasMoreMentors,
     setSearchInput,
-    setSelectedTags,
     showMoreMentors,
+    {
+      tags: { values: selectedTags, set: setSelectedTags, reset: () => setSelectedTags([]) },
+      experience: {
+        values: selectedExperience,
+        set: setSelectedExperience,
+        reset: () => setSelectedExperience([]),
+      },
+      price: {
+        values: selectedPrice,
+        set: setSelectedPrice,
+        reset: () => setSelectedPrice(undefined),
+      },
+      count: () => {
+        return selectedTags.length + selectedExperience.length + (selectedPrice ? 1 : 0)
+      },
+    },
   ]
 }
 

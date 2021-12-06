@@ -12,7 +12,7 @@ import MentorsSearch from '../components/MentorsSearch'
 import Section from '../components/Section'
 import useMentors from '../components/useMentors'
 import donates from '../config/donates'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
@@ -52,15 +52,8 @@ function onSponsorsShown(isVisible) {
 }
 
 export default function Home({ pageMentors }) {
-  const [
-    mentors,
-    searchInput,
-    selectedTags,
-    hasMoreMentors,
-    setSearchInput,
-    setSelectedTags,
-    showMoreMentors,
-  ] = useMentors(pageMentors)
+  const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
+    useMentors(pageMentors)
 
   useEffect(() => {
     analytics.event('Visit Index Page')
@@ -153,12 +146,14 @@ export default function Home({ pageMentors }) {
       <Section id="list">
         <Section.Title>Наши менторы</Section.Title>
 
-        <div className="mb-6">
-          <MentorsSearch value={searchInput} onChange={setSearchInput} />
+        <div className="mb-6 md:flex">
+          <div className="w-full">
+            <MentorsSearch value={searchInput} onChange={setSearchInput} />
+          </div>
         </div>
 
         <div className="mb-8">
-          <MentorsFilters tags={selectedTags} onChange={setSelectedTags} />
+          <MentorsFilters appliedFilters={appliedFilters} />
         </div>
 
         <MentorsList
