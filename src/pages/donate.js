@@ -11,18 +11,10 @@ export default function Donate() {
   const supporters = [
     { name: 'Денис Бесков', level: 4, url: 'https://systems.education/' },
     { name: 'Марина Гладышева', level: 2 },
+    { name: 'Artem Grygorenko', level: 2 },
+    { name: 'Иван Богданов', level: 2 },
     //{ name: 'Михаил Князев', level: 3 },
     //{ name: 'Иван Круглов', level: 3 },
-    { name: 'Artem Grygorenko', level: 2 },
-    { name: 'Михаил Куклин', level: 2 },
-    { name: 'София Мамаева', level: 1 },
-    { name: 'Денис Инешин', level: 1 },
-    { name: 'Дмитрий Симонов', level: 1 },
-    { name: 'Максим М.', level: 1 },
-    { name: 'Ани Кочарян', level: 1 },
-    { name: 'Роман Ивлиев', level: 1 },
-    { name: 'Анастасия Калашникова', level: 1 },
-    { name: 'Марина Коняева', level: 1 },
   ]
 
   return (
@@ -85,7 +77,7 @@ export default function Donate() {
         <Section.Title>Нас поддерживают</Section.Title>
 
         <div className="text-center">
-          <p>Эти люди поддержали нас через Patreon или вручную. Спасибо им!</p>
+          <p>Эти люди поддерживают нас через Patreon. Спасибо им!</p>
         </div>
 
         {supporters.map((supporter) => (
@@ -93,13 +85,18 @@ export default function Donate() {
             <div className="flex justify-between">
               <div>
                 <h3 className="text-lg">{supporter.name}</h3>
-                {supporter.level === 3 && (
-                  <div className="text-sm pt-1 text-gray-600">Меценат 👑</div>
-                )}
+
+                <div className="text-sm pt-1 text-gray-600">
+                  Уровень:{' '}
+                  <b>
+                    {supporter.level === 2 && 'Стример'}
+                    {supporter.level === 3 && 'Меценат 👑'}
+                    {supporter.level === 4 && 'Мини-спонсор 💰'}
+                  </b>
+                </div>
 
                 {supporter.level === 4 && (
                   <>
-                    <div className="text-sm pt-1 text-gray-600">Мини-спонсор 💰</div>
                     <div className="text-sm pt-1 text-gray-600">
                       <a href={supporter.url} target="_blank" rel="nofollow noreferrer">
                         {supporter.url}
