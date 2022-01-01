@@ -13,6 +13,7 @@ import allFilters from '../../../config/filters'
 import analytics from '../../../lib/analytics'
 import { htmlContent } from '../../../lib/html-content'
 import { polyfill } from 'interweave-ssr'
+import pluralize from '../../../lib/pluralize'
 
 // This enables rendering profile HTML on server
 polyfill()
@@ -110,6 +111,20 @@ export default function Mentor(props) {
               <br />
               <b>Цена (за час):</b> {mentor.price}
               <br />
+              {mentor.menteeCount > 0 && (
+                <>
+                  <b>
+                    {pluralize(mentor.menteeCount, [
+                      'Получил помощь: ',
+                      'Получили помощь: ',
+                      'Получили помощь: ',
+                    ])}
+                  </b>
+                  {mentor.menteeCount}
+                  {pluralize(mentor.menteeCount, [' человек', ' человека', ' человек'])}
+                  <br />
+                </>
+              )}
             </div>
 
             {mentor.isVisible && new_version && (
