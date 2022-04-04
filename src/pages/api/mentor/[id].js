@@ -22,7 +22,10 @@ const handler = async (req, res) => {
   }
 
   // Only allow authenticated requests
-  if (req.headers?.mentors_api_auth_token !== process.env.MENTORS_API_LIST_AUTH_TOKEN) {
+  if (
+    req.headers?.mentors_api_auth_token !== process.env.MENTORS_API_LIST_AUTH_TOKEN &&
+    req.headers?.mentors_api_auth_token !== process.env.MENTORS_API_LIST_AUTH_TOKEN_INNO
+  ) {
     return res.status(403).json({})
   }
 
