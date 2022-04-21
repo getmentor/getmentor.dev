@@ -183,6 +183,14 @@ export default function Home({ pageMentors }) {
               <Image src="/images/ontico.png" width={300} height={(220 / 1024) * 300} />
             </a>
           </Link>
+
+          <a
+            className="h-20 px-8 pt-1 flex justify-center items-center"
+            href="http://psyvit.ru/?utm_source=getmentor&utm_medium=banner&utm_campaign=sait"
+            target="_blank" rel="noreferrer"
+          >
+            <Image src="/images/psyvit.png" width={300} height={100} />
+          </a>
         </div>
 
         <div className="text-center mt-4">
