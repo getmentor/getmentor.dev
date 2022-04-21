@@ -97,12 +97,7 @@ export default function Ontico({ pageMentors }) {
 
           <p className="text-3xl lg:text-right font-light">уже 15 лет :)</p>
 
-          <a
-            className="button bg-primary-900 mt-6"
-            href={ontico_landing_url}
-            rel="noreferrer"
-            target="_blank"
-          >
+          <a className="button bg-primary-900 mt-6" href={ontico_landing_url} target="_blank" rel="noreferrer">
             Наши конференции
           </a>
         </div>
@@ -241,12 +236,7 @@ export default function Ontico({ pageMentors }) {
         <Section.Title>Календарь конференций</Section.Title>
 
         <div className="text-center">
-          <a
-            className="button bg-primary-900"
-            target="_blank"
-            href={ontico_landing_url}
-            rel="noreferrer"
-          >
+          <a className="button bg-primary-900" target="_blank" href={ontico_landing_url} rel="noreferrer">
             Все наши конференции
           </a>
         </div>

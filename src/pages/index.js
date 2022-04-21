@@ -172,8 +172,7 @@ export default function Home({ pageMentors }) {
           <a
             className="h-20 px-8 pt-1 flex justify-center items-center"
             href="https://avito.tech"
-            target="_blank"
-            rel="noreferrer"
+            target="_blank" rel="noreferrer"
           >
             <Image src="/images/avito_tech.png" width={300} height={100} />
           </a>
@@ -187,7 +186,8 @@ export default function Home({ pageMentors }) {
           <a
             className="h-20 px-8 pt-1 flex justify-center items-center"
             href="http://psyvit.ru/?utm_source=getmentor&utm_medium=banner&utm_campaign=sait"
-            target="_blank" rel="noreferrer"
+            target="_blank"
+            rel="noreferrer"
           >
             <Image src="/images/psyvit.png" width={300} height={100} />
           </a>
