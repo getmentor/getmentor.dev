@@ -3,7 +3,7 @@ const { Appsignal } = require('@appsignal/nodejs')
 const appsignal = new Appsignal({
   active: true,
   name: 'getmentor',
-  apiKey: process.env.APPSIGNAL_PUSH_API_KEY,
+  pushApiKey: process.env.APPSIGNAL_PUSH_API_KEY,
 })
 
 const {
