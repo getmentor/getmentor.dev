@@ -16,6 +16,9 @@ function Nav() {
         </a>
       </li>
       <li>
+        <a href="https://blog.getmentor.dev">✍️ Наш блог</a>
+      </li>
+      <li>
         <Link href="/bementor">➕ Стать ментором</Link>
       </li>
       <li>
