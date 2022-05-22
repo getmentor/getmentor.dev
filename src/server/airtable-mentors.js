@@ -8,6 +8,10 @@ const Url = require('url')
  * @returns {Promise<Mentor[]>}
  */
 export async function getMentors() {
+  if (process.env.AIRTABLE_WORK_OFFLINE > 0) {
+    return testData()
+  }
+
   const mentorsRaw = await airtableBase('Mentors')
     .select({
       filterByFormula: 'OR(Status = "active", Status = "inactive")',
@@ -126,4 +130,35 @@ function calendarType(url) {
   } catch (_) {
     return 'none'
   }
+}
+
+function testData() {
+  return [
+    {
+      id: '1',
+      airtableId: 'rec123',
+      slug: 'georgiy-mogelashvili-1',
+      name: 'Георгий Могелашвили',
+      job: 'Lead Developer',
+      workplace: 'Booking.com',
+      description: 'Тестовые данные, всем привет!',
+      about: 'Тестовый раздел обо мне',
+      competencies: 'тест, test',
+      experience: '10+',
+      price: '1000 руб',
+      menteeCount: '5',
+      photo: {},
+      photo_url: '/images/patreon.png',
+      tags: 'Backend,Frontend,Agile,Сообщество Онтико',
+      sortOrder: 1,
+      isVisible: 1,
+      sponsors: 'Сообщество Онтико',
+      calendarType: 'none',
+
+      // symbol props will not be serialized and sent to client
+      // TODO token will not be serialized event you will want save it to cache
+      [AUTH_TOKEN]: 'afas',
+      [CALENDAR_URL]: 'https://calendly.com/',
+    },
+  ]
 }
