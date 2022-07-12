@@ -10,9 +10,10 @@ function Nav() {
       <li>
         <a
           href="https://geekfactor.io/international?utm_source=getmentor&utm_medium=banner&utm_campaign=getmentor-promo"
-          target="_blank" rel="noreferrer"
+          target="_blank"
+          rel="noreferrer"
         >
-          🚀 Поиск работы зарубежом
+          🚀 Поиск работы за рубежом
         </a>
       </li>
       <li>
