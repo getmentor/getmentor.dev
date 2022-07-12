@@ -6,7 +6,7 @@ import NavHeader from '../../../components/NavHeader'
 import Footer from '../../../components/Footer'
 import { getMentors } from '../../../server/cached-mentors'
 import Section from '../../../components/Section'
-import Interweave from 'interweave'
+import { Interweave } from 'interweave'
 import MetaHeader from '../../../components/MetaHeader'
 import seo from '../../../config/seo'
 import allFilters from '../../../config/filters'
@@ -41,6 +41,7 @@ export async function getServerSideProps(context) {
 
 export default function Mentor(props) {
   const { mentor, new_version } = props
+  const title = mentor.name + ' | ' + seo.title
 
   useEffect(() => {
     analytics.event('View Mentor Page', {
@@ -62,9 +63,7 @@ export default function Mentor(props) {
   return (
     <>
       <Head>
-        <title>
-          {mentor.name} | {seo.title}
-        </title>
+        <title>{title}</title>
 
         <MetaHeader
           customTitle={mentor.name}

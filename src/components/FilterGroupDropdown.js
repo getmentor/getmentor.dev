@@ -23,9 +23,9 @@ export default function FilterGroupDropdown({
       },
       button: {
         selected:
-          'text-sm rounded-full py-1 pl-4 pr-2 m-1 cursor-pointer bg-gray-300 text-gray-600 bg-gray-700 text-white',
+          'text-sm rounded-full py-1 pl-4 pr-2 m-1 cursor-pointer text-gray-600 bg-gray-700 text-white',
         not_selected:
-          'text-sm rounded-full py-1 pl-4 pr-2  m-1 cursor-pointer bg-gray-300 text-gray-600 bg-gray-300 hover:bg-gray-200 text-gray-600',
+          'text-sm rounded-full py-1 pl-4 pr-2 m-1 cursor-pointer bg-gray-300 text-gray-600 bg-gray-300 hover:bg-gray-200 text-gray-600',
       },
       span: {
         selected: 'mr-2 bg-gray-700 text-white',
@@ -47,7 +47,7 @@ export default function FilterGroupDropdown({
       },
       button: {
         selected:
-          'text-sm rounded-sm py-1 pl-4 pr-2 m-1 cursor-pointer bg-gray-300 text-gray-600 bg-gray-700 text-white',
+          'text-sm rounded-sm py-1 pl-4 pr-2 m-1 cursor-pointer text-gray-600 bg-gray-700 text-white',
         not_selected:
           'text-sm rounded-sm py-1 pl-4 pr-2 m-1 cursor-pointer bg-gray-300 text-gray-600 bg-indigo-200 hover:bg-gray-200 text-gray-600',
       },

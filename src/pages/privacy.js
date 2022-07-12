@@ -6,10 +6,12 @@ import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 
 export default function Privacy() {
+  const title = 'Политика в отношении обработки персональных данных | ' + seo.title
+
   return (
     <>
       <Head>
-        <title>Политика в отношении обработки персональных данных | {seo.title}</title>
+        <title>{title}</title>
         <MetaHeader customTitle="Политика в отношении обработки персональных данных" />
       </Head>
 

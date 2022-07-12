@@ -54,6 +54,8 @@ export default function Profile({ errorCode, mentor }) {
   const [readyStatus, setReadyStatus] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
 
+  const title = 'Профиль | ' + seo.title
+
   useEffect(() => {
     let timer
     if (readyStatus === 'success') {
@@ -105,7 +107,7 @@ export default function Profile({ errorCode, mentor }) {
   return (
     <>
       <Head>
-        <title>Профиль | {seo.title}</title>
+        <title>{title}</title>
       </Head>
 
       <NavHeader />

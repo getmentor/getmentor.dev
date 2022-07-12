@@ -12,10 +12,12 @@ export default function Bementor() {
     analytics.event('Visit Bementor Page')
   }, [])
 
+  const title = 'Стань частью нашей команды | ' + seo.title
+
   return (
     <>
       <Head>
-        <title>Стань частью нашей команды | {seo.title}</title>
+        <title>{title}</title>
         <MetaHeader customTitle="Стань частью нашей команды" />
       </Head>
 

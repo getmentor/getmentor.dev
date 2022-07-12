@@ -38,6 +38,8 @@ export default function OrderMentor({ mentor }) {
   const today = new Date().toISOString().slice(0, 10)
   const MAX_REQUESTS_PER_DAY = 5
 
+  const title = 'Запись к ментору | ' + mentor.name + ' | ' + seo.title
+
   var requestsToday = 0
 
   useEffect(() => {
@@ -128,9 +130,7 @@ export default function OrderMentor({ mentor }) {
   return (
     <>
       <Head>
-        <title>
-          Запись к ментору | {mentor.name} | {seo.title}
-        </title>
+        <title>{title}</title>
       </Head>
 
       <NavHeader />

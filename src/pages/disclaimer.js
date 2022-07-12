@@ -6,10 +6,12 @@ import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 
 export default function Disclaimer() {
+  const title = 'Отказ от ответственности | ' + seo.title
+
   return (
     <>
       <Head>
-        <title>Отказ от ответственности | {seo.title}</title>
+        <title>{title}</title>
         <MetaHeader customTitle="Отказ от ответственности" />
       </Head>
 

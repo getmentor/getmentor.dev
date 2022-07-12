@@ -18,10 +18,12 @@ export default function Donate() {
     //{ name: 'Иван Круглов', level: 3 },
   ]
 
+  const title = 'Донат | ' + seo.title
+
   return (
     <>
       <Head>
-        <title>Донат | {seo.title}</title>
+        <title>{title}</title>
         <MetaHeader customTitle="Донат" />
       </Head>
 

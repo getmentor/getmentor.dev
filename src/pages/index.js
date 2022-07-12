@@ -12,7 +12,7 @@ import MentorsSearch from '../components/MentorsSearch'
 import Section from '../components/Section'
 import useMentors from '../components/useMentors'
 import donates from '../config/donates'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
@@ -172,7 +172,8 @@ export default function Home({ pageMentors }) {
           <a
             className="h-20 px-8 pt-1 flex justify-center items-center"
             href="https://avito.tech"
-            target="_blank" rel="noreferrer"
+            target="_blank"
+            rel="noreferrer"
           >
             <Image src="/images/avito_tech.png" width={300} height={100} />
           </a>

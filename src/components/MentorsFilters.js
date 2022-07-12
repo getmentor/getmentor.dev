@@ -50,14 +50,14 @@ export default function MentorsFilters(props) {
   }
 
   const onClickExperience = (experience) => {
-    const newExperiences = onClickFilterMultiple(experience, appliedFilters.experience, {
+    onClickFilterMultiple(experience, appliedFilters.experience, {
       onRemove: 'Filter Removed Experience',
       onAdd: 'Filter Added Experience',
     })
   }
 
   const onClickPrice = (price) => {
-    const newPrice = onClickFilterSingle(price, appliedFilters.price, {
+    onClickFilterSingle(price, appliedFilters.price, {
       onRemove: 'Filter Removed Price',
       onAdd: 'Filter Added Price',
     })
