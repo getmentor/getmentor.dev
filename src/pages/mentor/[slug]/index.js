@@ -12,18 +12,15 @@ import seo from '../../../config/seo'
 import allFilters from '../../../config/filters'
 import analytics from '../../../lib/analytics'
 import { htmlContent } from '../../../lib/html-content'
-import { polyfill } from 'interweave-ssr'
+// import { polyfill } from 'interweave-ssr'
 import pluralize from '../../../lib/pluralize'
 
 // This enables rendering profile HTML on server
-polyfill()
+// polyfill()
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
   const mentor = allMentors.find((mentor) => mentor.slug === context.params.slug)
-
-  // const new_version = context.query.new_version === process.env.NEW_CONTACT_FORM_SECRET
-  const new_version = true
 
   if (!mentor) {
     return {
@@ -34,13 +31,12 @@ export async function getServerSideProps(context) {
   return {
     props: {
       mentor,
-      new_version,
     },
   }
 }
 
 export default function Mentor(props) {
-  const { mentor, new_version } = props
+  const mentor = props.mentor
   const title = mentor.name + ' | ' + seo.title
 
   useEffect(() => {
@@ -126,39 +122,11 @@ export default function Mentor(props) {
               )}
             </div>
 
-            {mentor.isVisible && new_version && (
+            {mentor.isVisible && (
               <div className="mb-6">
                 <Link href={'/mentor/' + mentor.slug + '/contact'}>
                   <a className="button">Оставить заявку</a>
                 </Link>
-              </div>
-            )}
-
-            {mentor.isVisible && !new_version && (
-              <div className="mb-6">
-                <a
-                  className="button"
-                  href={
-                    'https://airtable.com/shr5aTzZF5zKSRUDG?prefill_Mentor=' + mentor.airtableId
-                  }
-                  onClick={() => {
-                    analytics.event('Request a Mentor', {
-                      'Mentor Id': mentor.id,
-                      'Mentor Name': mentor.name,
-                      'Mentor Experience': mentor.experience,
-                      'Mentor Price': mentor.price,
-                      'Mentor Sponsors': mentor.sponsors,
-
-                      // legacy props
-                      id: mentor.airtableId,
-                      name: mentor.name,
-                      experience: mentor.experience,
-                      price: mentor.price,
-                    })
-                  }}
-                >
-                  Оставить заявку
-                </a>
               </div>
             )}
 
