@@ -6,17 +6,17 @@ import NavHeader from '../../../components/NavHeader'
 import Footer from '../../../components/Footer'
 import { getMentors } from '../../../server/cached-mentors'
 import Section from '../../../components/Section'
-import { Interweave } from 'interweave'
+import { Markup } from 'interweave'
 import MetaHeader from '../../../components/MetaHeader'
 import seo from '../../../config/seo'
 import allFilters from '../../../config/filters'
 import analytics from '../../../lib/analytics'
 import { htmlContent } from '../../../lib/html-content'
-// import { polyfill } from 'interweave-ssr'
+import { polyfill } from 'interweave-ssr'
 import pluralize from '../../../lib/pluralize'
 
 // This enables rendering profile HTML on server
-// polyfill()
+polyfill()
 
 export async function getServerSideProps(context) {
   const allMentors = await getMentors()
@@ -133,14 +133,22 @@ export default function Mentor(props) {
             {mentor.about && (
               <div className="prose my-4">
                 <b>О себе</b>
-                <Interweave content={htmlContent(mentor.about)} noWrap={true} />
+                <Markup
+                  content={htmlContent(mentor.about)}
+                  noWrap={true}
+                  disableLineBreaks={true}
+                />
               </div>
             )}
 
             {mentor.description && (
               <div className="prose my-4">
                 <b>С чем помогу</b>
-                <Interweave content={htmlContent(mentor.description)} noWrap={true} />
+                <Markup
+                  content={htmlContent(mentor.description)}
+                  noWrap={true}
+                  disableLineBreaks={true}
+                />
               </div>
             )}
 
