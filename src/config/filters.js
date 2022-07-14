@@ -25,6 +25,7 @@ export default {
     'HR',
     'Карьера',
     'Собеседования',
+    'Другое',
   ],
   byTags: {
     development: ['Backend', 'Frontend', 'iOS', 'Android', 'System Design', 'Code Review'],
@@ -32,7 +33,7 @@ export default {
     ops: ['DevOps/SRE', 'Databases', 'Сети', 'Cloud'],
     hr: ['HR', 'Карьера', 'Собеседования', 'Entrepreneurship', 'DevRel'],
     marketing: ['Marketing', 'Content/Copy'],
-    rest: ['Data Science/ML', 'UX/UI/Design', 'QA', 'Аналитика'],
+    rest: ['Data Science/ML', 'UX/UI/Design', 'QA', 'Аналитика', 'Другое'],
   },
   price: [
     'Бесплатно',
