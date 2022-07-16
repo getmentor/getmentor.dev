@@ -1,6 +1,7 @@
 import hash from 'object-hash'
 import { getMentors as getMentorsFromAirtable } from './airtable-mentors'
 import { CALENDAR_URL } from '../lib/entities'
+import constants from '../config/constants'
 
 /**
  * @var {Promise<Mentor[]>}
@@ -22,6 +23,8 @@ let mentorsHash
  */
 let mentorsLoadedAt
 
+const CACHE_REFRESH_INTERVAL = constants.CACHE_REFRESH_INTERVAL
+
 // this hack prevent this functions to me called during build time and etc
 // be sure you set APP_ENV in production deployment
 if (process.env.APP_ENV === 'production') {
@@ -38,7 +41,7 @@ function init() {
   // fetch new data periodically
   setInterval(() => {
     loadMentorsToCache().catch(console.error)
-  }, 10 * 60 * 1000)
+  }, CACHE_REFRESH_INTERVAL)
 }
 
 /**
@@ -72,7 +75,7 @@ export async function getMentors() {
   }
 
   // extra safety if setInterval logic fails or APP_ENV not added
-  if (!mentorsLoadedAt || Date.now() - mentorsLoadedAt >= 60 * 60 * 1000) {
+  if (!mentorsLoadedAt || Date.now() - mentorsLoadedAt >= 5 * CACHE_REFRESH_INTERVAL) {
     await loadMentorsToCache()
   }
 

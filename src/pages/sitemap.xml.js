@@ -1,11 +1,9 @@
 import { getMentors } from '../server/cached-mentors'
+import constants from '../config/constants'
 
 const Sitemap = () => {}
 
-const baseUrl = {
-  development: 'http://localhost:3000/',
-  production: 'https://getmentor.dev/',
-}[process.env.NODE_ENV]
+const baseUrl = constants.BASE_URL
 
 function sitemapItem(path) {
   return `
