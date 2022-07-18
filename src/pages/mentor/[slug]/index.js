@@ -98,7 +98,7 @@ export default function Mentor(props) {
             </div>
 
             {!mentor.isVisible && (
-              <div className="text-gray-500 mb-6">Ментор приостановил приём заявок.</div>
+              <div className="text-gray-500 mb-6">Ментор временно приостановил приём заявок.</div>
             )}
 
             <div className="mb-4">
