@@ -171,19 +171,27 @@ export default function OrderMentor({ mentor }) {
         </div>
       </Section>
 
-      {readyStatus === 'success' && (
+      {!mentor.isVisible && (
+        <Section>
+          <div className="flex justify-center">
+            <div className="text-gray-500 mb-6">Ментор временно приостановил приём заявок.</div>
+          </div>
+        </Section>
+      )}
+
+      {mentor.isVisible && readyStatus === 'success' && (
         <Section>
           <SuccessMessage mentor={mentor} formData={formData} />
         </Section>
       )}
 
-      {readyStatus !== 'success' && readyStatus === 'limit' && (
+      {mentor.isVisible && readyStatus !== 'success' && readyStatus === 'limit' && (
         <Section>
           <LimitMessage mentor={mentor} />
         </Section>
       )}
 
-      {readyStatus !== 'success' && readyStatus !== 'limit' && (
+      {mentor.isVisible && readyStatus !== 'success' && readyStatus !== 'limit' && (
         <Section>
           <div className="max-w-md mx-auto">
             <ContactMentorForm
