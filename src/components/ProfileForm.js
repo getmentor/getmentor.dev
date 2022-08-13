@@ -58,6 +58,17 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
       </div>
 
       <div>
+        <label className="block mb-2 font-medium text-gray-700">
+          <em>
+            Для редактирования фото напишите в телеграм{' '}
+            <a href="https://t.me/glamcoder" rel="nofollow">
+              @glamcoder
+            </a>
+          </em>
+        </label>
+      </div>
+
+      <div>
         <label htmlFor="workplace" className="block mb-2 font-medium text-gray-700">
           Компания{' '}
           <a data-tip data-for="workplace-tip">
