@@ -64,7 +64,7 @@ export default function Mentor(props) {
         <MetaHeader
           customTitle={mentor.name}
           customDescription={mentor.job + ' @ ' + mentor.workplace}
-          customImage={mentor.photo_url}
+          customImage={mentor.cloud_photo_url}
         />
       </Head>
 
@@ -94,7 +94,7 @@ export default function Mentor(props) {
             </div>
 
             <div className="mb-4 md:hidden">
-              <img className="w-full" src={mentor.photo_url} />
+              <img className="w-full" src={mentor.cloud_photo_url} />
             </div>
 
             {!mentor.isVisible && (
@@ -162,7 +162,7 @@ export default function Mentor(props) {
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
-            <img src={mentor.photo.url} />
+            <img src={mentor.cloud_photo_url} />
           </div>
         </div>
       </Section>

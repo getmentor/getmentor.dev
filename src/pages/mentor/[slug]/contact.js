@@ -145,7 +145,7 @@ export default function OrderMentor({ mentor }) {
             <div className="w-full sm:w-32">
               <div className="aspect-w-1 aspect-h-1 relative">
                 <Image
-                  src={mentor.photo.thumbnails?.large.url || mentor.photo_url}
+                  src={mentor.cloud_photo_url}
                   alt={mentor.name}
                   layout="fill"
                   objectFit="cover"

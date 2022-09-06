@@ -67,6 +67,10 @@ export async function getMentors() {
       isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
       sponsors: getMentorSponsor(tags),
       calendarType: calendarType(item.fields['Calendly Url']),
+      cloud_photo_url:
+        'https://mentorphotos.blob.core.windows.net/photos/' + item.fields['Id'] + '/large',
+      cloud_photo_url_full:
+        'https://mentorphotos.blob.core.windows.net/photos/' + item.fields['Id'] + '/full',
 
       // symbol props will not be serialized and sent to client
       // TODO token will not be serialized event you will want save it to cache

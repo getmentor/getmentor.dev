@@ -45,7 +45,7 @@ const handler = async (req, res) => {
         experience: m.experience,
         price: m.price,
         doneSessions: m.menteeCount,
-        photo: m.photo_url,
+        photo: m.cloud_photo_url,
         tags: m.tags.join(','),
         link: `${seo.domain}/mentor/${m.slug}`,
       }

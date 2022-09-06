@@ -13,7 +13,7 @@ export default function MentorsList(props) {
             <a target="_blank">
               <div className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat">
                 <Image
-                  src={mentor.photo.thumbnails?.large.url || mentor.photo_url}
+                  src={mentor.cloud_photo_url}
                   alt={mentor.name}
                   layout="fill"
                   objectFit="cover"
