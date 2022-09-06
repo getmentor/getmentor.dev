@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
 import Head from 'next/head'
+import Image from 'next/image'
 import NavHeader from '../../../components/NavHeader'
 import Footer from '../../../components/Footer'
 import { getMentors } from '../../../server/cached-mentors'
@@ -94,7 +95,7 @@ export default function Mentor(props) {
             </div>
 
             <div className="mb-4 md:hidden">
-              <img className="w-full" src={mentor.photo_url} />
+              <Image className="w-full" src={mentor.photo_url} />
             </div>
 
             {!mentor.isVisible && (
@@ -162,7 +163,7 @@ export default function Mentor(props) {
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
-            <img src={mentor.photo.url} />
+            <Image src={mentor.photo.url} />
           </div>
         </div>
       </Section>
