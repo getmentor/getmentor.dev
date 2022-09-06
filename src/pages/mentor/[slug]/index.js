@@ -95,7 +95,7 @@ export default function Mentor(props) {
             </div>
 
             <div className="mb-4 md:hidden">
-              <Image className="w-full" src={mentor.photo_url} />
+              <img className="w-full" src={mentor.photo_url} />
             </div>
 
             {!mentor.isVisible && (
@@ -163,7 +163,7 @@ export default function Mentor(props) {
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
-            <Image src={mentor.photo.url} />
+            <img src={mentor.photo.url} />
           </div>
         </div>
       </Section>
