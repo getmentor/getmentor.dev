@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import * as airtableMentors from '../../server/airtable-mentors'
 import * as cachedMentors from '../../server/cached-mentors'
-import { getOneMentorById } from '../server/mentors-data'
+import { getOneMentorById } from '../../server/mentors-data'
 import { AUTH_TOKEN } from '../../lib/entities'
 import filters from '../../config/filters'
 
