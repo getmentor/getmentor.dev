@@ -5,7 +5,7 @@ import ProfileForm from '../components/ProfileForm'
 import NavHeader from '../components/NavHeader'
 import Section from '../components/Section'
 import Footer from '../components/Footer'
-import { getMentors } from '../server/cached-mentors'
+import { getOneMentorById } from '../server/mentors-data'
 import seo from '../config/seo'
 import filters from '../config/filters'
 import Notification from '../components/Notification'
@@ -20,8 +20,8 @@ export async function getServerSideProps(context) {
     return { notFound: true }
   }
 
-  const allMentors = await getMentors()
-  const mentor = allMentors.find((mentor) => mentor.id === context.query.id)
+  const mentor = await getOneMentorById(context.query.id)
+
   if (!mentor) {
     return { notFound: true }
   }

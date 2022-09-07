@@ -1,4 +1,4 @@
-import { getMentors } from '../server/cached-mentors'
+import { getAllMentors } from '../server/mentors-data'
 import constants from '../config/constants'
 
 const Sitemap = () => {}
@@ -17,7 +17,7 @@ function sitemapItem(path) {
 }
 
 export async function getServerSideProps({ res }) {
-  const allMentors = await getMentors()
+  const allMentors = await getAllMentors(false, true)
 
   let staticPages = [{ page: '' }, { page: 'bementor' }, { page: 'donate' }]
 

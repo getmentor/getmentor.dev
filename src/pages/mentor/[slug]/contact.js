@@ -6,7 +6,7 @@ import ContactMentorForm from '../../../components/ContactMentorForm'
 import seo from '../../../config/seo'
 import Footer from '../../../components/Footer'
 import NavHeader from '../../../components/NavHeader'
-import { getMentors } from '../../../server/cached-mentors'
+import { getOneMentorBySlug } from '../../../server/mentors-data'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
 import Image from 'next/image'
@@ -14,8 +14,7 @@ import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
 
 export async function getServerSideProps(context) {
-  const allMentors = await getMentors()
-  const mentor = allMentors.find((mentor) => mentor.slug === context.params.slug)
+  const mentor = await getOneMentorBySlug(context.params.slug)
 
   if (!mentor) {
     return {

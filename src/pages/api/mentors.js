@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
-import { getMentors } from '../../server/cached-mentors'
+import { getAllMentors } from '../../server/mentors-data'
 import seo from '../../config/seo'
 import Cors from 'cors'
 import initMiddleware from '../../lib/init-middleware'
@@ -29,27 +29,25 @@ const handler = async (req, res) => {
     return res.status(403).json({})
   }
 
-  const allMentors = await getMentors()
+  const allMentors = await getAllMentors(true)
 
-  const mentors = allMentors
-    .filter((mentor) => mentor.isVisible)
-    .map((m) => {
-      return {
-        id: m.id,
-        name: m.name,
-        title: m.job,
-        workplace: m.workplace,
-        about: m.about,
-        description: m.description,
-        competencies: m.competencies,
-        experience: m.experience,
-        price: m.price,
-        doneSessions: m.menteeCount,
-        photo: m.photo_url,
-        tags: m.tags.join(','),
-        link: `${seo.domain}/mentor/${m.slug}`,
-      }
-    })
+  const mentors = allMentors.map((m) => {
+    return {
+      id: m.id,
+      name: m.name,
+      title: m.job,
+      workplace: m.workplace,
+      about: m.about,
+      description: m.description,
+      competencies: m.competencies,
+      experience: m.experience,
+      price: m.price,
+      doneSessions: m.menteeCount,
+      photo: m.photo_url,
+      tags: m.tags.join(','),
+      link: `${seo.domain}/mentor/${m.slug}`,
+    }
+  })
 
   return res.status(200).json({ mentors })
 }

@@ -5,7 +5,7 @@ import cloudinary from '../lib/cloudinary'
 import seo from '../config/seo'
 import NavHeader from '../components/NavHeader'
 import Section from '../components/Section'
-import { getMentors } from '../server/cached-mentors'
+import { getAllMentors } from '../server/mentors-data'
 import MentorsFilters from '../components/MentorsFilters'
 import MentorsList from '../components/MentorsList'
 import useMentors from '../components/useMentors'
@@ -16,11 +16,9 @@ import analytics from '../lib/analytics'
 import { useEffect } from 'react'
 
 export async function getServerSideProps() {
-  const allMentors = await getMentors()
+  const allMentors = await getAllMentors()
 
-  const pageMentors = allMentors
-    .filter((mentor) => mentor.isVisible)
-    .filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
+  const pageMentors = allMentors.filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
 
   return {
     props: {

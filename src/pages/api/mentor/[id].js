@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
-import { getMentors } from '../../../server/cached-mentors'
+import { getOneMentorById } from '../../../server/mentors-data'
 import seo from '../../../config/seo'
 import Cors from 'cors'
 import initMiddleware from '../../../lib/init-middleware'
@@ -29,8 +29,8 @@ const handler = async (req, res) => {
     return res.status(403).json({})
   }
 
-  const allMentors = await getMentors()
-  const m = allMentors.find((mentor) => mentor.id == req.query.id)
+  req.query.id = parseInt(req.query.id, 10)
+  const m = await getOneMentorById(req.query.id)
 
   if (m) {
     return res.status(200).json({

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIdBadge, faComments, faEdit } from '@fortawesome/free-solid-svg-icons'
-import { getMentors } from '../server/cached-mentors'
+import { getAllMentors } from '../server/mentors-data'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import MentorsFilters from '../components/MentorsFilters'
@@ -19,9 +19,7 @@ import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
 
 export async function getServerSideProps() {
-  const allMentors = await getMentors()
-
-  const pageMentors = allMentors.filter((mentor) => mentor.isVisible)
+  const pageMentors = await getAllMentors()
 
   return {
     props: {

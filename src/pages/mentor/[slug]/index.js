@@ -2,10 +2,9 @@ import { useEffect } from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
 import Head from 'next/head'
-import Image from 'next/image'
 import NavHeader from '../../../components/NavHeader'
 import Footer from '../../../components/Footer'
-import { getMentors } from '../../../server/cached-mentors'
+import { getOneMentorBySlug } from '../../../server/mentors-data'
 import Section from '../../../components/Section'
 import { Markup } from 'interweave'
 import MetaHeader from '../../../components/MetaHeader'
@@ -20,8 +19,7 @@ import pluralize from '../../../lib/pluralize'
 polyfill()
 
 export async function getServerSideProps(context) {
-  const allMentors = await getMentors()
-  const mentor = allMentors.find((mentor) => mentor.slug === context.params.slug)
+  const mentor = await getOneMentorBySlug(context.params.slug)
 
   if (!mentor) {
     return {
