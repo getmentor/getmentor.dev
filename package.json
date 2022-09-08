@@ -16,6 +16,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.6.6",
+    "@microsoft/applicationinsights-react-js": "^3.4.0",
+    "@microsoft/applicationinsights-web": "^2.8.7",
     "@sentry/nextjs": "^7.6.0",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.5.2",
