@@ -18,8 +18,8 @@ import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
 
-export async function getServerSideProps() {
-  const pageMentors = await getAllMentors()
+export async function getStaticProps(context) {
+  const pageMentors = await getAllMentors(false, false, false)
 
   return {
     props: {

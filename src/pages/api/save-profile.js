@@ -36,7 +36,7 @@ const saveProfileHandler = async (req, res) => {
     }
   }
 
-  const mentor = await getOneMentorById(req.query.id)
+  const mentor = await getOneMentorById(req.query.id, false)
 
   if (!mentor) {
     return res.status(404).send({ success: false, error: 'Mentor not found.' })
@@ -56,7 +56,6 @@ const saveProfileHandler = async (req, res) => {
 
   try {
     await airtableMentors.updateMentor(mentor.airtableId, newProps)
-    cachedMentors.updateMentor(mentor.airtableId, newProps)
   } catch (e) {
     Sentry.captureException(`Error: ${e.message}; ErrorCode: ${e.error}; Status: ${e.statusCode}`)
     return res.status(503).send({ success: false })

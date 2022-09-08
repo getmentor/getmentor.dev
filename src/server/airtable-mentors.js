@@ -7,14 +7,15 @@ const Url = require('url')
 /**
  * @returns {Promise<Mentor[]>}
  */
-export async function getMentors() {
+async function getMentorsInternal(formula = '') {
   if (process.env.AIRTABLE_WORK_OFFLINE > 0) {
     return testData()
   }
 
   const mentorsRaw = await airtableBase('Mentors')
     .select({
-      filterByFormula: 'OR(Status = "active", Status = "inactive")',
+      filterByFormula: formula,
+      view: 'All Approved',
       fields: [
         'Id',
         'Alias',
@@ -80,6 +81,22 @@ export async function getMentors() {
   })
 
   return mentors
+}
+
+export async function getMentors() {
+  return await getMentorsInternal()
+}
+
+export async function getMentorById(id) {
+  const mentors = await getMentorsInternal(`Id = "${id}"`)
+
+  return mentors.length === 1 ? mentors[0] : undefined
+}
+
+export async function getMentorBySlug(slug) {
+  const mentors = await getMentorsInternal(`Alias = "${slug}"`)
+
+  return mentors.length === 1 ? mentors[0] : undefined
 }
 
 /**

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Head from 'next/head'
 import NavHeader from '../../../components/NavHeader'
 import Footer from '../../../components/Footer'
-import { getOneMentorBySlug } from '../../../server/mentors-data'
+import { getAllMentors, getOneMentorBySlug } from '../../../server/mentors-data'
 import Section from '../../../components/Section'
 import { Markup } from 'interweave'
 import MetaHeader from '../../../components/MetaHeader'
@@ -18,8 +18,21 @@ import pluralize from '../../../lib/pluralize'
 // This enables rendering profile HTML on server
 polyfill()
 
-export async function getServerSideProps(context) {
-  const mentor = await getOneMentorBySlug(context.params.slug)
+export async function getStaticPaths() {
+  const pageMentors = await getAllMentors()
+
+  const paths = pageMentors.map((m) => ({
+    params: { slug: m.slug },
+  }))
+
+  return {
+    paths,
+    fallback: 'blocking',
+  }
+}
+
+export async function getStaticProps(context) {
+  const mentor = await getOneMentorBySlug(context.params.slug, false)
 
   if (!mentor) {
     return {

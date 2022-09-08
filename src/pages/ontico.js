@@ -15,8 +15,8 @@ import MetaHeader from '../components/MetaHeader'
 import analytics from '../lib/analytics'
 import { useEffect } from 'react'
 
-export async function getServerSideProps() {
-  const allMentors = await getAllMentors()
+export async function getStaticProps(context) {
+  const allMentors = await getAllMentors(false, false, false)
 
   const pageMentors = allMentors.filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
 
