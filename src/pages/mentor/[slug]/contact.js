@@ -6,15 +6,28 @@ import ContactMentorForm from '../../../components/ContactMentorForm'
 import seo from '../../../config/seo'
 import Footer from '../../../components/Footer'
 import NavHeader from '../../../components/NavHeader'
-import { getOneMentorBySlug } from '../../../server/mentors-data'
+import { getAllMentors, getOneMentorBySlug } from '../../../server/mentors-data'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
 import Image from 'next/image'
 import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
 
-export async function getServerSideProps(context) {
-  const mentor = await getOneMentorBySlug(context.params.slug)
+export async function getStaticPaths() {
+  const pageMentors = await getAllMentors()
+
+  const paths = pageMentors.map((m) => ({
+    params: { slug: m.slug },
+  }))
+
+  return {
+    paths,
+    fallback: 'blocking',
+  }
+}
+
+export async function getStaticProps(context) {
+  const mentor = await getOneMentorBySlug(context.params.slug, false)
 
   if (!mentor) {
     return {

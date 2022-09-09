@@ -1,7 +1,14 @@
 import { getMentors as getCachedMentors } from './cached-mentors'
+import {
+  getMentors as getUncachedMentors,
+  getMentorById as getUncachedMentorById,
+  getMentorBySlug as getUncachedMentorBySlug,
+} from './airtable-mentors'
 
-export async function getAllMentors(all_fields, show_hidden) {
-  const allMentors = (await getCachedMentors()).filter((mentor) => mentor.isVisible)
+export async function getAllMentors(all_fields, show_hidden, useCache = true) {
+  const getMentors = useCache ? getCachedMentors : getUncachedMentors
+
+  const allMentors = (await getMentors()).filter((mentor) => mentor.isVisible)
 
   const filteredMentors = show_hidden ? allMentors.filter((mentor) => mentor.isVisible) : allMentors
 
@@ -30,12 +37,20 @@ export async function getAllMentors(all_fields, show_hidden) {
   }
 }
 
-export async function getOneMentorBySlug(slug) {
+export async function getOneMentorBySlug(slug, useCache = true) {
+  if (!useCache) {
+    return await getUncachedMentorBySlug(slug)
+  }
+
   const allMentors = await getCachedMentors()
   return allMentors.find((mentor) => mentor.slug === slug)
 }
 
-export async function getOneMentorById(id) {
+export async function getOneMentorById(id, useCache = true) {
+  if (!useCache) {
+    return await getUncachedMentorById(id)
+  }
+
   const allMentors = await getCachedMentors()
   return allMentors.find((mentor) => mentor.id === id)
 }
