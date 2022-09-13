@@ -20,7 +20,6 @@ jobs:
     env:
       AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
       AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
-      APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
       #SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       #SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       #SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
@@ -52,40 +51,6 @@ jobs:
       - name: Deploy
         run: doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }} --wait
 
-  notify-appsignal:
-    needs: deploy-to-DO
-    runs-on: ubuntu-latest
-    env:
-      AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
-      AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
-      APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
-    
-    steps:
-      - name: Create deployment notification
-        uses: actions/github-script@v4
-        with:
-          script: |
-            const https = require('https')
-            const deployment_payload = JSON.stringify({
-              "revision": context.sha,
-              "user": context.payload.sender.login
-            })
-            const options = {
-              hostname: 'push.appsignal.com',
-              port: 443,
-              path: `/1/markers?api_key=${process.env.APPSIGNAL_PUSH_API_KEY}&name=getmentor&environment=production`,
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': deployment_payload.length
-              }
-            }
-            const req = https.request(options, res => {})
-            req.on('error', error => {
-              console.error(error)
-            })
-            req.write(deployment_payload)
-            req.end()
   notify-sentry:
     needs: deploy-to-DO
     runs-on: ubuntu-latest

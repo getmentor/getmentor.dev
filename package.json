@@ -3,14 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' node src/server.js",
+    "dev": "NODE_OPTIONS='--inspect' node --require ./src/lib/load-appinsights.js node_modules/next/dist/bin/next dev",
     "build": "next build",
-    "start": "NODE_ENV=production node src/server.js",
+    "start": "NODE_ENV=production node --require ./src/lib/load-appinsights.js node_modules/next/dist/bin/next start",
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@appsignal/nextjs": "^2.0.21",
-    "@appsignal/nodejs": "^2.4.2",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
