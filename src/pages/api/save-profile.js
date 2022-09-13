@@ -5,6 +5,8 @@ import { getOneMentorById } from '../../server/mentors-data'
 import { AUTH_TOKEN } from '../../lib/entities'
 import filters from '../../config/filters'
 
+let a = require('../../lib/load-appinsights')
+
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
   job: yup.string().required(),

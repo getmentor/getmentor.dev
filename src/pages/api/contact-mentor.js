@@ -4,6 +4,8 @@ import { createClientRequest } from '../../server/airtable-client-requests'
 import { CALENDAR_URL } from '../../lib/entities'
 import { getOneMentorByRecordId } from '../../server/mentors-data'
 
+let a = require('../../lib/load-appinsights')
+
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
   email: yup.string().email(),
