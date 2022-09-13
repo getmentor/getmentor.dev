@@ -3,6 +3,7 @@ import {
   getMentors as getUncachedMentors,
   getMentorById as getUncachedMentorById,
   getMentorBySlug as getUncachedMentorBySlug,
+  getMentorByRecordId as getUncachedMentorByRecordId,
 } from './airtable-mentors'
 
 export async function getAllMentors(all_fields, show_hidden, useCache = true) {
@@ -53,4 +54,13 @@ export async function getOneMentorById(id, useCache = true) {
 
   const allMentors = await getCachedMentors()
   return allMentors.find((mentor) => mentor.id === id)
+}
+
+export async function getOneMentorByRecordId(recordId, useCache = true) {
+  if (!useCache) {
+    return await getUncachedMentorByRecordId(recordId)
+  }
+
+  const allMentors = await getCachedMentors()
+  return allMentors.find((mentor) => mentor.airtableId === recordId)
 }

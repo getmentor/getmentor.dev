@@ -93,6 +93,12 @@ export async function getMentorById(id) {
   return mentors.length === 1 ? mentors[0] : undefined
 }
 
+export async function getMentorByRecordId(recordId) {
+  const mentors = await getMentorsInternal(`RECORD_ID() = "${recordId}"`)
+
+  return mentors.length === 1 ? mentors[0] : undefined
+}
+
 export async function getMentorBySlug(slug) {
   const mentors = await getMentorsInternal(`Alias = "${slug}"`)
 
