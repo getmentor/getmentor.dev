@@ -8,15 +8,6 @@ function Nav() {
   return (
     <ul>
       <li>
-        <a
-          href="https://geekfactor.io/international?utm_source=getmentor&utm_medium=banner&utm_campaign=getmentor-promo"
-          target="_blank"
-          rel="noreferrer"
-        >
-          🚀 Поиск работы за рубежом
-        </a>
-      </li>
-      <li>
         <a href="https://blog.getmentor.dev">✍️ Наш блог</a>
       </li>
       <li>
