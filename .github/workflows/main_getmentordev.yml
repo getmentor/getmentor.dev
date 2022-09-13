@@ -13,6 +13,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+      AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+      BUILD_ON_GITHUB:  ${{ secrets.BUILD_ON_GITHUB }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -23,9 +28,8 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          yarn install
+          yarn build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
