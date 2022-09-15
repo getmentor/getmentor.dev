@@ -30,6 +30,11 @@ export default function useMentors(allMentors, pageSize = 48) {
   let filteredMentors = allMentors
 
   if (searchInput.length >= 2) {
+    const tokens = searchInput
+      .toLowerCase()
+      .split(',')
+      .map((t) => t.trim())
+
     filteredMentors = filteredMentors.filter((mentor) => {
       const searchContent = (
         mentor.name +
@@ -44,10 +49,7 @@ export default function useMentors(allMentors, pageSize = 48) {
         ' ' +
         mentor.competencies
       ).toLowerCase()
-      const tokens = searchInput
-        .toLowerCase()
-        .split(',')
-        .map((t) => t.trim())
+
       return hasAllInArray(tokens, searchContent)
     })
   }
