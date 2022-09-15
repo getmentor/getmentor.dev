@@ -4,6 +4,7 @@ const moduleExports = {
   sentry: {
     disableServerWebpackPlugin: process.env.BUILD_ON_GITHUB === '1',
     disableClientWebpackPlugin: process.env.BUILD_ON_GITHUB === '1',
+    hideSourceMaps: true,
   },
 
   images: {
