@@ -10,24 +10,11 @@ export default async function handler(req, res) {
     const slug = req.query.slug
     const baseUrl = process.env.GETMENTOR_DOMAIN
 
-    const cf = require('cloudflare')({
-      key: process.env.CLOUDFLARE_API_KEY,
-      email: process.env.CLOUDFLARE_API_EMAIL,
-    })
-
     await Promise.all([
       res.revalidate('/'),
       res.revalidate('/ontico'),
       res.revalidate(`/mentor/${slug}`),
       res.revalidate(`/mentor/${slug}/contact`),
-      cf.zones.purgeCache(process.env.CLOUDFLARE_ZONE_ID, {
-        files: [
-          baseUrl,
-          `${baseUrl}/ontico`,
-          `${baseUrl}/mentor/${slug}`,
-          `${baseUrl}/mentor/${slug}/contact`,
-        ],
-      }),
     ])
 
     return res.json({ revalidated: true })

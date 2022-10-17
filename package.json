@@ -29,7 +29,6 @@
     "applicationinsights": "^2.3.4",
     "autoprefixer": "^10.4.7",
     "classnames": "^2.3.1",
-    "cloudflare": "^2.9.1",
     "cors": "^2.8.5",
     "interweave": "^13.0.0",
     "interweave-ssr": "^2.0.0",
