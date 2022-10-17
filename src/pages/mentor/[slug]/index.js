@@ -14,6 +14,7 @@ import analytics from '../../../lib/analytics'
 import { htmlContent } from '../../../lib/html-content'
 import { polyfill } from 'interweave-ssr'
 import pluralize from '../../../lib/pluralize'
+import { imageLoader } from '../../../lib/azure-image-loader'
 
 // This enables rendering profile HTML on server
 polyfill()
@@ -106,7 +107,7 @@ export default function Mentor(props) {
             </div>
 
             <div className="mb-4 md:hidden">
-              <img className="w-full" src={mentor.photo_url} />
+              <img className="w-full" src={imageLoader({ src: mentor.slug, quality: 'full' })} />
             </div>
 
             {!mentor.isVisible && (
@@ -174,7 +175,7 @@ export default function Mentor(props) {
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
-            <img src={mentor.photo.url} />
+            <img src={imageLoader({ src: mentor.slug, quality: 'large' })} />
           </div>
         </div>
       </Section>

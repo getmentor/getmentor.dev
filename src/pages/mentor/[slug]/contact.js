@@ -12,6 +12,7 @@ import analytics from '../../../lib/analytics'
 import Image from 'next/image'
 import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
+import { imageLoader } from '../../../lib/azure-image-loader'
 
 export async function getStaticPaths() {
   const pageMentors = await getAllMentors()
@@ -157,11 +158,11 @@ export default function OrderMentor({ mentor }) {
             <div className="w-full sm:w-32">
               <div className="aspect-w-1 aspect-h-1 relative">
                 <Image
-                  src={mentor.photo.thumbnails?.large.url || mentor.photo_url}
+                  src={mentor.slug}
                   alt={mentor.name}
                   layout="fill"
                   objectFit="cover"
-                  unoptimized={true}
+                  loader={imageLoader}
                 />
               </div>
             </div>
