@@ -158,11 +158,10 @@ export default function OrderMentor({ mentor }) {
             <div className="w-full sm:w-32">
               <div className="aspect-w-1 aspect-h-1 relative">
                 <Image
-                  src={mentor.slug}
+                  src={imageLoader({ src: mentor.slug, quality: 'large' })}
                   alt={mentor.name}
                   layout="fill"
                   objectFit="cover"
-                  loader={imageLoader}
                 />
               </div>
             </div>

@@ -14,9 +14,10 @@ export default function MentorsList(props) {
             <a target="_blank">
               <div className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat">
                 <Image
-                  src={mentor.slug}
+                  src={imageLoader({ src: mentor.slug, quality: 'large' })}
                   alt={mentor.name}
-                  loader={imageLoader}
+                  placeholder="blur"
+                  blurDataURL={imageLoader({ src: mentor.slug, quality: 'small' })}
                   layout="fill"
                   objectFit="cover"
                 />
