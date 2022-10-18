@@ -20,6 +20,7 @@ jobs:
     env:
       AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
       AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+      AZURE_STORAGE_DOMAIN:  ${{ secrets.AZURE_STORAGE_DOMAIN }}
       BUILD_ON_GITHUB:  ${{ secrets.BUILD_ON_GITHUB }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
