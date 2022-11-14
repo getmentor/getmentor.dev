@@ -13,6 +13,7 @@ export default function Donate() {
     // { name: 'Марина Гладышева', level: 2 },
     // { name: 'Artem Grygorenko', level: 2 },
     { name: 'Paul Seredkin', level: 2 },
+    { name: 'Ленар Фаттахов', level: 2 },
     // { name: 'Иван Богданов', level: 2 },
     //{ name: 'Михаил Князев', level: 3 },
     //{ name: 'Иван Круглов', level: 3 },
