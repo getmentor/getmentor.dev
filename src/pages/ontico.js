@@ -16,7 +16,7 @@ import analytics from '../lib/analytics'
 import { useEffect } from 'react'
 
 export async function getStaticProps(context) {
-  const allMentors = await getAllMentors(false, false, false)
+  const allMentors = await getAllMentors()
 
   const pageMentors = allMentors.filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
 

@@ -6,12 +6,12 @@ import {
   getMentorByRecordId as getUncachedMentorByRecordId,
 } from './airtable-mentors'
 
-export async function getAllMentors(all_fields, show_hidden, useCache = true) {
+export async function getAllMentors(all_fields, show_hidden, useCache) {
   const getMentors = useCache ? getCachedMentors : getUncachedMentors
 
-  const allMentors = (await getMentors()).filter((mentor) => mentor.isVisible)
+  const allMentors = await getMentors()
 
-  const filteredMentors = show_hidden ? allMentors.filter((mentor) => mentor.isVisible) : allMentors
+  const filteredMentors = show_hidden ? allMentors : allMentors.filter((mentor) => mentor.isVisible)
 
   if (all_fields) {
     return filteredMentors
@@ -41,7 +41,7 @@ export async function getAllMentors(all_fields, show_hidden, useCache = true) {
   }
 }
 
-export async function getOneMentorBySlug(slug, useCache = true) {
+export async function getOneMentorBySlug(slug, useCache = false) {
   if (!useCache) {
     return await getUncachedMentorBySlug(slug)
   }
@@ -50,7 +50,7 @@ export async function getOneMentorBySlug(slug, useCache = true) {
   return allMentors.find((mentor) => mentor.slug === slug)
 }
 
-export async function getOneMentorById(id, useCache = true) {
+export async function getOneMentorById(id, useCache = false) {
   if (!useCache) {
     return await getUncachedMentorById(id)
   }
@@ -59,7 +59,7 @@ export async function getOneMentorById(id, useCache = true) {
   return allMentors.find((mentor) => mentor.id === id)
 }
 
-export async function getOneMentorByRecordId(recordId, useCache = true) {
+export async function getOneMentorByRecordId(recordId, useCache = false) {
   if (!useCache) {
     return await getUncachedMentorByRecordId(recordId)
   }

@@ -20,7 +20,7 @@ export async function getServerSideProps(context) {
     return { notFound: true }
   }
 
-  const mentor = await getOneMentorById(context.query.id, false)
+  const mentor = await getOneMentorById(context.query.id)
 
   if (!mentor) {
     return { notFound: true }

@@ -37,7 +37,7 @@ const saveProfileHandler = async (req, res) => {
     }
   }
 
-  const mentor = await getOneMentorById(req.query.id, false)
+  const mentor = await getOneMentorById(req.query.id)
 
   if (!mentor) {
     return res.status(404).send({ success: false, error: 'Mentor not found.' })

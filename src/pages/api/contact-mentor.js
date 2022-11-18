@@ -55,7 +55,7 @@ const handler = async (req, res) => {
     return res.status(400).json({ success: false, error: 'Captcha validation failed' })
   }
 
-  const mentor = await getOneMentorByRecordId(req.body['mentorAirtableId'], false)
+  const mentor = await getOneMentorByRecordId(req.body['mentorAirtableId'])
   var calendarUrl = mentor[CALENDAR_URL]
   res.status(200).json({ success: true, calendar_url: calendarUrl })
 }

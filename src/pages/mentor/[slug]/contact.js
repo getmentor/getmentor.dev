@@ -15,7 +15,7 @@ import Koalendar from '../../../components/Koalendar'
 import { imageLoader } from '../../../lib/azure-image-loader'
 
 export async function getStaticPaths() {
-  const pageMentors = await getAllMentors()
+  const pageMentors = await getAllMentors(false, true)
 
   const paths = pageMentors.map((m) => ({
     params: { slug: m.slug },
@@ -28,7 +28,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  const mentor = await getOneMentorBySlug(context.params.slug, false)
+  const mentor = await getOneMentorBySlug(context.params.slug)
 
   if (!mentor) {
     return {
