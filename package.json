@@ -8,7 +8,8 @@
     "start": "NODE_ENV=production node --require ./src/lib/load-appinsights.js node_modules/next/dist/bin/next start",
     "start2": "NODE_ENV=production next start",
     "dev2": "next dev",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "inspect": "NODE_ENV=production node --inspect --require ./src/lib/load-appinsights.js node_modules/next/dist/bin/next start"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
