@@ -40,8 +40,6 @@ export async function getStaticProps(context) {
     props: {
       mentor,
     },
-
-    revalidate: 10 * 60, // In seconds
   }
 }
 

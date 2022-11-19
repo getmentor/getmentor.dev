@@ -11,8 +11,8 @@ export default async function handler(req, res) {
     const baseUrl = process.env.GETMENTOR_DOMAIN
 
     await Promise.all([
-      res.revalidate('/'),
-      res.revalidate('/ontico'),
+      // res.revalidate('/'),
+      // res.revalidate('/ontico'),
       res.revalidate(`/mentor/${slug}`),
       res.revalidate(`/mentor/${slug}/contact`),
     ])
