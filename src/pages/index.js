@@ -25,6 +25,8 @@ export async function getStaticProps(context) {
     props: {
       pageMentors,
     },
+
+    revalidate: 10 * 60, // In seconds
   }
 }
 
