@@ -15,7 +15,7 @@ const bodySchema = yup.object().shape({
   telegramUsername: yup.string().required(),
 })
 
-const handler = async (req, res) => {
+export default async function handler(req, res) {
   await bodySchema.validate(req.body)
 
   let url = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_V2_SECRET_KEY}&response=${req.body['recaptchaToken']}`
@@ -59,5 +59,3 @@ const handler = async (req, res) => {
   var calendarUrl = mentor[CALENDAR_URL]
   res.status(200).json({ success: true, calendar_url: calendarUrl })
 }
-
-export default Sentry.withSentry(handler)
