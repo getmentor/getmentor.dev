@@ -1,4 +1,3 @@
-import { getMentors as getCachedMentors } from './cached-mentors'
 import {
   getMentors as getUncachedMentors,
   getMentorById as getUncachedMentorById,
@@ -6,10 +5,8 @@ import {
   getMentorByRecordId as getUncachedMentorByRecordId,
 } from './airtable-mentors'
 
-export async function getAllMentors(all_fields, show_hidden, useCache) {
-  const getMentors = useCache ? getCachedMentors : getUncachedMentors
-
-  const allMentors = await getMentors()
+export async function getAllMentors(all_fields, show_hidden) {
+  const allMentors = await getUncachedMentors()
 
   const filteredMentors = show_hidden ? allMentors : allMentors.filter((mentor) => mentor.isVisible)
 
@@ -41,29 +38,14 @@ export async function getAllMentors(all_fields, show_hidden, useCache) {
   }
 }
 
-export async function getOneMentorBySlug(slug, useCache = false) {
-  if (!useCache) {
-    return await getUncachedMentorBySlug(slug)
-  }
-
-  const allMentors = await getCachedMentors()
-  return allMentors.find((mentor) => mentor.slug === slug)
+export async function getOneMentorBySlug(slug) {
+  return await getUncachedMentorBySlug(slug)
 }
 
-export async function getOneMentorById(id, useCache = false) {
-  if (!useCache) {
-    return await getUncachedMentorById(id)
-  }
-
-  const allMentors = await getCachedMentors()
-  return allMentors.find((mentor) => mentor.id === id)
+export async function getOneMentorById(id) {
+  return await getUncachedMentorById(id)
 }
 
-export async function getOneMentorByRecordId(recordId, useCache = false) {
-  if (!useCache) {
-    return await getUncachedMentorByRecordId(recordId)
-  }
-
-  const allMentors = await getCachedMentors()
-  return allMentors.find((mentor) => mentor.airtableId === recordId)
+export async function getOneMentorByRecordId(recordId) {
+  return await getUncachedMentorByRecordId(recordId)
 }
