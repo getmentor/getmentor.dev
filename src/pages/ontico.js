@@ -25,7 +25,7 @@ export async function getStaticProps(context) {
       pageMentors,
     },
 
-    revalidate: 10 * 60, // In seconds
+    revalidate: Number(process.env.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS),
   }
 }
 
