@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import { getAllMentors } from '../../server/mentors-data'
 import seo from '../../config/seo'
 import Cors from 'cors'
@@ -13,7 +12,7 @@ const cors = initMiddleware(
   })
 )
 
-const handler = async (req, res) => {
+export default async function handler(req, res) {
   await cors(req, res)
 
   // Only allow GET
@@ -51,5 +50,3 @@ const handler = async (req, res) => {
 
   return res.status(200).json({ mentors })
 }
-
-export default Sentry.withSentry(handler)

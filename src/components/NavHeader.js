@@ -26,10 +26,8 @@ export default function NavHeader(props) {
   return (
     <div className={classNames(styles.container, props.className)}>
       <div className="container flex items-center">
-        <Link href="/">
-          <a className="flex items-center pt-1">
-            <Image src="/images/logo.png" width={120} height={24} loading="eager" />
-          </a>
+        <Link href="/" className="flex items-center pt-1">
+          <Image src="/images/logo.png" width={120} height={24} loading="eager" />
         </Link>
 
         <div className={classNames(styles.toggle, 'md:hidden')} onClick={() => setOpen(!open)}>

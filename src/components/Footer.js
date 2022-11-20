@@ -23,13 +23,13 @@ export default function Footer() {
           </a>
         </p>
         <p>
-          <Link href="/privacy">
-            <a className="link">Политика в отношении персональных данных</a>
+          <Link href="/privacy" className="link">
+            Политика в отношении персональных данных
           </Link>
         </p>
         <p>
-          <Link href="/disclaimer">
-            <a className="link">Отказ от ответственности</a>
+          <Link href="/disclaimer" className="link">
+            Отказ от ответственности
           </Link>
         </p>
       </div>
