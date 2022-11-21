@@ -12,6 +12,7 @@ const moduleExports = {
   },
 
   experimental: {
+    esmExternals: false,
     largePageDataBytes: 3 * 1024 * 1024,
   },
 
