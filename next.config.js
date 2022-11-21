@@ -11,6 +11,10 @@ const moduleExports = {
     domains: ['dl.airtable.com', process.env.AZURE_STORAGE_DOMAIN],
   },
 
+  experimental: {
+    largePageDataBytes: 3 * 1024 * 1024,
+  },
+
   async headers() {
     return [
       // this header fixed bad behaviors of next <Image /> component
