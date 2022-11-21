@@ -63,4 +63,4 @@ jobs:
   #     with:
   #       environment: production
   #       sourcemaps: ./src
-  #       version: "v0.6.0"
+  #       version: "v0.5.2"

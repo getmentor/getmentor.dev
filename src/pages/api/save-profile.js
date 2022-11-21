@@ -19,7 +19,7 @@ const bodySchema = yup.object().shape({
   competencies: yup.string().required(),
 })
 
-export default async function handler(req, res) {
+const saveProfileHandler = async (req, res) => {
   req.query.id = parseInt(req.query.id, 10)
   if (isNaN(req.query.id)) {
     return res.status(404).send({ success: false, error: 'Mentor not found.' })
@@ -68,3 +68,5 @@ export default async function handler(req, res) {
 
   res.send({ success: true })
 }
+
+export default Sentry.withSentry(saveProfileHandler)
