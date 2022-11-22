@@ -22,7 +22,7 @@ jobs:
       AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
       AZURE_STORAGE_DOMAIN:  ${{ secrets.AZURE_STORAGE_DOMAIN }}
       BUILD_ON_GITHUB:  ${{ secrets.BUILD_ON_GITHUB }}
-      INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS: ${{ INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS }}
+      INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS: ${{ secrets.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
