@@ -13,6 +13,12 @@ jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
+    env:
+      AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+      AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+      AZURE_STORAGE_DOMAIN:  ${{ secrets.AZURE_STORAGE_DOMAIN }}
+      BUILD_ON_GITHUB:  ${{ secrets.BUILD_ON_GITHUB }}
+      INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS: ${{ secrets.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS }}
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v2
