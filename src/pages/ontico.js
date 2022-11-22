@@ -24,6 +24,8 @@ export async function getStaticProps(context) {
     props: {
       pageMentors,
     },
+
+    revalidate: Number(process.env.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS),
   }
 }
 
