@@ -6,7 +6,7 @@ import ContactMentorForm from '../../../components/ContactMentorForm'
 import seo from '../../../config/seo'
 import Footer from '../../../components/Footer'
 import NavHeader from '../../../components/NavHeader'
-import { getAllMentors, getOneMentorBySlug } from '../../../server/mentors-data'
+import { getOneMentorBySlug } from '../../../server/mentors-data'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
 import Image from 'next/image'
@@ -14,20 +14,7 @@ import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
 import { imageLoader } from '../../../lib/azure-image-loader'
 
-export async function getStaticPaths() {
-  const pageMentors = await getAllMentors(false, true)
-
-  const paths = pageMentors.map((m) => ({
-    params: { slug: m.slug },
-  }))
-
-  return {
-    paths,
-    fallback: 'blocking',
-  }
-}
-
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const mentor = await getOneMentorBySlug(context.params.slug)
 
   if (!mentor) {
@@ -127,6 +114,7 @@ export default function OrderMentor({ mentor }) {
       })
       .then((data) => {
         if (data.success) {
+          console.log(data)
           mentor.calendarUrl = data.calendar_url
           setReadyStatus('success')
           incerementRequestsPerDay()

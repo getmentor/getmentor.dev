@@ -17,7 +17,7 @@ function sitemapItem(path) {
 }
 
 export async function getServerSideProps({ res }) {
-  const allMentors = await getAllMentors(false, true)
+  const allMentors = await getAllMentors({ onlyVisible: true })
 
   let staticPages = [{ page: '' }, { page: 'bementor' }, { page: 'donate' }]
 

@@ -1,51 +1,37 @@
-import {
-  getMentors as getUncachedMentors,
-  getMentorById as getUncachedMentorById,
-  getMentorBySlug as getUncachedMentorBySlug,
-  getMentorByRecordId as getUncachedMentorByRecordId,
-} from './airtable-mentors'
+import fetch from 'node-fetch'
+import constants from '../config/constants'
 
-export async function getAllMentors(all_fields, show_hidden) {
-  const allMentors = await getUncachedMentors()
-
-  const filteredMentors = show_hidden ? allMentors : allMentors.filter((mentor) => mentor.isVisible)
-
-  if (all_fields) {
-    return filteredMentors
-  } else {
-    const mentors = filteredMentors.map((m) => {
-      return {
-        id: m.id,
-        slug: m.slug,
-        name: m.name,
-        job: m.job,
-        workplace: m.workplace,
-        description: m.description,
-        competencies: m.competencies,
-        about: m.about,
-        experience: m.experience,
-        price: m.price,
-        menteeCount: m.menteeCount,
-        photo: m.photo,
-        photo_url: m.photo_url,
-        sortOrder: m.sortOrder,
-        tags: m.tags,
-        sponsors: m.sponsors,
-      }
-    })
-
-    return mentors
-  }
+export async function getAllMentors(params) {
+  return makeApiCall('api/internal/mentors', params)
 }
 
-export async function getOneMentorBySlug(slug) {
-  return await getUncachedMentorBySlug(slug)
+export async function getOneMentorBySlug(slug, params) {
+  return makeApiCall('api/internal/mentors/by_slug/' + slug, params)
 }
 
-export async function getOneMentorById(id) {
-  return await getUncachedMentorById(id)
+export async function getOneMentorById(id, params) {
+  return makeApiCall('api/internal/mentors/by_id/' + id, params)
 }
 
-export async function getOneMentorByRecordId(recordId) {
-  return await getUncachedMentorByRecordId(recordId)
+export async function getOneMentorByRecordId(rec, params) {
+  return makeApiCall('api/internal/mentors/by_rec/' + rec, params)
+}
+
+export async function forceRefreshCache() {
+  return makeApiCall('api/internal/force_reset_cache')
+}
+
+async function makeApiCall(path, params) {
+  return fetch(constants.BASE_URL + path, {
+    method: 'POST',
+    body: JSON.stringify({
+      show_hidden: params?.showHiddenFields,
+      only_visible: params?.onlyVisible,
+      force_refresh: params?.forceRefresh,
+    }),
+    headers: {
+      'X-INTERNAL-MENTORS-API-AUTH-TOKEN': process.env.INTERTNAL_MENTORS_API,
+      'Content-Type': 'application/json',
+    },
+  }).then((r) => r.json())
 }

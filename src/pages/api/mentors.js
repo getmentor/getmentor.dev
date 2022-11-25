@@ -29,7 +29,7 @@ const handler = async (req, res) => {
     return res.status(403).json({})
   }
 
-  const allMentors = await getAllMentors(true)
+  const allMentors = await getAllMentors({ onlyVisible: true })
 
   const mentors = allMentors.map((m) => {
     return {

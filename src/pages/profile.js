@@ -9,7 +9,6 @@ import { getOneMentorById } from '../server/mentors-data'
 import seo from '../config/seo'
 import filters from '../config/filters'
 import Notification from '../components/Notification'
-import { AUTH_TOKEN, CALENDAR_URL } from '../lib/entities'
 import Error from 'next/error'
 import analytics from '../lib/analytics'
 import Link from 'next/link'
@@ -20,19 +19,17 @@ export async function getServerSideProps(context) {
     return { notFound: true }
   }
 
-  const mentor = await getOneMentorById(context.query.id)
+  const mentor = await getOneMentorById(context.query.id, { showHiddenFields: true })
 
   if (!mentor) {
     return { notFound: true }
   }
 
-  if (!context.query.token || mentor[AUTH_TOKEN] !== context.query.token) {
+  if (!context.query.token || mentor.authToken !== context.query.token) {
     return {
       props: { errorCode: 403, mentor: null },
     }
   }
-
-  mentor.calendarUrl = mentor[CALENDAR_URL]
 
   return {
     props: { errorCode: 0, mentor },

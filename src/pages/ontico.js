@@ -15,8 +15,8 @@ import MetaHeader from '../components/MetaHeader'
 import analytics from '../lib/analytics'
 import { useEffect } from 'react'
 
-export async function getStaticProps(context) {
-  const allMentors = await getAllMentors()
+export async function getServerSideProps(context) {
+  const allMentors = await getAllMentors({ onlyVisible: true })
 
   const pageMentors = allMentors.filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
 
@@ -24,8 +24,6 @@ export async function getStaticProps(context) {
     props: {
       pageMentors,
     },
-
-    revalidate: Number(process.env.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS),
   }
 }
 

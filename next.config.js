@@ -53,6 +53,18 @@ const moduleExports = {
         destination: '/api/internal/mentors?slug=:slug',
         permanent: true,
       },
+
+      {
+        source: '/api/internal/mentors/by_rec/:rec',
+        destination: '/api/internal/mentors?rec=:rec',
+        permanent: true,
+      },
+
+      {
+        source: '/api/internal/force_reset_cache',
+        destination: '/api/internal/mentors?force_reset_cache=1',
+        permanent: true,
+      },
     ]
   },
 
