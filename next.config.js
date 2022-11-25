@@ -14,7 +14,7 @@ const moduleExports = {
   experimental: {
     esmExternals: false,
     largePageDataBytes: 3 * 1024 * 1024,
-    trustHostHeader: true
+    trustHostHeader: true,
   },
 
   async headers() {
@@ -39,6 +39,18 @@ const moduleExports = {
       {
         source: '/:slug([a-z-]+\\d+)',
         destination: '/mentor/:slug', // Matched parameters can be used in the destination
+        permanent: true,
+      },
+
+      {
+        source: '/api/internal/mentors/by_id/:id',
+        destination: '/api/internal/mentors?id=:id',
+        permanent: true,
+      },
+
+      {
+        source: '/api/internal/mentors/by_slug/:slug',
+        destination: '/api/internal/mentors?slug=:slug',
         permanent: true,
       },
     ]
