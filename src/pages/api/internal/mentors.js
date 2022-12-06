@@ -3,7 +3,7 @@ import Cors from 'cors'
 import initMiddleware from '../../../lib/init-middleware'
 import { AUTH_TOKEN, CALENDAR_URL } from '../../../lib/entities'
 
-import { getMentors } from '../../../server/airtable-mentors'
+import { getMentors as getMentorsFromData } from '../../../server/airtable-mentors'
 
 const NodeCache = require('node-cache')
 const mentorsCache = new NodeCache({
@@ -44,16 +44,34 @@ const handler = async (req, res) => {
     return res.status(200).json({ success: true })
   }
 
+  const result = await getMentors({
+    only_visible: req.body?.only_visible,
+    show_hidden: req.body?.show_hidden,
+    id: req.query?.id,
+    slug: req.query?.slug,
+    rec: req.query?.rec,
+  })
+
+  if (req.query?.id || req.query?.slug || req.query?.rec) {
+    return result ? res.status(200).json(result[0]) : res.status(404).json()
+  } else {
+    return result
+  }
+}
+
+export default Sentry.withSentry(handler)
+
+export async function getMentors(params) {
   let result = mentorsCache.get('main')
   if (result == undefined) {
     result = await refresh()
   }
 
-  if (req.body?.only_visible) {
+  if (params.only_visible) {
     result = result.filter((m) => m.isVisible)
   }
 
-  if (req.body?.show_hidden) {
+  if (params.show_hidden) {
     result = result.map((m) => {
       return {
         ...m,
@@ -63,25 +81,23 @@ const handler = async (req, res) => {
     })
   }
 
-  if (req.query?.id) {
-    const id = parseInt(req.query.id, 10)
+  if (params.id) {
+    const id = parseInt(params.id, 10)
     result = result.filter((m) => m.id === id)
-    result = result.length === 1 ? result[0] : undefined
-  } else if (req.query?.slug) {
-    result = result.filter((m) => m.slug === req.query.slug)
-    result = result.length === 1 ? result[0] : undefined
-  } else if (req.query?.rec) {
-    result = result.filter((m) => m.airtableId === req.query.rec)
-    result = result.length === 1 ? result[0] : undefined
+    result = result.length === 1 ? result : undefined
+  } else if (params.slug) {
+    result = result.filter((m) => m.slug === params.slug)
+    result = result.length === 1 ? result : undefined
+  } else if (params.rec) {
+    result = result.filter((m) => m.airtableId === params.rec)
+    result = result.length === 1 ? result : undefined
   }
 
-  return res.status(200).json(result)
+  return result
 }
 
-export default Sentry.withSentry(handler)
-
 async function refresh(key, value) {
-  let mentors = await getMentors(true)
+  let mentors = await getMentorsFromData(true)
   mentorsCache.set('main', mentors)
   return mentors
 }

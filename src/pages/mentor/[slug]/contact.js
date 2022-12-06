@@ -114,7 +114,6 @@ export default function OrderMentor({ mentor }) {
       })
       .then((data) => {
         if (data.success) {
-          console.log(data)
           mentor.calendarUrl = data.calendar_url
           setReadyStatus('success')
           incerementRequestsPerDay()
