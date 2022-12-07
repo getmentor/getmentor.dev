@@ -2,10 +2,9 @@ import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import * as airtableMentors from '../../server/airtable-mentors'
 import { getOneMentorById, forceRefreshCache } from '../../server/mentors-data'
-import { AUTH_TOKEN } from '../../lib/entities'
 import filters from '../../config/filters'
 
-let a = require('../../lib/load-appinsights')
+require('../../lib/load-appinsights')
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),

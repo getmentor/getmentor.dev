@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
 
-let a = require('../../lib/load-appinsights')
+require('../../lib/load-appinsights')
 
 const handler = async function handler(req, res) {
   // Check for secret to confirm this is a valid request
@@ -10,7 +10,6 @@ const handler = async function handler(req, res) {
 
   try {
     const slug = req.query.slug
-    const baseUrl = process.env.GETMENTOR_DOMAIN
 
     await Promise.all([
       res.revalidate('/'),
