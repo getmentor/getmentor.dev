@@ -57,7 +57,7 @@ const saveProfileHandler = async (req, res) => {
   try {
     await Promise.all([
       airtableMentors.updateMentor(mentor.airtableId, newProps),
-      forceRefreshCache(),
+      // forceRefreshCache(),
     ])
   } catch (e) {
     Sentry.captureException(`Error: ${e.message}; ErrorCode: ${e.error}; Status: ${e.statusCode}`)
