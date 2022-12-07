@@ -18,15 +18,13 @@ import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
 
-export async function getStaticProps(context) {
-  const pageMentors = await getAllMentors()
+export async function getServerSideProps(context) {
+  const pageMentors = await getAllMentors({ onlyVisible: true })
 
   return {
     props: {
       pageMentors,
     },
-
-    revalidate: Number(process.env.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS),
   }
 }
 
