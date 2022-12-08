@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' node --require ./src/lib/load-appinsights.js node_modules/next/dist/bin/next dev",
     "build": "next build",
-    "start": "NODE_ENV=production node --require ./src/lib/load-appinsights.js node_modules/next/dist/bin/next start",
+    "start": "NODE_ENV=production node --max-old-space-size=512 --require ./src/lib/load-appinsights.js node_modules/next/dist/bin/next start",
     "start2": "NODE_ENV=production next start",
     "dev2": "next dev",
     "lint": "eslint src/",
