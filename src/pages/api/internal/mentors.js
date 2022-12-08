@@ -12,7 +12,6 @@ const mentorsCache = new NodeCache({
   useClones: false,
   deleteOnExpire: false,
 })
-mentorsCache.on('del', refresh)
 mentorsCache.on('expired', refresh)
 
 refresh()
@@ -97,7 +96,8 @@ export async function getMentors(params) {
 }
 
 async function refresh(key, value) {
-  let mentors = await getMentorsFromData(true)
+  const mentors = await getMentorsFromData(true)
+  mentorsCache.del('main');
   mentorsCache.set('main', mentors)
   return mentors
 }
