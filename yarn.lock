@@ -4508,10 +4508,10 @@ react-async-script@^1.1.1:
     hoist-non-react-statics "^3.3.0"
     prop-types "^15.5.0"
 
-react-calendly@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/react-calendly/-/react-calendly-4.0.1.tgz#2cdbc0a997d7f066c60c23e4d90c1c9a237b1ec4"
-  integrity sha512-y4IXQ/ghFSPJHlFS2XUb7tUEfLkJAF6SGDDq9EP1pzA1iKW57qwpQO/7pVwshJPPWVkEPYqLN2IkeNzShi2oKQ==
+react-calendly@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/react-calendly/-/react-calendly-4.1.1.tgz#25ac2ff3e062e4c6a0aefb83b851bebf66a94a1c"
+  integrity sha512-NEVYY3BXvDb11jmEh7ttMzXRKHSZA2POxNI64wh9sqXgcwvWzy/pfDGOxfM3UCgCvH1iXyPmdy+qntHDEprh4w==
 
 react-dom@^17.0.2:
   version "17.0.2"
