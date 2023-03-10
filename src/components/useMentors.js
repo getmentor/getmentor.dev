@@ -56,7 +56,9 @@ export default function useMentors(allMentors, pageSize = 48) {
 
   // filter by tags
   if (selectedTags.length) {
-    filteredMentors = filteredMentors.filter((mentor) => hasAllTags(mentor.tags, selectedTags))
+    filteredMentors = filteredMentors.filter((mentor) => {
+      return hasAllTags(mentor.tags, selectedTags)
+    })
   }
 
   // filter by experience

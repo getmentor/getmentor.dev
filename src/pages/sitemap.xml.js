@@ -1,5 +1,7 @@
-import { getAllMentors } from '../server/mentors-data'
+//import { getAllMentors } from '../server/mentors-data'
 import constants from '../config/constants'
+
+import getAllMentors from '../assets-plug/datas.js'
 
 const Sitemap = () => {}
 
@@ -17,7 +19,8 @@ function sitemapItem(path) {
 }
 
 export async function getServerSideProps({ res }) {
-  const allMentors = await getAllMentors({ onlyVisible: true })
+  //const allMentors = await getAllMentors({ onlyVisible: true })
+  const allMentors = getAllMentors
 
   let staticPages = [{ page: '' }, { page: 'bementor' }, { page: 'donate' }]
 

@@ -33,7 +33,7 @@ export default function Bementor() {
             Заполните{' '}
             <a
               className="link"
-              href="https://airtable.com/shraFoLi9aSqzU4U9"
+              href="https://airtable.com/shraFoLi9aSqzU4U9" ///// todo
               target="_blank"
               rel="noreferrer"
             >
@@ -46,7 +46,7 @@ export default function Bementor() {
 
       <div className="iframe-wrapper">
         <iframe
-          src="https://airtable.com/embed/shraFoLi9aSqzU4U9?backgroundColor=white"
+          src="https://airtable.com/embed/shraFoLi9aSqzU4U9?backgroundColor=white" ////todo
           style={{
             display: 'block',
             border: 'none',
