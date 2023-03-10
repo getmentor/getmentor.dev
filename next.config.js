@@ -9,7 +9,7 @@ const moduleExports = {
 
   images: {
     //   domains: ['dl.airtable.com', process.env.AZURE_STORAGE_DOMAIN],
-    domains: [''],
+    domains: [],
   },
 
   experimental: {
