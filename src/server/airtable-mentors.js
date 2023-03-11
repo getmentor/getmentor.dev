@@ -7,6 +7,9 @@ const Url = require('url')
 /**
  * @returns {Promise<Mentor[]>}
  */
+
+const TEST = process.env.NEXT_PUBLIC_TESTING_MODE
+
 async function getMentorsInternal(formula = '') {
   if (process.env.AIRTABLE_WORK_OFFLINE > 0) {
     return testData()
@@ -84,22 +87,34 @@ async function getMentorsInternal(formula = '') {
 }
 
 export async function getMentors() {
+  if (TEST === 'on') {
+    return null
+  }
   return await getMentorsInternal()
 }
 
 export async function getMentorById(id) {
+  if (TEST === 'on') {
+    return null
+  }
   const mentors = await getMentorsInternal(`Id = "${id}"`)
 
   return mentors.length === 1 ? mentors[0] : undefined
 }
 
 export async function getMentorByRecordId(recordId) {
+  if (TEST === 'on') {
+    return null
+  }
   const mentors = await getMentorsInternal(`RECORD_ID() = "${recordId}"`)
 
   return mentors.length === 1 ? mentors[0] : undefined
 }
 
 export async function getMentorBySlug(slug) {
+  if (TEST === 'on') {
+    return null
+  }
   const mentors = await getMentorsInternal(`Alias = "${slug}"`)
 
   return mentors.length === 1 ? mentors[0] : undefined
@@ -111,6 +126,9 @@ export async function getMentorBySlug(slug) {
  * @returns {Promise<Record>}
  */
 export async function updateMentor(recordId, mentor) {
+  if (TEST === 'on') {
+    return null
+  }
   let allTags = await getAllTagsCached()
   mentor.calendarType = calendarType(mentor.calendarUrl)
 
@@ -130,6 +148,9 @@ export async function updateMentor(recordId, mentor) {
 }
 
 function getMentorSponsor(tags) {
+  if (TEST === 'on') {
+    return null
+  }
   const sponsors = []
   tags.forEach((t) => {
     if (allFilters.sponsors.includes(t)) {

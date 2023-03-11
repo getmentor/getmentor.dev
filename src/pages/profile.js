@@ -5,7 +5,7 @@ import ProfileForm from '../components/ProfileForm'
 import NavHeader from '../components/NavHeader'
 import Section from '../components/Section'
 import Footer from '../components/Footer'
-//import { getOneMentorById } from '../server/mentors-data'
+import { getOneMentorById } from '../server/mentors-data'
 import seo from '../config/seo'
 import filters from '../config/filters'
 import Notification from '../components/Notification'
@@ -13,16 +13,13 @@ import Error from 'next/error'
 import analytics from '../lib/analytics'
 import Link from 'next/link'
 
-import { getMentorById } from '../assets-plug/datas'
-
 export async function getServerSideProps(context) {
   context.query.id = parseInt(context.query.id, 10)
   if (isNaN(context.query.id)) {
     return { notFound: true }
   }
 
-  //const mentor = await getOneMentorById(context.query.id, { showHiddenFields: true })
-  const mentor = getMentorById(context.query.id)
+  const mentor = await getOneMentorById(context.query.id, { showHiddenFields: true })
 
   if (!mentor) {
     return { notFound: true }

@@ -78,4 +78,5 @@ const getAllMentors = [
 ]
 
 export const getMentorById = (id) => getAllMentors.find((el) => el.id === id)
+export const getMentorBySlug = (slug) => getAllMentors.find((el) => el.slug === slug)
 export default getAllMentors

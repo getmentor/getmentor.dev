@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import * as airtableMentors from '../../server/airtable-mentors'
-import { getOneMentorById, forceRefreshCache } from '../../server/mentors-data'
+import { getOneMentorById } from '../../server/mentors-data'
 import filters from '../../config/filters'
 
 require('../../lib/load-appinsights')

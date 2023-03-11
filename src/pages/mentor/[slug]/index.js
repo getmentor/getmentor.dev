@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
 import Head from 'next/head'
+import Image from 'next/image'
 import NavHeader from '../../../components/NavHeader'
 import Footer from '../../../components/Footer'
 import { getOneMentorBySlug } from '../../../server/mentors-data'
@@ -94,7 +95,7 @@ export default function Mentor(props) {
             </div>
 
             <div className="mb-4 md:hidden">
-              <img className="w-full" src={imageLoader({ src: mentor.slug, quality: 'full' })} />
+              <Image className="w-full" src={imageLoader({ src: mentor.slug, quality: 'full' })} />
             </div>
 
             {!mentor.isVisible && (
@@ -125,7 +126,7 @@ export default function Mentor(props) {
             {mentor.isVisible && (
               <div className="mb-6">
                 <Link href={'/mentor/' + mentor.slug + '/contact'}>
-                  <a className="button">Оставить заявку</a>
+                  <div className="button">Оставить заявку</div>
                 </Link>
               </div>
             )}
@@ -162,7 +163,7 @@ export default function Mentor(props) {
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
-            <img src={imageLoader({ src: mentor.slug, quality: 'large' })} />
+            <Image src={imageLoader({ src: mentor.slug, quality: 'large' })} />
           </div>
         </div>
       </Section>

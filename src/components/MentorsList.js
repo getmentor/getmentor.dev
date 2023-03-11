@@ -11,15 +11,13 @@ export default function MentorsList(props) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
         {mentors.map((mentor) => (
           <Link key={mentor.id} href={'/mentor/' + mentor.slug}>
-            <a target="_blank">
+            <div target="_blank" className="link">
               <div className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat">
                 <Image
-                  //src={imageLoader({ src: mentor.slug, quality: 'large' })}
-                  src={imageLoader({ src: mentor.name })}
+                  src={imageLoader({ src: mentor.slug, quality: 'large' })}
                   alt={mentor.name}
                   placeholder="blur"
-                  //blurDataURL={imageLoader({ src: mentor.slug, quality: 'small' })}
-                  blurDataURL={imageLoader({ src: mentor.name })}
+                  blurDataURL={imageLoader({ src: mentor.slug, quality: 'small' })}
                   layout="fill"
                   objectFit="cover"
                 />
@@ -44,7 +42,7 @@ export default function MentorsList(props) {
                   </div>
                 )}
               </div>
-            </a>
+            </div>
           </Link>
         ))}
       </div>

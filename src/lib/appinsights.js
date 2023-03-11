@@ -13,19 +13,23 @@ if (typeof window !== 'undefined') {
   browserHistory.location.pathname = browserHistory?.state?.url
 }
 
-var reactPlugin = new ReactPlugin()
-var appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING,
-    extensions: [reactPlugin],
-    extensionConfig: {
-      [reactPlugin.identifier]: { history: browserHistory },
-    },
-  },
-})
+const TEST = process.env.NEXT_PUBLIC_TESTING_MODE
 
-if (typeof window !== 'undefined') {
-  appInsights.loadAppInsights()
+if (TEST !== 'on') {
+  var reactPlugin = new ReactPlugin()
+  var appInsights = new ApplicationInsights({
+    config: {
+      connectionString: process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING,
+      extensions: [reactPlugin],
+      extensionConfig: {
+        [reactPlugin.identifier]: { history: browserHistory },
+      },
+    },
+  })
+
+  if (typeof window !== 'undefined') {
+    appInsights.loadAppInsights()
+  }
 }
 
 export { appInsights, reactPlugin }

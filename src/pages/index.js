@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIdBadge, faComments, faEdit } from '@fortawesome/free-solid-svg-icons'
-//import { getAllMentors } from '../server/mentors-data'
+import { getAllMentors } from '../server/mentors-data'
 import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import MentorsFilters from '../components/MentorsFilters'
@@ -18,12 +18,8 @@ import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
 
-import getAllMentors from '../assets-plug/datas.js'
-
 export async function getServerSideProps(context) {
-  //const pageMentors = await getAllMentors({ onlyVisible: true })
-  const pageMentors = getAllMentors
-
+  const pageMentors = await getAllMentors({ onlyVisible: true })
   return {
     props: {
       pageMentors,
@@ -55,7 +51,6 @@ function onSponsorsShown(isVisible) {
 export default function Home({ pageMentors }) {
   const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
     useMentors(pageMentors)
-
   useEffect(() => {
     analytics.event('Visit Index Page')
   }, [])
@@ -180,9 +175,9 @@ export default function Home({ pageMentors }) {
           </a>
 
           <Link href="/ontico">
-            <a className="h-20 px-8 flex justify-center items-center">
+            <div className="h-20 px-8 flex justify-center items-center">
               <Image src="/images/ontico.png" width={300} height={(220 / 1024) * 300} />
-            </a>
+            </div>
           </Link>
 
           <a
@@ -235,13 +230,13 @@ export default function Home({ pageMentors }) {
             Поэтому у тебя есть возможность задонатить нам сколько ты хочешь. Сделать это довольно
             легко, вот{' '}
             <Link href="/donate">
-              <a className="link">тут написано как</a>
+              <div className="link">тут написано как</div>
             </Link>
             .
           </p>
 
           <Link href="/donate">
-            <a className="button bg-primary-900">Поблагодарить</a>
+            <div className="button bg-primary-900">Поблагодарить</div>
           </Link>
         </div>
       </Section>
@@ -258,7 +253,7 @@ export default function Home({ pageMentors }) {
           <p>Заполни анкету и мы обязательно добавим тебя на сайт.</p>
 
           <Link href="/bementor">
-            <a className="button bg-primary-900">Оставить заявку</a>
+            <div className="button bg-primary-900">Оставить заявку</div>
           </Link>
         </div>
       </Section>

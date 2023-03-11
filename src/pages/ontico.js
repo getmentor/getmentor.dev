@@ -5,7 +5,7 @@ import cloudinary from '../lib/cloudinary'
 import seo from '../config/seo'
 import NavHeader from '../components/NavHeader'
 import Section from '../components/Section'
-//import { getAllMentors } from '../server/mentors-data'
+import { getAllMentors } from '../server/mentors-data'
 import MentorsFilters from '../components/MentorsFilters'
 import MentorsList from '../components/MentorsList'
 import useMentors from '../components/useMentors'
@@ -15,11 +15,8 @@ import MetaHeader from '../components/MetaHeader'
 import analytics from '../lib/analytics'
 import { useEffect } from 'react'
 
-import getAllMentors from '../assets-plug/datas.js'
-
 export async function getServerSideProps(context) {
-  //const allMentors = await getAllMentors({ onlyVisible: true })
-  const allMentors = getAllMentors
+  const allMentors = await getAllMentors({ onlyVisible: true })
 
   const pageMentors = allMentors.filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
 
@@ -62,7 +59,7 @@ const galleryPhotos = [
 function Feature({ title, text, imageUrl }) {
   return (
     <div className="text-center p-4">
-      <img className="inline w-40" src={imageUrl} />
+      <Image className="inline w-40" src={imageUrl} />
       <p>{text}</p>
     </div>
   )

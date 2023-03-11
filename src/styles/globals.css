@@ -23,6 +23,8 @@
   .prose a {
     border-bottom: 2px solid;
     text-decoration: none !important;
+    display: inline-block;
+    cursor: pointer;
   }
 }
 

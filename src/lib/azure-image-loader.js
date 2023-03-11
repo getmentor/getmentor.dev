@@ -1,12 +1,16 @@
-//const STORAGE_DOMAIN = process.env.NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
+import getAllMentors from '../assets-stub/datas.js'
 
-import getAllMentors from '../assets-plug/datas.js'
+const TEST = process.env.NEXT_PUBLIC_TESTING_MODE
 
 export function imageLoader({ src, width, quality }) {
-  const mentors = getAllMentors
-  const mentor = mentors.find((el) => el.name === src)
-  return mentor.photo_url
-  /*
+  if (TEST === 'on') {
+    const mentors = getAllMentors
+    const mentor = mentors.find((el) => el.slug === src)
+    return mentor.photo_url
+  }
+
+  const STORAGE_DOMAIN = process.env.NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
+
   const url = 'https://' + STORAGE_DOMAIN + '/mentor-images/'
 
   let size = 'full'
@@ -20,5 +24,5 @@ export function imageLoader({ src, width, quality }) {
     size = quality
   }
 
-  return `${url}${src}/${size}` */
+  return `${url}${src}/${size}`
 }

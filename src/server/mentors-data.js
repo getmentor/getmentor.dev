@@ -2,11 +2,22 @@ import fetch from 'node-fetch'
 import constants from '../config/constants'
 import { getMentors as api_getMentors } from '../pages/api/internal/mentors'
 
+import getAllTestMentors from '../assets-stub/datas.js'
+import { getMentorById, getMentorBySlug } from '../assets-stub/datas'
+
+const TEST = process.env.NEXT_PUBLIC_TESTING_MODE
+
 export async function getAllMentors(params) {
+  if (TEST === 'on') {
+    return getAllTestMentors
+  }
   return fakeApiCall(params)
 }
 
 export async function getOneMentorBySlug(slug, params) {
+  if (TEST === 'on') {
+    return getMentorBySlug(slug)
+  }
   return fakeApiCall({
     ...params,
     slug: slug,
@@ -14,6 +25,9 @@ export async function getOneMentorBySlug(slug, params) {
 }
 
 export async function getOneMentorById(id, params) {
+  if (TEST === 'on') {
+    return getMentorById(id)
+  }
   return fakeApiCall({
     ...params,
     id: id,
