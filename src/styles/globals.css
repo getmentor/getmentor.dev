@@ -26,6 +26,10 @@
     display: inline-block;
     cursor: pointer;
   }
+
+  .link-image {
+    cursor: pointer;
+  }
 }
 
 @layer components {

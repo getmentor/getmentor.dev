@@ -11,7 +11,7 @@ export default function MentorsList(props) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
         {mentors.map((mentor) => (
           <Link key={mentor.id} href={'/mentor/' + mentor.slug}>
-            <div target="_blank" className="link">
+            <div target="_blank" className="link-image">
               <div className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat">
                 <Image
                   src={imageLoader({ src: mentor.slug, quality: 'large' })}
