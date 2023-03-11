@@ -34,15 +34,16 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 
-### TEST MODE manage by env variable NEXT_PUBLIC_TESTING_MODE
-## Development test frontend 
+## Test mode manage by env variable NEXT_PUBLIC_TESTING_MODE
+
+### Development test frontend 
 ```
 npm run dev2
 ```
 
-## build test frontend 
+### build test frontend 
 ```
 npm run build
 ```
 
-### [Try the application](https://getmentor-dev.vercel.app)
+### [Try the application](https://getmentor-dev-git-deploy-frontend-abra19.vercel.app/)
