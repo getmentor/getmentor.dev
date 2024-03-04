@@ -11,6 +11,9 @@
     "lint": "eslint src/",
     "inspect": "NODE_ENV=production node --inspect --require ./src/lib/load-appinsights.js node_modules/next/dist/bin/next start"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
