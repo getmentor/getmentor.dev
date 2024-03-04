@@ -5,6 +5,7 @@ import { getOneMentorById, forceRefreshCache } from '../../server/mentors-data'
 import filters from '../../config/filters'
 
 require('../../lib/load-appinsights')
+require('../../lib/pyroscope')
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
