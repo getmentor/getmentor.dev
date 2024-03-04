@@ -24,6 +24,9 @@ jobs:
       BUILD_ON_GITHUB:  ${{ secrets.BUILD_ON_GITHUB }}
       INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS: ${{ secrets.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS }}
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS }}
+      PYROSCOPE_SERVER_ADDRESS: ${{ secrets.PYROSCOPE_SERVER_ADDRESS }}
+      PYRSOCOPE_USER_ID: ${{ secrets.PYRSOCOPE_USER_ID }}
+      PYRSOCOPE_PASSWORD: ${{ secrets.PYRSOCOPE_PASSWORD }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -65,4 +68,4 @@ jobs:
       with:
         environment: production
         sourcemaps: ./src
-        version: "v0.6.0"
+        version: "v0.7.0"
