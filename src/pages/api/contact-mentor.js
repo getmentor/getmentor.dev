@@ -4,6 +4,7 @@ import { createClientRequest } from '../../server/airtable-client-requests'
 import { getOneMentorByRecordId } from '../../server/mentors-data'
 
 require('../../lib/load-appinsights')
+require('../../lib/pyroscope')
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),

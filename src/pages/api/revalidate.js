@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/nextjs'
 
 require('../../lib/load-appinsights')
+require('../../lib/pyroscope')
 
 const handler = async function handler(req, res) {
   // Check for secret to confirm this is a valid request
