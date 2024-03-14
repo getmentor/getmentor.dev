@@ -3,7 +3,7 @@ import { getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk'
 
 export const initFaro = () => {
   var faro = initializeFaro({
-    url: 'https://faro-collector-prod-eu-west-3.grafana.net/collect/ff89ecdffa24839797cd050e86b0dbbd',
+    url: process.env.NEXT_PUBLIC_FARO_ENDPOINT + process.env.NEXT_PUBLIC_FARO_INSTRUMENTATION_KEY,
     app: {
       name: 'getmentor_dev',
       version: '1.0.0',
