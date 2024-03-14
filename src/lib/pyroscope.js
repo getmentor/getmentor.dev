@@ -7,6 +7,4 @@ Pyroscope.init({
   basicAuthPassword: process.env.PYRSOCOPE_PASSWORD,
 })
 
-console.log('pyroscope init')
-
 Pyroscope.start()
