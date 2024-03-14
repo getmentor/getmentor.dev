@@ -13,6 +13,7 @@ import Image from 'next/image'
 import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
 import { imageLoader } from '../../../lib/azure-image-loader'
+import { initFaro } from '../../../lib/faro'
 
 export async function getServerSideProps(context) {
   const mentor = await getOneMentorBySlug(context.params.slug)
@@ -31,6 +32,10 @@ export async function getServerSideProps(context) {
 }
 
 export default function OrderMentor({ mentor }) {
+  useEffect(() => {
+    initFaro()
+  })
+
   const [readyStatus, setReadyStatus] = useState('')
   const [formData, setFormData] = useState()
 

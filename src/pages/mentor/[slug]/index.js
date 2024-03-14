@@ -15,6 +15,7 @@ import { htmlContent } from '../../../lib/html-content'
 import { polyfill } from 'interweave-ssr'
 import pluralize from '../../../lib/pluralize'
 import { imageLoader } from '../../../lib/azure-image-loader'
+import { initFaro } from '../../../lib/faro'
 
 // This enables rendering profile HTML on server
 polyfill()
@@ -38,6 +39,10 @@ export async function getServerSideProps(context) {
 export default function Mentor(props) {
   const mentor = props.mentor
   const title = mentor.name + ' | ' + seo.title
+
+  useEffect(() => {
+    initFaro()
+  })
 
   useEffect(() => {
     analytics.event('View Mentor Page', {
