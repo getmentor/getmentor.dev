@@ -69,7 +69,8 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "simple-git-hooks": "^2.8.0",
-    "yarn-upgrade-all": "^0.7.1"
+    "yarn-upgrade-all": "^0.7.1",
+    "@tiptap/core":"~2.0.0"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
