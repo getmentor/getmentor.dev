@@ -14,6 +14,7 @@ import MentorsSearch from '../components/MentorsSearch'
 import MetaHeader from '../components/MetaHeader'
 import analytics from '../lib/analytics'
 import { useEffect } from 'react'
+import { initFaro } from '../lib/faro'
 
 export async function getServerSideProps(context) {
   const allMentors = await getAllMentors({ onlyVisible: true })
@@ -66,6 +67,10 @@ function Feature({ title, text, imageUrl }) {
 }
 
 export default function Ontico({ pageMentors }) {
+  useEffect(() => {
+    initFaro()
+  })
+
   const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
     useMentors(pageMentors)
 

@@ -19,6 +19,8 @@
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@grafana/faro-web-sdk": "^1.4.2",
+    "@grafana/faro-web-tracing": "^1.4.2",
     "@headlessui/react": "^1.6.6",
     "@microsoft/applicationinsights-react-js": "^3.4.0",
     "@microsoft/applicationinsights-web": "^2.8.7",
