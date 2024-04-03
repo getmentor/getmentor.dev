@@ -11,7 +11,7 @@ export default function Donate() {
   const supporters = [
     { name: 'Александр Терехин', level: 2 },
     { name: 'Kirill Krasnoshchekov', level: 2 },
-    { name: 'Ольга Zhyzhka', level: 2 },
+    { name: 'usukololgubu', level: 2 },
 
     // { name: 'Стример', level: 2 },
     // { name: 'Меценат', level: 3 },
