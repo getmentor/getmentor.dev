@@ -35,6 +35,7 @@ export default function MentorsFilters(props) {
     appliedFilters.tags.reset()
     appliedFilters.experience.reset()
     appliedFilters.price.reset()
+    appliedFilters.noSessions.reset()
 
     analytics.event('Reset All Filters')
     history.replaceState(null, null, '#')
@@ -54,6 +55,11 @@ export default function MentorsFilters(props) {
       onRemove: 'Filter Removed Experience',
       onAdd: 'Filter Added Experience',
     })
+  }
+
+  const onClickNoSessions = (value) => {
+    const selected = appliedFilters.noSessions.value
+    appliedFilters.noSessions.set(!selected)
   }
 
   const onClickPrice = (price) => {
@@ -214,6 +220,19 @@ export default function MentorsFilters(props) {
             multiSelect={false}
             theme="block"
           />
+        </li>
+
+        <li
+          className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
+            'text-sm rounded-sm py-1 pl-4 pr-4 m-1 cursor-pointer bg-gray-300 text-gray-600 bg-indigo-200 hover:bg-gray-200 text-gray-600':
+              !appliedFilters.noSessions.value,
+            'text-sm rounded-sm py-1 pl-4 pr-4 m-1 cursor-pointer text-gray-600 bg-gray-700 text-white':
+              appliedFilters.noSessions.value,
+          })}
+          key="noSessions"
+          onClick={onClickNoSessions}
+        >
+          Без сессий
         </li>
 
         <li

@@ -37,6 +37,7 @@ async function getMentorsInternal(formula = '') {
         'Status',
         'AuthToken',
         'Calendly Url',
+        'Is New',
       ],
     })
     .all()
@@ -68,6 +69,7 @@ async function getMentorsInternal(formula = '') {
       isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
       sponsors: getMentorSponsor(tags),
       calendarType: calendarType(item.fields['Calendly Url']),
+      isNew: item.fields['Is New'] === 1,
 
       // symbol props will not be serialized and sent to client
       // TODO token will not be serialized event you will want save it to cache
