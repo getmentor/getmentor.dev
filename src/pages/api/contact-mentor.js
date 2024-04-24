@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import { createClientRequest } from '../../server/airtable-client-requests'
 import { getOneMentorByRecordId } from '../../server/mentors-data'
@@ -30,7 +29,6 @@ const handler = async (req, res) => {
       return res.json()
     })
     .catch((e) => {
-      Sentry.captureException('Captcha exception: ' + JSON.stringify(e))
       return res.status(400).json({ success: false, error: 'Captcha failed.' })
     })
 
@@ -46,7 +44,6 @@ const handler = async (req, res) => {
           Telegram: req.body['telegramUsername'],
         })
       } catch (e) {
-        Sentry.captureException('Create request failed: ' + JSON.stringify(e))
         return res.status(400).json({ success: false, error: 'Save to storage failed' })
       }
     }
@@ -61,4 +58,4 @@ const handler = async (req, res) => {
   res.status(200).json({ success: true, calendar_url: mentor.calendarUrl })
 }
 
-export default Sentry.withSentry(handler)
+export default handler

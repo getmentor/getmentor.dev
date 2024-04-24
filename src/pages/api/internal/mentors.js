@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import Cors from 'cors'
 import initMiddleware from '../../../lib/init-middleware'
 import { AUTH_TOKEN, CALENDAR_URL } from '../../../lib/entities'
@@ -58,7 +57,7 @@ const handler = async (req, res) => {
   }
 }
 
-export default Sentry.withSentry(handler)
+export default handler
 
 export async function getMentors(params) {
   let result = mentorsCache.get('main')
@@ -97,7 +96,7 @@ export async function getMentors(params) {
 
 async function refresh(key, value) {
   const mentors = await getMentorsFromData(true)
-  mentorsCache.del('main');
+  mentorsCache.del('main')
   mentorsCache.set('main', mentors)
   return mentors
 }
