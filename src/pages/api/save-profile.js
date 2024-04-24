@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import * as airtableMentors from '../../server/airtable-mentors'
 import { getOneMentorById, forceRefreshCache } from '../../server/mentors-data'
@@ -61,7 +60,6 @@ const saveProfileHandler = async (req, res) => {
       // forceRefreshCache(),
     ])
   } catch (e) {
-    Sentry.captureException(`Error: ${e.message}; ErrorCode: ${e.error}; Status: ${e.statusCode}`)
     return res.status(503).send({ success: false })
   }
 
@@ -72,4 +70,4 @@ const saveProfileHandler = async (req, res) => {
   res.send({ success: true })
 }
 
-export default Sentry.withSentry(saveProfileHandler)
+export default saveProfileHandler

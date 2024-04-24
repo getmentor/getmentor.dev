@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import { getOneMentorById } from '../../../server/mentors-data'
 import seo from '../../../config/seo'
 import Cors from 'cors'
@@ -53,4 +52,4 @@ const handler = async (req, res) => {
   }
 }
 
-export default Sentry.withSentry(handler)
+export default handler
