@@ -21,6 +21,11 @@ export default function MentorsList(props) {
                   layout="fill"
                   objectFit="cover"
                 />
+                {mentor.isNew && (
+                  <div className="bg-gray-800 text-white w-20 h-1 absolute m-2 rounded-lg p-1.5 h-8 align-middle text-center text-sm">
+                    🎉 New
+                  </div>
+                )}
               </div>
 
               <div className="mt-3 mb-5">
