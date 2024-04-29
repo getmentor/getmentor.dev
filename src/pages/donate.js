@@ -9,13 +9,13 @@ import seo from '../config/seo'
 
 export default function Donate() {
   const supporters = [
-    // { name: 'Денис Бесков', level: 4, url: 'https://systems.education/' },
-    { name: 'Марина Гладышева', level: 2 },
-    { name: 'Artem Grygorenko', level: 2 },
-    { name: 'Paul Seredkin', level: 2 },
-    // { name: 'Иван Богданов', level: 2 },
-    //{ name: 'Михаил Князев', level: 3 },
-    //{ name: 'Иван Круглов', level: 3 },
+    { name: 'Александр Терехин', level: 2 },
+    { name: 'Kirill Krasnoshchekov', level: 2 },
+    { name: 'usukololgubu', level: 2 },
+
+    // { name: 'Стример', level: 2 },
+    // { name: 'Меценат', level: 3 },
+    // { name: 'Мини-спонсор', level: 4, url: 'https://getmentor.dev/' },
   ]
 
   const title = 'Донат | ' + seo.title

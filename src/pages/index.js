@@ -17,9 +17,10 @@ import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
+import { initFaro } from '../lib/faro'
 
-export async function getStaticProps(context) {
-  const pageMentors = await getAllMentors(false, false, false)
+export async function getServerSideProps(context) {
+  const pageMentors = await getAllMentors({ onlyVisible: true })
 
   return {
     props: {
@@ -50,6 +51,10 @@ function onSponsorsShown(isVisible) {
 }
 
 export default function Home({ pageMentors }) {
+  useEffect(() => {
+    initFaro()
+  })
+
   const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
     useMentors(pageMentors)
 
@@ -93,7 +98,7 @@ export default function Home({ pageMentors }) {
           <Feature
             icon={faIdBadge}
             title="Выбери ментора"
-            text="С нами работают 500+ специалистов из Авито, Яндекса, Google и других компаний. Можешь выбрать нужного человека по специальности, опыту работы и стоимости встречи."
+            text="С нами работают 2000+ специалистов из Авито, Яндекса, Google и других компаний. Можешь выбрать нужного человека по специальности, опыту работы и стоимости встречи."
             subline="Всех менторов мы проверяем сами: никакого шарлатанства."
           />
 

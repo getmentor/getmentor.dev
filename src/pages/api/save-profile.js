@@ -1,11 +1,10 @@
-import * as Sentry from '@sentry/nextjs'
 import * as yup from 'yup'
 import * as airtableMentors from '../../server/airtable-mentors'
-import { getOneMentorById } from '../../server/mentors-data'
-import { AUTH_TOKEN } from '../../lib/entities'
+import { getOneMentorById, forceRefreshCache } from '../../server/mentors-data'
 import filters from '../../config/filters'
 
-let a = require('../../lib/load-appinsights')
+require('../../lib/load-appinsights')
+require('../../lib/pyroscope')
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
@@ -37,12 +36,12 @@ const saveProfileHandler = async (req, res) => {
     }
   }
 
-  const mentor = await getOneMentorById(req.query.id, false)
+  const mentor = await getOneMentorById(req.query.id, { showHiddenFields: true })
 
   if (!mentor) {
     return res.status(404).send({ success: false, error: 'Mentor not found.' })
   }
-  if (!req.query.token || mentor[AUTH_TOKEN] !== req.query.token) {
+  if (!req.query.token || mentor.authToken !== req.query.token) {
     return res.status(403).send({ success: false, error: 'Access denied.' })
   }
 
@@ -56,9 +55,11 @@ const saveProfileHandler = async (req, res) => {
   }
 
   try {
-    await airtableMentors.updateMentor(mentor.airtableId, newProps)
+    await Promise.all([
+      airtableMentors.updateMentor(mentor.airtableId, newProps),
+      // forceRefreshCache(),
+    ])
   } catch (e) {
-    Sentry.captureException(`Error: ${e.message}; ErrorCode: ${e.error}; Status: ${e.statusCode}`)
     return res.status(503).send({ success: false })
   }
 
@@ -69,4 +70,4 @@ const saveProfileHandler = async (req, res) => {
   res.send({ success: true })
 }
 
-export default Sentry.withSentry(saveProfileHandler)
+export default saveProfileHandler

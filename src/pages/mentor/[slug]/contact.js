@@ -6,28 +6,17 @@ import ContactMentorForm from '../../../components/ContactMentorForm'
 import seo from '../../../config/seo'
 import Footer from '../../../components/Footer'
 import NavHeader from '../../../components/NavHeader'
-import { getAllMentors, getOneMentorBySlug } from '../../../server/mentors-data'
+import { getOneMentorBySlug } from '../../../server/mentors-data'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
 import Image from 'next/image'
 import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
+import { imageLoader } from '../../../lib/azure-image-loader'
+import { initFaro } from '../../../lib/faro'
 
-export async function getStaticPaths() {
-  const pageMentors = await getAllMentors()
-
-  const paths = pageMentors.map((m) => ({
-    params: { slug: m.slug },
-  }))
-
-  return {
-    paths,
-    fallback: 'blocking',
-  }
-}
-
-export async function getStaticProps(context) {
-  const mentor = await getOneMentorBySlug(context.params.slug, false)
+export async function getServerSideProps(context) {
+  const mentor = await getOneMentorBySlug(context.params.slug)
 
   if (!mentor) {
     return {
@@ -43,6 +32,10 @@ export async function getStaticProps(context) {
 }
 
 export default function OrderMentor({ mentor }) {
+  useEffect(() => {
+    initFaro()
+  })
+
   const [readyStatus, setReadyStatus] = useState('')
   const [formData, setFormData] = useState()
 
@@ -157,11 +150,10 @@ export default function OrderMentor({ mentor }) {
             <div className="w-full sm:w-32">
               <div className="aspect-w-1 aspect-h-1 relative">
                 <Image
-                  src={mentor.photo.thumbnails?.large.url || mentor.photo_url}
+                  src={imageLoader({ src: mentor.slug, quality: 'large' })}
                   alt={mentor.name}
                   layout="fill"
                   objectFit="cover"
-                  unoptimized={true}
                 />
               </div>
             </div>

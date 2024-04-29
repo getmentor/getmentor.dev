@@ -64,7 +64,7 @@ async function getMentorsInternal(formula = '') {
       photo: item.fields['Image_Attachment'][0],
       photo_url: item.fields['Image'],
       tags: tags,
-      sortOrder: item.fields['SortOrder'],
+      sortOrder: item.fields['SortOrder'] || 10000,
       isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
       sponsors: getMentorSponsor(tags),
       calendarType: calendarType(item.fields['Calendly Url']),

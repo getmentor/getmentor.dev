@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import { getAllMentors } from '../../server/mentors-data'
 import seo from '../../config/seo'
 import Cors from 'cors'
@@ -29,7 +28,7 @@ const handler = async (req, res) => {
     return res.status(403).json({})
   }
 
-  const allMentors = await getAllMentors(true)
+  const allMentors = await getAllMentors({ onlyVisible: true })
 
   const mentors = allMentors.map((m) => {
     return {
@@ -52,4 +51,4 @@ const handler = async (req, res) => {
   return res.status(200).json({ mentors })
 }
 
-export default Sentry.withSentry(handler)
+export default handler

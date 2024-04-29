@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import pluralize from '../lib/pluralize'
+import { imageLoader } from '../lib/azure-image-loader'
 
 export default function MentorsList(props) {
   const { mentors, hasMore, onClickMore } = props
@@ -13,11 +14,12 @@ export default function MentorsList(props) {
             <a target="_blank">
               <div className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat">
                 <Image
-                  src={mentor.photo.thumbnails?.large.url || mentor.photo_url}
+                  src={imageLoader({ src: mentor.slug, quality: 'large' })}
                   alt={mentor.name}
+                  placeholder="blur"
+                  blurDataURL={imageLoader({ src: mentor.slug, quality: 'small' })}
                   layout="fill"
                   objectFit="cover"
-                  unoptimized={true}
                 />
               </div>
 
