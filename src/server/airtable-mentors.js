@@ -179,6 +179,7 @@ function testData() {
       isVisible: 1,
       sponsors: 'Сообщество Онтико',
       calendarType: 'none',
+      isNew: true,
 
       // symbol props will not be serialized and sent to client
       // TODO token will not be serialized event you will want save it to cache

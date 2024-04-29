@@ -36,6 +36,7 @@ export default function MentorsFilters(props) {
     appliedFilters.experience.reset()
     appliedFilters.price.reset()
     appliedFilters.noSessions.reset()
+    appliedFilters.newMentor.reset()
 
     analytics.event('Reset All Filters')
     history.replaceState(null, null, '#')
@@ -60,6 +61,11 @@ export default function MentorsFilters(props) {
   const onClickNoSessions = (value) => {
     const selected = appliedFilters.noSessions.value
     appliedFilters.noSessions.set(!selected)
+  }
+
+  const onClickNewMentor = (value) => {
+    const selected = appliedFilters.newMentor.value
+    appliedFilters.newMentor.set(!selected)
   }
 
   const onClickPrice = (price) => {
@@ -222,6 +228,19 @@ export default function MentorsFilters(props) {
           />
         </li>
 
+        <li
+          className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
+            'text-sm rounded-sm py-1 pl-4 pr-4 m-1 cursor-pointer bg-gray-300 text-gray-600 bg-indigo-200 hover:bg-gray-200 text-gray-600':
+              !appliedFilters.newMentor.value,
+            'text-sm rounded-sm py-1 pl-4 pr-4 m-1 cursor-pointer text-gray-600 bg-gray-700 text-white':
+              appliedFilters.newMentor.value,
+          })}
+          key="newMentor"
+          onClick={onClickNewMentor}
+        >
+          🎉 Новички
+        </li>
+
         <div className="group relative flex justify-center">
           <li
             className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
@@ -233,7 +252,7 @@ export default function MentorsFilters(props) {
             key="noSessions"
             onClick={onClickNoSessions}
           >
-            Без сессий
+            🫶 Без сессий
             <span className="absolute top-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100 z-50 w-96 text-left">
               Сортировка спика работает рандомно, так что каждый ментор имеет равный шанс оказаться
               в топе. Однако некоторым менторам не везёт, и они не сразу добираются до внимания
