@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIdBadge, faComments, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { getAllMentors } from '../server/mentors-data'

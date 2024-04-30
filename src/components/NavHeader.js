@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import styles from './NavHeader.module.css'
 
 function Nav() {
