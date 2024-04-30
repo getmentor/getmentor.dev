@@ -60,7 +60,7 @@ const galleryPhotos = [
 function Feature({ title, text, imageUrl }) {
   return (
     <div className="text-center p-4">
-      <img className="inline w-40" src={imageUrl} alt="icon" />
+      <Image className="inline" width={100} height={100} src={imageUrl} alt="icon" />
       <p>{text}</p>
     </div>
   )
