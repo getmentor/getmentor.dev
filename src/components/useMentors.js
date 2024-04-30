@@ -9,6 +9,10 @@ export default function useMentors(allMentors, pageSize = 48) {
   const [selectedPrice, setSelectedPrice] = useState(undefined)
   const [selectedExperience, setSelectedExperience] = useState([])
 
+  const [selectedNoSessions, setSelectedNoSessions] = useState(false)
+
+  const [selectedNewMentor, setSelectedNewMentor] = useState(false)
+
   // reset pagination on filters change
   useEffect(() => {
     setMentorsCount(pageSize)
@@ -75,6 +79,16 @@ export default function useMentors(allMentors, pageSize = 48) {
     filteredMentors = filteredMentors.filter((mentor) => priceFilters?.includes(mentor.price))
   }
 
+  // filter by no session
+  if (selectedNoSessions) {
+    filteredMentors = filteredMentors.filter((mentor) => mentor.menteeCount === 0)
+  }
+
+  // filter by new
+  if (selectedNewMentor) {
+    filteredMentors = filteredMentors.filter((mentor) => mentor.isNew)
+  }
+
   const mentors = filteredMentors.slice(0, mentorsCount)
   const hasMoreMentors = filteredMentors.length > mentorsCount
 
@@ -95,6 +109,16 @@ export default function useMentors(allMentors, pageSize = 48) {
         values: selectedPrice,
         set: setSelectedPrice,
         reset: () => setSelectedPrice(undefined),
+      },
+      noSessions: {
+        value: selectedNoSessions,
+        set: setSelectedNoSessions,
+        reset: () => setSelectedNoSessions(false),
+      },
+      newMentor: {
+        value: selectedNewMentor,
+        set: setSelectedNewMentor,
+        reset: () => setSelectedNewMentor(false),
       },
       count: () => {
         return selectedTags.length + selectedExperience.length + (selectedPrice ? 1 : 0)
