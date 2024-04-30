@@ -140,8 +140,8 @@ export default function Home({ pageMentors }) {
         </div>
 
         <div className="text-center mt-4">
-          <Link href="/donate">
-            <a className="link">Почему это важно</a>
+          <Link href="/donate" className="link">
+            Почему это важно
           </Link>
         </div>
       </Section>
@@ -181,10 +181,8 @@ export default function Home({ pageMentors }) {
             <Image src="/images/avito_tech.png" width={300} height={100} />
           </a>
 
-          <Link href="/ontico">
-            <a className="h-20 px-8 flex justify-center items-center">
-              <Image src="/images/ontico.png" width={300} height={(220 / 1024) * 300} />
-            </a>
+          <Link href="/ontico" className="h-20 px-8 flex justify-center items-center">
+            <Image src="/images/ontico.png" width={300} height={(220 / 1024) * 300} />
           </Link>
 
           <a
@@ -236,14 +234,14 @@ export default function Home({ pageMentors }) {
           <p>
             Поэтому у тебя есть возможность задонатить нам сколько ты хочешь. Сделать это довольно
             легко, вот{' '}
-            <Link href="/donate">
-              <a className="link">тут написано как</a>
+            <Link href="/donate" className="link">
+              тут написано как
             </Link>
             .
           </p>
 
-          <Link href="/donate">
-            <a className="button bg-primary-900">Поблагодарить</a>
+          <Link href="/donate" className="button bg-primary-900">
+            Поблагодарить
           </Link>
         </div>
       </Section>
@@ -259,8 +257,8 @@ export default function Home({ pageMentors }) {
 
           <p>Заполни анкету и мы обязательно добавим тебя на сайт.</p>
 
-          <Link href="/bementor">
-            <a className="button bg-primary-900">Оставить заявку</a>
+          <Link href="/bementor" className="button bg-primary-900">
+            Оставить заявку
           </Link>
         </div>
       </Section>
