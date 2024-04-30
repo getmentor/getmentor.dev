@@ -60,7 +60,7 @@ const galleryPhotos = [
 function Feature({ title, text, imageUrl }) {
   return (
     <div className="text-center p-4">
-      <img className="inline w-40" src={imageUrl} />
+      <img className="inline w-40" src={imageUrl} alt="icon" />
       <p>{text}</p>
     </div>
   )
@@ -152,20 +152,11 @@ export default function Ontico({ pageMentors }) {
 
       <Section id="howitworks">
         <div className="flex flex-wrap justify-around max-w-screen-lg -my-10 mx-auto">
-          <Feature
-            text="Более 50 конференций"
-            imageUrl="https://dl.airtable.com/.attachments/a372ca40ab8d5407d9a215fdad23baad/41841dcd/Icons-01.png"
-          />
+          <Feature text="Более 50 конференций" imageUrl="/images/ontico/Icons-01.png" />
 
-          <Feature
-            text="Более 3 000 докладчиков"
-            imageUrl="https://dl.airtable.com/.attachments/81e7479c0d8caa0a54e9bad068693bba/1e367350/Icons-02.png"
-          />
+          <Feature text="Более 3 000 докладчиков" imageUrl="/images/ontico/Icons-02.png" />
 
-          <Feature
-            text="Более 40 000 участников"
-            imageUrl="https://dl.airtable.com/.attachments/438dd1569af1535542ce8ffcededc647/f92ec701/Icons-03.png"
-          />
+          <Feature text="Более 40 000 участников" imageUrl="/images/ontico/Icons-03.png" />
         </div>
       </Section>
 
