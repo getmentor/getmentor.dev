@@ -138,6 +138,7 @@ export default function Home({ pageMentors }) {
                   maxWidth: '100%',
                   height: 'auto',
                 }}
+                alt={donate.name}
               />
             </a>
           ))}
@@ -190,6 +191,7 @@ export default function Home({ pageMentors }) {
                 maxWidth: '100%',
                 height: 'auto',
               }}
+              alt="avito.tech"
             />
           </a>
 
@@ -202,6 +204,7 @@ export default function Home({ pageMentors }) {
                 maxWidth: '100%',
                 height: 'auto',
               }}
+              alt="Ontico"
             />
           </Link>
 
@@ -219,6 +222,7 @@ export default function Home({ pageMentors }) {
                 maxWidth: '100%',
                 height: 'auto',
               }}
+              alt="PSYvIT"
             />
           </a>
         </div>
