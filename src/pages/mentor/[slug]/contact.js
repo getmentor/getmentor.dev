@@ -9,7 +9,7 @@ import NavHeader from '../../../components/NavHeader'
 import { getOneMentorBySlug } from '../../../server/mentors-data'
 import { useEffect, useState } from 'react'
 import analytics from '../../../lib/analytics'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
 import { imageLoader } from '../../../lib/azure-image-loader'
@@ -152,8 +152,11 @@ export default function OrderMentor({ mentor }) {
                 <Image
                   src={imageLoader({ src: mentor.slug, quality: 'large' })}
                   alt={mentor.name}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  sizes="100vw"
+                  style={{
+                    objectFit: 'cover',
+                  }}
                 />
               </div>
             </div>

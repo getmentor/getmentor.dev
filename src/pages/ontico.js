@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import classNames from 'classnames'
 import cloudinary from '../lib/cloudinary'
 import seo from '../config/seo'
@@ -92,7 +92,16 @@ export default function Ontico({ pageMentors }) {
       <Section id="header">
         <div className="py-14 max-w-screen-lg mx-auto">
           <h1 className="-ml-3">
-            <Image src="/images/ontico.png" alt="Онтико" width={400} height={(400 / 1024) * 220} />
+            <Image
+              src="/images/ontico.png"
+              alt="Онтико"
+              width={400}
+              height={(400 / 1024) * 220}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
           </h1>
 
           <p className="text-3xl leading-relaxed">
@@ -128,6 +137,10 @@ export default function Ontico({ pageMentors }) {
                 width: 100,
                 blur: 400,
               })}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
             />
           </div>
 
@@ -189,6 +202,10 @@ export default function Ontico({ pageMentors }) {
                 }}
                 placeholder="blur"
                 blurDataURL={cloudinary.url(photoUrl, { width: 100, blur: 200 })}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
               />
             </div>
           ))}
@@ -219,6 +236,10 @@ export default function Ontico({ pageMentors }) {
                 width: 100,
                 blur: 400,
               })}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
             />
           </div>
         </div>

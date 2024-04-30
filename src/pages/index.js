@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIdBadge, faComments, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { getAllMentors } from '../server/mentors-data'
@@ -134,6 +134,10 @@ export default function Home({ pageMentors }) {
                 src={donate.image.url}
                 width={donate.image.width}
                 height={donate.image.height}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
               />
             </a>
           ))}
@@ -178,11 +182,27 @@ export default function Home({ pageMentors }) {
             target="_blank"
             rel="noreferrer"
           >
-            <Image src="/images/avito_tech.png" width={300} height={100} />
+            <Image
+              src="/images/avito_tech.png"
+              width={300}
+              height={100}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
           </a>
 
           <Link href="/ontico" className="h-20 px-8 flex justify-center items-center">
-            <Image src="/images/ontico.png" width={300} height={(220 / 1024) * 300} />
+            <Image
+              src="/images/ontico.png"
+              width={300}
+              height={(220 / 1024) * 300}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
           </Link>
 
           <a
@@ -191,7 +211,15 @@ export default function Home({ pageMentors }) {
             target="_blank"
             rel="noreferrer"
           >
-            <Image src="/images/psyvit.png" width={300} height={100} />
+            <Image
+              src="/images/psyvit.png"
+              width={300}
+              height={100}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
           </a>
         </div>
 

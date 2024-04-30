@@ -3,7 +3,7 @@ import NavHeader from '../components/NavHeader'
 import Footer from '../components/Footer'
 import Section from '../components/Section'
 import donates from '../config/donates'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 
@@ -60,6 +60,10 @@ export default function Donate() {
                 src={donate.image.url}
                 width={donate.image.width}
                 height={donate.image.height}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
               />
             </a>
           ))}

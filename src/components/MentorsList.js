@@ -1,4 +1,4 @@
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import Link from 'next/link'
 import pluralize from '../lib/pluralize'
 import { imageLoader } from '../lib/azure-image-loader'
@@ -17,8 +17,11 @@ export default function MentorsList(props) {
                 alt={mentor.name}
                 placeholder="blur"
                 blurDataURL={imageLoader({ src: mentor.slug, quality: 'small' })}
-                layout="fill"
-                objectFit="cover"
+                fill
+                sizes="100vw"
+                style={{
+                  objectFit: 'cover',
+                }}
               />
               {mentor.isNew && (
                 <div className="bg-gray-800 text-white w-20 h-1 absolute m-2 rounded-lg p-1.5 h-8 align-middle text-center text-sm">

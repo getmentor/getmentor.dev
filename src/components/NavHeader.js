@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import styles from './NavHeader.module.css'
 
 function Nav() {
@@ -27,7 +27,16 @@ export default function NavHeader(props) {
     <div className={classNames(styles.container, props.className)}>
       <div className="container flex items-center">
         <Link href="/" className="flex items-center pt-1">
-          <Image src="/images/logo.png" width={120} height={24} loading="eager" />
+          <Image
+            src="/images/logo.png"
+            width={120}
+            height={24}
+            loading="eager"
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          />
         </Link>
 
         <div className={classNames(styles.toggle, 'md:hidden')} onClick={() => setOpen(!open)}>
