@@ -141,6 +141,7 @@ export default function Ontico({ pageMentors }) {
                 maxWidth: '100%',
                 height: 'auto',
               }}
+              alt="ontico"
             />
           </div>
 
@@ -197,6 +198,7 @@ export default function Ontico({ pageMentors }) {
                   maxWidth: '100%',
                   height: 'auto',
                 }}
+                alt="ontico"
               />
             </div>
           ))}
@@ -231,6 +233,7 @@ export default function Ontico({ pageMentors }) {
                 maxWidth: '100%',
                 height: 'auto',
               }}
+              alt="ontico"
             />
           </div>
         </div>
