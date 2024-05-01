@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import ReactTooltip from 'react-tooltip'
+import Link from 'next/link'
 
 const Url = require('url')
 
@@ -61,9 +62,9 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
         <label className="block mb-2 font-medium text-gray-700">
           <em>
             Для редактирования фото напишите в телеграм{' '}
-            <a href="https://t.me/glamcoder" rel="nofollow">
+            <Link href="https://t.me/glamcoder" rel="nofollow">
               @glamcoder
-            </a>
+            </Link>
           </em>
         </label>
       </div>
@@ -315,17 +316,17 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
       <div>
         <label htmlFor="calendarUrl" className="block mb-2 font-medium text-gray-700">
           Ссылка на запись в ваш календарь (
-          <a href="https://calendly.com" target="_blank" className="link" rel="noreferrer">
+          <Link href="https://calendly.com" target="_blank" className="link" rel="noreferrer">
             Calendly
-          </a>
+          </Link>
           ,{' '}
-          <a href="https://koalendar.com" target="_blank" className="link" rel="noreferrer">
+          <Link href="https://koalendar.com" target="_blank" className="link" rel="noreferrer">
             Koalendar
-          </a>{' '}
+          </Link>{' '}
           или что-то ещё){' '}
-          <a data-tip data-for="calendar-tip">
+          <Link data-tip data-for="calendar-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
-          </a>
+          </Link>
           <ReactTooltip id="calendar-tip" place="right" type="dark" effect="solid">
             <span>
               Если вы пользуетесь системами управления календарём (например, Calendly.com), то

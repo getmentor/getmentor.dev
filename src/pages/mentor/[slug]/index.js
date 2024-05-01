@@ -99,7 +99,11 @@ export default function Mentor(props) {
             </div>
 
             <div className="mb-4 md:hidden">
-              <img className="w-full" src={imageLoader({ src: mentor.slug, quality: 'full' })} />
+              <img
+                className="w-full"
+                src={imageLoader({ src: mentor.slug, quality: 'full' })}
+                alt={mentor.name}
+              />
             </div>
 
             {!mentor.isVisible && (
@@ -129,8 +133,8 @@ export default function Mentor(props) {
 
             {mentor.isVisible && (
               <div className="mb-6">
-                <Link href={'/mentor/' + mentor.slug + '/contact'}>
-                  <a className="button">Оставить заявку</a>
+                <Link href={'/mentor/' + mentor.slug + '/contact'} className="button">
+                  Оставить заявку
                 </Link>
               </div>
             )}
@@ -167,7 +171,7 @@ export default function Mentor(props) {
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
-            <img src={imageLoader({ src: mentor.slug, quality: 'large' })} />
+            <img src={imageLoader({ src: mentor.slug, quality: 'large' })} alt={mentor.name} />
           </div>
         </div>
       </Section>

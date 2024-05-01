@@ -60,7 +60,7 @@ const galleryPhotos = [
 function Feature({ title, text, imageUrl }) {
   return (
     <div className="text-center p-4">
-      <img className="inline w-40" src={imageUrl} alt="icon" />
+      <Image className="inline" width={100} height={100} src={imageUrl} alt="icon" />
       <p>{text}</p>
     </div>
   )
@@ -92,7 +92,16 @@ export default function Ontico({ pageMentors }) {
       <Section id="header">
         <div className="py-14 max-w-screen-lg mx-auto">
           <h1 className="-ml-3">
-            <Image src="/images/ontico.png" alt="Онтико" width={400} height={(400 / 1024) * 220} />
+            <Image
+              src="/images/ontico.png"
+              alt="Онтико"
+              width={400}
+              height={(400 / 1024) * 220}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
           </h1>
 
           <p className="text-3xl leading-relaxed">
@@ -128,6 +137,11 @@ export default function Ontico({ pageMentors }) {
                 width: 100,
                 blur: 400,
               })}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+              alt="ontico"
             />
           </div>
 
@@ -180,6 +194,11 @@ export default function Ontico({ pageMentors }) {
                 }}
                 placeholder="blur"
                 blurDataURL={cloudinary.url(photoUrl, { width: 100, blur: 200 })}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
+                alt="ontico"
               />
             </div>
           ))}
@@ -210,6 +229,11 @@ export default function Ontico({ pageMentors }) {
                 width: 100,
                 blur: 400,
               })}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+              alt="ontico"
             />
           </div>
         </div>

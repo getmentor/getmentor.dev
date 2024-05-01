@@ -60,6 +60,10 @@ export default function Donate() {
                 src={donate.image.url}
                 width={donate.image.width}
                 height={donate.image.height}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
               />
             </a>
           ))}

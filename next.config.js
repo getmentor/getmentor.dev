@@ -1,6 +1,18 @@
 module.exports = {
   images: {
-    domains: ['dl.airtable.com', process.env.AZURE_STORAGE_DOMAIN],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'dl.airtable.com',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: process.env.AZURE_STORAGE_DOMAIN,
+        port: '',
+        pathname: '/mentor-images/**',
+      },
+    ],
   },
 
   experimental: {

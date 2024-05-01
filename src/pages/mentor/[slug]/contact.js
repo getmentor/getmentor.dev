@@ -152,8 +152,11 @@ export default function OrderMentor({ mentor }) {
                 <Image
                   src={imageLoader({ src: mentor.slug, quality: 'large' })}
                   alt={mentor.name}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  sizes="100vw"
+                  style={{
+                    objectFit: 'cover',
+                  }}
                 />
               </div>
             </div>
