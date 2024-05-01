@@ -4,7 +4,7 @@ module.exports = {
   },
 
   experimental: {
-    largePageDataBytes: 3 * 1024 * 1024,
+    largePageDataBytes: 10 * 1024 * 1024,
   },
 
   async headers() {
