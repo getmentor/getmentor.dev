@@ -25,7 +25,7 @@
     "@microsoft/applicationinsights-react-js": "^3.4.0",
     "@microsoft/applicationinsights-web": "^2.8.7",
     "@pyroscope/nodejs": "^0.2.9",
-    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.2",
     "@tailwindcss/typography": "^0.5.3",
     "@tiptap/core": "~2.0.0",
