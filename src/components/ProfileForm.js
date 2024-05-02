@@ -324,9 +324,9 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
             Koalendar
           </Link>{' '}
           или что-то ещё){' '}
-          <Link data-tip data-for="calendar-tip">
+          <a data-tip data-for="calendar-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
-          </Link>
+          </a>
           <ReactTooltip id="calendar-tip" place="right" type="dark" effect="solid">
             <span>
               Если вы пользуетесь системами управления календарём (например, Calendly.com), то
