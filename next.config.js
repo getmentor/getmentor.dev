@@ -67,6 +67,32 @@ module.exports = {
         destination: '/api/internal/mentors?force_reset_cache=1',
         permanent: true,
       },
+
+      // proxy redirects for Mixpanel
+      {
+        source: '/mxp/lib.min.js',
+        destination: 'https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js',
+        permanent: true,
+        basePath: false,
+      },
+      {
+        source: '/mxp/lib.js',
+        destination: 'https://cdn.mxpnl.com/libs/mixpanel-2-latest.js',
+        permanent: true,
+        basePath: false,
+      },
+      {
+        source: '/mxp/decide',
+        destination: 'https://decide.mixpanel.com/decide',
+        permanent: true,
+        basePath: false,
+      },
+      {
+        source: '/mxp',
+        destination: 'https://api.mixpanel.com/',
+        permanent: true,
+        basePath: false,
+      },
     ]
   },
 
