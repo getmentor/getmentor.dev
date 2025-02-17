@@ -79,6 +79,10 @@ export async function getMentors(params) {
     })
   }
 
+  if (params.drop_long_fields) {
+    result = result.map( ({about, description, ...m}) => m)
+  }
+
   if (params.id) {
     const id = parseInt(params.id, 10)
     result = result.filter((m) => m.id === id)
