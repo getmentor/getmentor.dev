@@ -20,7 +20,7 @@ import VisibilitySensor from 'react-visibility-sensor'
 import { initFaro } from '../lib/faro'
 
 export async function getServerSideProps(context) {
-  const pageMentors = await getAllMentors({ onlyVisible: true })
+  const pageMentors = await getAllMentors({ onlyVisible: true, drop_long_fields: true })
 
   return {
     props: {

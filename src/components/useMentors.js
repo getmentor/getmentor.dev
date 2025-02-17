@@ -47,9 +47,9 @@ export default function useMentors(allMentors, pageSize = 48) {
         ' ' +
         mentor.workplace +
         ' ' +
-        mentor.description +
+        (mentor.description || '') +
         ' ' +
-        mentor.about +
+        (mentor.about || '') +
         ' ' +
         mentor.competencies
       ).toLowerCase()

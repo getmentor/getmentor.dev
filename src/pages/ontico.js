@@ -17,7 +17,7 @@ import { useEffect } from 'react'
 import { initFaro } from '../lib/faro'
 
 export async function getServerSideProps(context) {
-  const allMentors = await getAllMentors({ onlyVisible: true })
+  const allMentors = await getAllMentors({ onlyVisible: true, drop_long_fields: true })
 
   const pageMentors = allMentors.filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
 
