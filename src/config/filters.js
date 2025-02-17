@@ -15,6 +15,7 @@ export default {
     'Аналитика',
     'Сети',
     'Cloud',
+    'Безопасность',
     'DevOps/SRE',
     'Agile',
     'Team Lead/Management',
@@ -30,7 +31,7 @@ export default {
   byTags: {
     development: ['Backend', 'Frontend', 'iOS', 'Android', 'System Design', 'Code Review'],
     management: ['Agile', 'Team Lead/Management', 'Project Management', 'Product Management'],
-    ops: ['DevOps/SRE', 'Databases', 'Сети', 'Cloud'],
+    ops: ['DevOps/SRE', 'Databases', 'Сети', 'Cloud', 'Безопасность'],
     hr: ['HR', 'Карьера', 'Собеседования', 'Entrepreneurship', 'DevRel'],
     marketing: ['Marketing', 'Content/Copy'],
     rest: ['Data Science/ML', 'UX/UI/Design', 'QA', 'Аналитика', 'Другое'],
