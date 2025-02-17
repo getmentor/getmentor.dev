@@ -54,6 +54,7 @@ async function fakeApiCall(params) {
     id: params?.id,
     slug: params?.slug,
     rec: params?.rec,
+    drop_long_fields: params?.drop_long_fields,
   })
 
   if (res && (params.id || params.slug || params.rec)) {
