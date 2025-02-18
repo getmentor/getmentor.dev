@@ -9,9 +9,9 @@ import seo from '../config/seo'
 
 export default function Donate() {
   const supporters = [
+    { name: '👑 Антон Алексеев', level: 4, url: 'https://getmentor.dev/mentor/anton-alekseev-4855' },
     { name: 'Александр Терехин', level: 2 },
     { name: 'Kirill Krasnoshchekov', level: 2 },
-    { name: 'Антон Алексеев', level: 4, url: 'https://getmentor.dev/mentor/anton-alekseev-4855' },
 
     // { name: 'Стример', level: 2 },
     // { name: 'Меценат', level: 3 },
