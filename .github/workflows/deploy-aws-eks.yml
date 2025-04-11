@@ -1,0 +1,95 @@
+name: Deploy to AWS EKS
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: getmentor
+  EKS_CLUSTER_NAME: getmentor-cluster
+  NAMESPACE: getmentor
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Update kubeconfig
+      run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
+
+    - name: Create namespace if not exists
+      run: kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Update Kubernetes secrets
+      run: |
+        kubectl create secret generic getmentor-secrets \
+          --namespace=${{ env.NAMESPACE }} \
+          --from-literal=AIRTABLE_API_KEY=${{ secrets.AIRTABLE_API_KEY }} \
+          --from-literal=AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }} \
+          --from-literal=APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
+          --from-literal=PYROSCOPE_SERVER_ADDRESS=${{ secrets.PYROSCOPE_SERVER_ADDRESS }} \
+          --from-literal=PYRSOCOPE_USER_ID=${{ secrets.PYRSOCOPE_USER_ID }} \
+          --from-literal=PYRSOCOPE_PASSWORD=${{ secrets.PYRSOCOPE_PASSWORD }} \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Update ConfigMap
+      run: |
+        kubectl create configmap getmentor-config \
+          --namespace=${{ env.NAMESPACE }} \
+          --from-literal=INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS=${{ secrets.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS }} \
+          --from-literal=AZURE_STORAGE_DOMAIN=${{ secrets.AZURE_STORAGE_DOMAIN }} \
+          --from-literal=BUILD_ON_GITHUB=${{ secrets.BUILD_ON_GITHUB }} \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Deploy to EKS
+      run: |
+        # Replace placeholders in deployment.yaml
+        sed -i "s|\${CONTAINER_REGISTRY}|${{ steps.login-ecr.outputs.registry }}|g" k8s/base/deployment.yaml
+        sed -i "s|\${IMAGE_TAG}|${{ github.sha }}|g" k8s/base/deployment.yaml
+        
+        # Apply Kubernetes manifests
+        kubectl apply -f k8s/base/namespace.yaml
+        kubectl apply -f k8s/base/deployment.yaml
+        kubectl apply -f k8s/base/service.yaml
+        kubectl apply -f k8s/base/ingress.yaml
+        kubectl apply -f k8s/base/hpa.yaml
+
+    - name: Verify deployment
+      run: |
+        kubectl rollout status deployment/getmentor -n ${{ env.NAMESPACE }} --timeout=180s

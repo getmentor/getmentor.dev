@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: getmentor
+  namespace: getmentor
+  labels:
+    app: getmentor
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: getmentor

@@ -1,0 +1,95 @@
+name: Deploy to GCP GKE
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: getmentor-project
+  GKE_CLUSTER: getmentor-cluster
+  GKE_ZONE: us-central1-a
+  NAMESPACE: getmentor
+  IMAGE: getmentor
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ env.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Configure Docker for GCR
+      run: gcloud auth configure-docker
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE }}:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }} --project ${{ env.GCP_PROJECT_ID }}
+
+    - name: Create namespace if not exists
+      run: kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Update Kubernetes secrets
+      run: |
+        kubectl create secret generic getmentor-secrets \
+          --namespace=${{ env.NAMESPACE }} \
+          --from-literal=AIRTABLE_API_KEY=${{ secrets.AIRTABLE_API_KEY }} \
+          --from-literal=AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }} \
+          --from-literal=APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
+          --from-literal=PYROSCOPE_SERVER_ADDRESS=${{ secrets.PYROSCOPE_SERVER_ADDRESS }} \
+          --from-literal=PYRSOCOPE_USER_ID=${{ secrets.PYRSOCOPE_USER_ID }} \
+          --from-literal=PYRSOCOPE_PASSWORD=${{ secrets.PYRSOCOPE_PASSWORD }} \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Update ConfigMap
+      run: |
+        kubectl create configmap getmentor-config \
+          --namespace=${{ env.NAMESPACE }} \
+          --from-literal=INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS=${{ secrets.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS }} \
+          --from-literal=AZURE_STORAGE_DOMAIN=${{ secrets.AZURE_STORAGE_DOMAIN }} \
+          --from-literal=BUILD_ON_GITHUB=${{ secrets.BUILD_ON_GITHUB }} \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Deploy to GKE
+      run: |
+        # Replace placeholders in deployment.yaml
+        sed -i "s|\${CONTAINER_REGISTRY}|gcr.io/${{ env.GCP_PROJECT_ID }}|g" k8s/base/deployment.yaml
+        sed -i "s|\${IMAGE_TAG}|${{ github.sha }}|g" k8s/base/deployment.yaml
+        
+        # Apply Kubernetes manifests
+        kubectl apply -f k8s/base/namespace.yaml
+        kubectl apply -f k8s/base/deployment.yaml
+        kubectl apply -f k8s/base/service.yaml
+        kubectl apply -f k8s/base/ingress.yaml
+        kubectl apply -f k8s/base/hpa.yaml
+
+    - name: Verify deployment
+      run: |
+        kubectl rollout status deployment/getmentor -n ${{ env.NAMESPACE }} --timeout=180s
