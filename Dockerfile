@@ -8,6 +8,9 @@ WORKDIR /app
 # Copy package.json and yarn.lock
 COPY package.json yarn.lock ./
 
+# Install Python and other build dependencies
+RUN apk add --no-cache python3 make g++
+
 # Install dependencies
 RUN yarn install --frozen-lockfile
 

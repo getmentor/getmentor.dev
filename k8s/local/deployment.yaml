@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: getmentor
+  namespace: getmentor
+  labels:
+    app: getmentor
+spec:
+  replicas: 1  # Reduced to 1 for local deployment
+  selector:
+    matchLabels:
+      app: getmentor
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: getmentor
+    spec:
+      containers:
+      - name: getmentor
+        image: getmentor:local  # Use locally built image
+        imagePullPolicy: IfNotPresent  # Changed to IfNotPresent for local deployment
+        ports:
+        - containerPort: 3000
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi  # Reduced for local deployment
+          limits:
+            cpu: 300m      # Reduced for local deployment
+            memory: 256Mi  # Reduced for local deployment
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3000"
+        # Environment variables from ConfigMap
+        - name: INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS
+          valueFrom:
+            configMapKeyRef:
+              name: getmentor-config
+              key: INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS
+        - name: AZURE_STORAGE_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: getmentor-config
+              key: AZURE_STORAGE_DOMAIN
+        - name: BUILD_ON_GITHUB
+          valueFrom:
+            configMapKeyRef:
+              name: getmentor-config
+              key: BUILD_ON_GITHUB
+        # Environment variables from Secret
+        - name: AIRTABLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: getmentor-secrets
+              key: AIRTABLE_API_KEY
+              optional: true  # Made optional for local deployment
+        - name: AIRTABLE_BASE_ID
+          valueFrom:
+            secretKeyRef:
+              name: getmentor-secrets
+              key: AIRTABLE_BASE_ID
+              optional: true  # Made optional for local deployment
+        - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: getmentor-secrets
+              key: APPLICATIONINSIGHTS_CONNECTION_STRING
+              optional: true  # Made optional for local deployment
+        - name: PYROSCOPE_SERVER_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: getmentor-secrets
+              key: PYROSCOPE_SERVER_ADDRESS
+              optional: true  # Made optional for local deployment
+        - name: PYRSOCOPE_USER_ID
+          valueFrom:
+            secretKeyRef:
+              name: getmentor-secrets
+              key: PYRSOCOPE_USER_ID
+              optional: true  # Made optional for local deployment
+        - name: PYRSOCOPE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: getmentor-secrets
+              key: PYRSOCOPE_PASSWORD
+              optional: true  # Made optional for local deployment
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001

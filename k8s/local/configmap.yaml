@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: getmentor-config
+  namespace: getmentor
+  labels:
+    app: getmentor
+data:
+  # Non-sensitive configuration
+  INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS: "3600"
+  AZURE_STORAGE_DOMAIN: "getmentorimages.blob.core.windows.net"
+  BUILD_ON_GITHUB: "true"
