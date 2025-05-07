@@ -93,6 +93,11 @@ module.exports = {
         permanent: true,
         basePath: false,
       },
+      {
+        source: '/aikb',
+        destination: '/api/mentors',
+        permanent: true,
+      },
     ]
   },
 
