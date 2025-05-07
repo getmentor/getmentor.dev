@@ -4,18 +4,18 @@ import seo from '../config/seo'
 import { imageLoader } from '../lib/azure-image-loader'
 
 export async function getServerSideProps(context) {
-  console.log(context.query)
-  if (context?.query?.ai_secret !== process.env.MENTORS_API_LIST_AUTH_TOKEN_AIKB) {
-    return { props: {} }
-  } else {
-    const pageMentors = await getAllMentors({ onlyVisible: true })
+  // console.log(context.query)
+  // if (context?.query?.ai_secret !== process.env.MENTORS_API_LIST_AUTH_TOKEN_AIKB) {
+  //   return { props: {} }
+  // } else {
+  const pageMentors = await getAllMentors({ onlyVisible: true })
 
-    return {
-      props: {
-        pageMentors,
-      },
-    }
+  return {
+    props: {
+      pageMentors,
+    },
   }
+  // }
 }
 
 export default function MentorsAIKB({ pageMentors }) {
