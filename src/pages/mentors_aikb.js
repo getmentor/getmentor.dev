@@ -25,7 +25,7 @@ export default function MentorsAIKB({ pageMentors }) {
       </Head>
 
       {pageMentors.map((mentor) => (
-        <p key={mentor.id}>
+        <div key={mentor.id}>
           <h2>{mentor.name}</h2>
           <p>
             {mentor.job} @ {mentor.workplace}
@@ -48,7 +48,7 @@ export default function MentorsAIKB({ pageMentors }) {
           <p>
             Ссылка на профиль: {seo.domain}/mentor/{mentor.slug}
           </p>
-        </p>
+        </div>
       ))}
     </>
   )
