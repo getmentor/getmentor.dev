@@ -4,6 +4,7 @@ import seo from '../config/seo'
 import { imageLoader } from '../lib/azure-image-loader'
 
 export async function getServerSideProps(context) {
+  console.log(context.query)
   if (context?.query?.ai_secret !== process.env.MENTORS_API_LIST_AUTH_TOKEN_AIKB) {
     return { props: {} }
   } else {
@@ -24,21 +25,23 @@ export default function MentorsAIKB({ pageMentors }) {
         <title>{seo.title}</title>
       </Head>
 
-      {pageMentors.map((mentor) => (
+      {pageMentors?.map((mentor) => (
         <div key={mentor.id}>
           <h2>{mentor.name}</h2>
           <p>
             {mentor.job} @ {mentor.workplace}
           </p>
           <p>
-            Описание: <br />
+            Описание:
             <pre>{mentor.about}</pre>
           </p>
           <p>
-            Чем помогу: <br />
+            Чем помогу:
             <pre>{mentor.description}</pre>
           </p>
-          <p>Компетенции: {mentor.competencies}</p>
+          <p>
+            Компетенции: <pre>{mentor.competencies}</pre>
+          </p>
           <p>Теги: {mentor.tags}</p>
           <p>Опыт: {mentor.experience}</p>
           <p>Цена: {mentor.price}</p>
