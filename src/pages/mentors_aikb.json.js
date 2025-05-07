@@ -1,11 +1,10 @@
 import { getAllMentors } from '../server/mentors-data'
 import seo from '../config/seo'
+import { imageLoader } from '../lib/azure-image-loader'
 
 const Mentors_aikb = () => {}
 
 export async function getServerSideProps({ res, query }) {
-  console.log(query)
-
   if (query?.ai_secret !== process.env.MENTORS_API_LIST_AUTH_TOKEN_AIKB) {
     res.write('{}')
     res.end()
@@ -24,14 +23,14 @@ export async function getServerSideProps({ res, query }) {
         experience: m.experience,
         price: m.price,
         doneSessions: m.menteeCount,
-        photo: m.photo_url,
+        photo: imageLoader({ src: m.slug, quality: 'small' }),
         tags: m.tags.join(','),
         link: `${seo.domain}/mentor/${m.slug}`,
       }
     })
 
     res.setHeader('Content-Type', 'application/json')
-    res.write(JSON.stringify(mentors))
+    res.write(JSON.stringify({ mentors: mentors }))
     res.end()
   }
 

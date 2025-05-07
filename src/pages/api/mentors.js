@@ -2,6 +2,7 @@ import { getAllMentors } from '../../server/mentors-data'
 import seo from '../../config/seo'
 import Cors from 'cors'
 import initMiddleware from '../../lib/init-middleware'
+import { imageLoader } from '../../lib/azure-image-loader'
 
 // Initialize the cors middleware
 const cors = initMiddleware(
@@ -43,7 +44,7 @@ const handler = async (req, res) => {
       experience: m.experience,
       price: m.price,
       doneSessions: m.menteeCount,
-      photo: m.photo_url,
+      photo: imageLoader({ src: m.slug, quality: 'large' }),
       tags: m.tags.join(','),
       link: `${seo.domain}/mentor/${m.slug}`,
     }
