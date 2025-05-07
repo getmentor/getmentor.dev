@@ -1,3 +1,6 @@
+User-agent: DigitalOceanGenAICrawler/1.0
+Allow: /
+
 User-agent: *
 Disallow: /[slug]
 Disallow: /mentor/[slug]
