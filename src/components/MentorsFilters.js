@@ -241,29 +241,27 @@ export default function MentorsFilters(props) {
           🎉 Новички
         </li>
 
-        <div className="group relative flex justify-center">
-          <li
-            className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
-              'text-sm rounded-sm py-1 pl-4 pr-4 m-1 cursor-pointer bg-gray-300 text-gray-600 bg-indigo-200 hover:bg-gray-200 text-gray-600':
-                !appliedFilters.noSessions.value,
-              'text-sm rounded-sm py-1 pl-4 pr-4 m-1 cursor-pointer text-gray-600 bg-gray-700 text-white':
-                appliedFilters.noSessions.value,
-            })}
-            key="noSessions"
-            onClick={onClickNoSessions}
-          >
-            🫶 Без сессий
-            {/*
-            <span className="absolute top-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100 z-50 w-80 text-left">
-              Сортировка спика сделана так, так что каждый ментор имеет равный шанс оказаться в
-              топе. Однако некоторым менторам не везёт, и они не сразу добираются до внимания
-              посетителей. Это напрямую сказывается на количестве сессий, которые они получают – их
-              просто нет. Но это не значит, что такие менторы плохие. Этот фильтр поможет вам найти
-              скрытые таланты.
-            </span>
-            */}
-          </li>
-        </div>
+        <li
+          className={classNames('text-sm rounded-full py-1 px-4 m-1 cursor-pointer', {
+            'text-sm rounded-sm py-1 pl-4 pr-4 m-1 cursor-pointer bg-gray-300 text-gray-600 bg-indigo-200 hover:bg-gray-200 text-gray-600':
+              !appliedFilters.noSessions.value,
+            'text-sm rounded-sm py-1 pl-4 pr-4 m-1 cursor-pointer text-gray-600 bg-gray-700 text-white':
+              appliedFilters.noSessions.value,
+          })}
+          key="noSessions"
+          onClick={onClickNoSessions}
+        >
+          🫶 Без сессий
+          {/*
+          <span className="absolute top-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100 z-50 w-80 text-left">
+            Сортировка спика сделана так, так что каждый ментор имеет равный шанс оказаться в
+            топе. Однако некоторым менторам не везёт, и они не сразу добираются до внимания
+            посетителей. Это напрямую сказывается на количестве сессий, которые они получают – их
+            просто нет. Но это не значит, что такие менторы плохие. Этот фильтр поможет вам найти
+            скрытые таланты.
+          </span>
+          */}
+        </li>
 
         <li
           className="text-sm rounded-sm py-1 px-4 m-1 cursor-pointer bg-primary-900 hover:bg-red-500 text-white"
