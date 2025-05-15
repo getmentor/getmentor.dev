@@ -18,6 +18,7 @@ import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
 import { initFaro } from '../lib/faro'
+import AIChatBot from '../components/AIChatBot'
 
 export async function getServerSideProps(context) {
   const pageMentors = await getAllMentors({ onlyVisible: true, drop_long_fields: true })
@@ -156,6 +157,7 @@ export default function Home({ pageMentors }) {
 
         <div className="mb-6 md:flex">
           <div className="w-full">
+            <AIChatBot />
             <MentorsSearch value={searchInput} onChange={setSearchInput} />
           </div>
         </div>
