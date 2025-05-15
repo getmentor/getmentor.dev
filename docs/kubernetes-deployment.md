@@ -20,10 +20,15 @@ This guide explains how to deploy the GetMentor.dev application to Kubernetes on
   - `secret.yaml`: Stores sensitive information (template with placeholders)
   - `ingress.yaml`: Configures external access to the application
   - `hpa.yaml`: Configures automatic scaling
+- `k8s/digitalocean/`: DigitalOcean Kubernetes overlay
+  - `kustomization.yaml`: Kustomize configuration for DigitalOcean
+  - `deployment.yaml`: Deployment patch for DigitalOcean
+  - `README.md`: Instructions for deploying to DigitalOcean
 - `.github/workflows/`: GitHub Actions workflows for CI/CD
   - `deploy-aws-eks.yml`: Workflow for deploying to AWS EKS
   - `deploy-gcp-gke.yml`: Workflow for deploying to GCP GKE
   - `deploy-yandex-cloud.yml`: Workflow for deploying to Yandex Cloud
+  - `deploy-digitalocean-k8s.yml`: Workflow for deploying to DigitalOcean Kubernetes
 
 ## Local Testing
 
@@ -144,6 +149,51 @@ BUILD_ON_GITHUB=true
    - `YANDEX_CLOUD_K8S_CLUSTER_ID`: Yandex Managed Kubernetes cluster ID
 
 3. Push to the main branch or manually trigger the workflow.
+
+### DigitalOcean Kubernetes
+
+#### Automated Deployment with GitHub Actions
+
+1. Set up the following GitHub Secrets:
+   - `DIGITALOCEAN_ACCESS_TOKEN`: DigitalOcean API token with read/write access
+   - `DIGITALOCEAN_REGISTRY`: Name of your DigitalOcean Container Registry
+   - `DIGITALOCEAN_CLUSTER_NAME`: Name of your DigitalOcean Kubernetes cluster
+   - All application environment variables (AIRTABLE_API_KEY, etc.)
+
+2. Create a DigitalOcean Container Registry if you don't have one:
+   ```bash
+   doctl registry create <registry-name> --subscription-tier basic
+   ```
+
+3. Create a DigitalOcean Kubernetes cluster if you don't have one:
+   ```bash
+   doctl kubernetes cluster create <cluster-name> --region nyc1 --size s-2vcpu-4gb --count 2
+   ```
+
+4. Push to the main branch or manually trigger the workflow.
+
+#### Manual Deployment with Script
+
+You can also deploy manually using the provided script:
+
+1. Set the required environment variables:
+   ```bash
+   export DIGITALOCEAN_ACCESS_TOKEN=your_digitalocean_api_token
+   export DIGITALOCEAN_REGISTRY=your_registry_name
+   export DIGITALOCEAN_CLUSTER_NAME=your_cluster_name
+
+   # Application environment variables
+   export AIRTABLE_API_KEY=your_airtable_api_key
+   export AIRTABLE_BASE_ID=your_airtable_base_id
+   # ... other environment variables
+   ```
+
+2. Run the deployment script:
+   ```bash
+   ./deploy-digitalocean.sh
+   ```
+
+The script will build the Docker image, push it to DigitalOcean Container Registry, and deploy it to your DigitalOcean Kubernetes cluster.
 
 ## Monitoring and Troubleshooting
 

@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: getmentor
+  namespace: getmentor
+spec:
+  template:
+    spec:
+      containers:
+      - name: getmentor
+        image: registry.digitalocean.com/${DIGITALOCEAN_REGISTRY}/getmentor:${IMAGE_TAG}
