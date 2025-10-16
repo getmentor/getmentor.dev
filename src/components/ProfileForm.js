@@ -316,12 +316,21 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
       <div>
         <label htmlFor="calendarUrl" className="block mb-2 font-medium text-gray-700">
           Ссылка на запись в ваш календарь (
-          <Link href="https://calendly.com" target="_blank" className="link" rel="noreferrer">
-            Calendly
+          <Link
+            href="https://calendlab.ru/signup?referral_code=for-mentors-6-months"
+            target="_blank"
+            className="link"
+            rel="noreferrer"
+          >
+            CalendLab
           </Link>
           ,{' '}
           <Link href="https://koalendar.com" target="_blank" className="link" rel="noreferrer">
             Koalendar
+          </Link>
+          ,{' '}
+          <Link href="https://calendly.com" target="_blank" className="link" rel="noreferrer">
+            Calendly
           </Link>{' '}
           или что-то ещё){' '}
           <a data-tip data-for="calendar-tip">
@@ -329,9 +338,11 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
           </a>
           <ReactTooltip id="calendar-tip" place="right" type="dark" effect="solid">
             <span>
-              Если вы пользуетесь системами управления календарём (например, Calendly.com), то
-              укажите ссылку на ваш календарь. Тогда менти смогут сами записываться к вам на
-              встречу.
+              Если вы пользуетесь системами управления календарём, то укажите ссылку на ваш
+              календарь. Тогда менти смогут сами записываться к вам на встречу. Мы рекомендуем
+              использовать Calendly, Koalendar или CalendLab, так как они интегрированы с нашей
+              платформой и форма записи будет отображаться сразу после того, как менти создаст
+              заявку.
             </span>
           </ReactTooltip>
         </label>
@@ -359,6 +370,19 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
           id="calendarUrl"
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
         />
+
+        <label htmlFor="calendarUrl" className="block mb-2 mt-1 font-small italic text-gray-700">
+          🎉 Вы можете получить первые 6 месяцев CalendLab бесплатно по{' '}
+          <Link
+            href="https://calendlab.ru/signup?referral_code=for-mentors-6-months"
+            target="_blank"
+            className="link"
+            rel="noreferrer"
+          >
+            этой ссылке
+          </Link>
+          .
+        </label>
       </div>
 
       {isError && (
