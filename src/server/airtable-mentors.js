@@ -150,6 +150,7 @@ function calendarType(url) {
     var u = Url.parse(url)
     if (u.hostname === 'calendly.com') return 'calendly'
     if (u.hostname === 'koalendar.com') return 'koalendar'
+    if (u.hostname === 'calendlab.ru') return 'calendlab'
     else return 'url'
   } catch (_) {
     return 'none'
