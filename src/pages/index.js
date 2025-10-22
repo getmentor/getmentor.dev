@@ -17,7 +17,6 @@ import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
-import { initFaro } from '../lib/faro'
 
 export async function getServerSideProps(context) {
   const pageMentors = await getAllMentors({ onlyVisible: true, drop_long_fields: true })
@@ -51,10 +50,6 @@ function onSponsorsShown(isVisible) {
 }
 
 export default function Home({ pageMentors }) {
-  useEffect(() => {
-    initFaro()
-  })
-
   const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
     useMentors(pageMentors)
 
