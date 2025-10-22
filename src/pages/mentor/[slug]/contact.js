@@ -12,6 +12,7 @@ import analytics from '../../../lib/analytics'
 import Image from 'next/image'
 import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
+import CalendlabWidget from '../../../components/CalendlabWidget'
 import { imageLoader } from '../../../lib/azure-image-loader'
 import { initFaro } from '../../../lib/faro'
 
@@ -259,6 +260,8 @@ function SuccessMessage({ mentor, formData }) {
               />
             ) : mentor.calendarType === 'koalendar' ? (
               <Koalendar url={mentor.calendarUrl} />
+            ) : mentor.calendarType === 'calendlab' ? (
+              <CalendlabWidget url={mentor.calendarUrl} />
             ) : (
               <a className="button" href={mentor.calendarUrl} target="_blank" rel="noreferrer">
                 Записаться на встречу
