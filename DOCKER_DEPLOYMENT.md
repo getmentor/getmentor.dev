@@ -16,11 +16,6 @@ Two Dockerfile versions are available:
 - **Production-ready**: Uses non-root user, minimal attack surface
 - **Build time**: ~25 seconds
 
-### `Dockerfile.simple` (Alternative - Single-stage build)
-- **Size**: ~3.74GB
-- **Benefits**: Easier to understand and debug
-- **Build time**: ~25 seconds
-
 **Recommendation**: Use `Dockerfile` (multi-stage) for production deployments.
 
 ## Local Testing
@@ -36,9 +31,6 @@ chmod +x docker-build-test.sh
 
 # Run the multi-stage image
 docker run -p 3000:3000 --env-file .env getmentor:multi-stage-test
-
-# Or run the simple image
-docker run -p 3000:3000 --env-file .env getmentor:simple-test
 ```
 
 The application will be available at http://localhost:3000
@@ -63,9 +55,15 @@ The following GitHub secrets are already configured, but verify they're correct:
 - `DIGITALOCEAN_APP_ID` - Your App Platform app ID
 - `AIRTABLE_API_KEY` - Airtable API key
 - `AIRTABLE_BASE_ID` - Airtable base ID
+- `NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY` - reCAPTCHA v2 site key
+- `RECAPTCHA_V2_SECRET_KEY` - reCAPTCHA v2 secret key
+- `MENTORS_API_LIST_AUTH_TOKEN` - Mentors API auth token
+- `MENTORS_API_LIST_AUTH_TOKEN_INNO` - Mentors API auth token (Inno)
+- `MENTORS_API_LIST_AUTH_TOKEN_AIKB` - Mentors API auth token (AIKB)
+- `REVALIDATE_SECRET_TOKEN` - Revalidation secret token
 - `AZURE_STORAGE_DOMAIN` - Azure storage domain
-- `BUILD_ON_GITHUB` - Build flag
-- `INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS` - Page revalidation interval
+- `NEXT_PUBLIC_AZURE_STORAGE_DOMAIN` - Azure storage domain (public)
+- `INTERTNAL_MENTORS_API` - Internal mentors API token
 
 ### Step 3: Update GitHub Workflow Configuration
 
@@ -100,9 +98,15 @@ You need to update your App Platform app configuration to use the Docker image i
 8. Under **Environment Variables**, ensure all required variables are set:
    - `AIRTABLE_API_KEY`
    - `AIRTABLE_BASE_ID`
+   - `NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY`
+   - `RECAPTCHA_V2_SECRET_KEY`
+   - `MENTORS_API_LIST_AUTH_TOKEN`
+   - `MENTORS_API_LIST_AUTH_TOKEN_INNO`
+   - `MENTORS_API_LIST_AUTH_TOKEN_AIKB`
+   - `REVALIDATE_SECRET_TOKEN`
    - `AZURE_STORAGE_DOMAIN`
-   - `BUILD_ON_GITHUB`
-   - `INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS`
+   - `NEXT_PUBLIC_AZURE_STORAGE_DOMAIN`
+   - `INTERTNAL_MENTORS_API`
 9. Under **HTTP Port**, set: `3000`
 10. Click **Save**
 
@@ -131,18 +135,42 @@ services:
         scope: RUN_TIME
         type: SECRET
         value: ${AIRTABLE_BASE_ID}
+      - key: NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ${NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY}
+      - key: RECAPTCHA_V2_SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ${RECAPTCHA_V2_SECRET_KEY}
+      - key: MENTORS_API_LIST_AUTH_TOKEN
+        scope: RUN_TIME
+        type: SECRET
+        value: ${MENTORS_API_LIST_AUTH_TOKEN}
+      - key: MENTORS_API_LIST_AUTH_TOKEN_INNO
+        scope: RUN_TIME
+        type: SECRET
+        value: ${MENTORS_API_LIST_AUTH_TOKEN_INNO}
+      - key: MENTORS_API_LIST_AUTH_TOKEN_AIKB
+        scope: RUN_TIME
+        type: SECRET
+        value: ${MENTORS_API_LIST_AUTH_TOKEN_AIKB}
+      - key: REVALIDATE_SECRET_TOKEN
+        scope: RUN_TIME
+        type: SECRET
+        value: ${REVALIDATE_SECRET_TOKEN}
       - key: AZURE_STORAGE_DOMAIN
         scope: RUN_TIME
         type: SECRET
         value: ${AZURE_STORAGE_DOMAIN}
-      - key: BUILD_ON_GITHUB
+      - key: NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
         scope: RUN_TIME
         type: SECRET
-        value: ${BUILD_ON_GITHUB}
-      - key: INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS
+        value: ${NEXT_PUBLIC_AZURE_STORAGE_DOMAIN}
+      - key: INTERTNAL_MENTORS_API
         scope: RUN_TIME
         type: SECRET
-        value: ${INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS}
+        value: ${INTERTNAL_MENTORS_API}
 ```
 
 Then apply it:
@@ -226,7 +254,6 @@ Or use the DigitalOcean Console to rollback to a previous deployment.
 ## Files Modified
 
 - `Dockerfile` - Multi-stage production Dockerfile
-- `Dockerfile.simple` - Single-stage Dockerfile (alternative)
 - `.dockerignore` - Excludes unnecessary files from Docker build context
 - `next.config.js` - Added `output: 'standalone'` for optimized builds
 - `.github/workflows/docker-deploy.yml` - New deployment workflow
