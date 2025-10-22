@@ -1,0 +1,45 @@
+# Simple single-stage Dockerfile for Next.js
+# This version is easier to understand and debug but creates a larger image
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install build dependencies for native modules (sharp)
+RUN apk add --no-cache python3 make g++
+
+# Copy package files and install dependencies
+COPY package.json yarn.lock* ./
+RUN yarn install --frozen-lockfile
+
+# Copy application code
+COPY . .
+
+# Set build-time environment variables
+# These ARGs will be provided during docker build or in CI/CD
+ARG AIRTABLE_API_KEY
+ARG AIRTABLE_BASE_ID
+ARG AZURE_STORAGE_DOMAIN
+ARG BUILD_ON_GITHUB
+ARG INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS
+
+ENV AIRTABLE_API_KEY=$AIRTABLE_API_KEY
+ENV AIRTABLE_BASE_ID=$AIRTABLE_BASE_ID
+ENV AZURE_STORAGE_DOMAIN=$AZURE_STORAGE_DOMAIN
+ENV BUILD_ON_GITHUB=$BUILD_ON_GITHUB
+ENV INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS=$INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS
+
+# Set environment to production
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Build the application
+RUN yarn build
+
+# Expose the port Next.js runs on
+EXPOSE 3000
+
+ENV PORT=3000
+
+# Start the application with custom Node options
+CMD ["node", "--max-old-space-size=512", "node_modules/next/dist/bin/next", "start"]

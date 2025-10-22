@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Next.js build output
+.next
+out
+
+# Environment variables - NEVER include these in the image
+.env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github
+
+# Development files
+README.md
+.vscode
+.idea
+
+# Testing
+coverage
+.nyc_output
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Other
+*.pem

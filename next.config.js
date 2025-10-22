@@ -1,4 +1,7 @@
 module.exports = {
+  // Enable standalone output for Docker deployments
+  output: 'standalone',
+
   images: {
     remotePatterns: [
       {

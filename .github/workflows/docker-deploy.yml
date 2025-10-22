@@ -1,0 +1,57 @@
+name: Docker Build and Deploy to DigitalOcean
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  REGISTRY: registry.digitalocean.com
+  REGISTRY_NAME: getmentor
+  IMAGE_NAME: getmentor-dev
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 1200
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg AIRTABLE_API_KEY="${{ secrets.AIRTABLE_API_KEY }}" \
+            --build-arg AIRTABLE_BASE_ID="${{ secrets.AIRTABLE_BASE_ID }}" \
+            --build-arg AZURE_STORAGE_DOMAIN="${{ secrets.AZURE_STORAGE_DOMAIN }}" \
+            --build-arg BUILD_ON_GITHUB="${{ secrets.BUILD_ON_GITHUB }}" \
+            --build-arg INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS="${{ secrets.INDEX_PAGE_REVALIDATION_INTERVAL_IN_SECONDS }}" \
+            -t ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:latest \
+            -f Dockerfile \
+            .
+
+      - name: Push image to DigitalOcean Container Registry
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Update DigitalOcean App Platform deployment
+        run: |
+          # Trigger a new deployment on App Platform
+          # This will pull the latest image from the registry
+          doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }} --wait
+
+      - name: Deployment summary
+        run: |
+          echo "✅ Docker image built and pushed successfully!"
+          echo "Image: ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "App Platform deployment triggered for app ID: ${{ secrets.DIGITALOCEAN_APP_ID }}"
