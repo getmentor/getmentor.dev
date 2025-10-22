@@ -12,7 +12,6 @@ import Notification from '../components/Notification'
 import Error from 'next/error'
 import analytics from '../lib/analytics'
 import Link from 'next/link'
-import { initFaro } from '../lib/faro'
 
 export async function getServerSideProps(context) {
   context.query.id = parseInt(context.query.id, 10)
@@ -38,10 +37,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Profile({ errorCode, mentor }) {
-  useEffect(() => {
-    initFaro()
-  })
-
   useEffect(() => {
     if (mentor) {
       analytics.event('Open Profile', {
