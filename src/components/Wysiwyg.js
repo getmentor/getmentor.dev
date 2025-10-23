@@ -13,8 +13,8 @@ export default function Wysiwyg({ content, onUpdate }) {
       },
     },
     content: htmlContent(content),
-    onUpdate() {
-      onUpdate(this)
+    onUpdate({ editor }) {
+      onUpdate(editor)
     },
   })
 

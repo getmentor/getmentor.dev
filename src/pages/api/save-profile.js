@@ -13,6 +13,7 @@ const bodySchema = yup.object().shape({
   description: yup.string().required(),
   about: yup.string().required(),
   competencies: yup.string().required(),
+  calendarUrl: yup.string().optional(),
 })
 
 const saveProfileHandler = async (req, res) => {
