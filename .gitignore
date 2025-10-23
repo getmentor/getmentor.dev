@@ -34,3 +34,6 @@ yarn-error.log*
 # vercel
 .vercel
 
+# docker test files (may contain sensitive env vars)
+docker-compose.override.yml
+
