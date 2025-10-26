@@ -7,16 +7,82 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import ReactTooltip from 'react-tooltip'
 import Link from 'next/link'
+import { useState, useRef } from 'react'
 
 const Url = require('url')
 
-export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
+export default function ProfileForm({
+  mentor,
+  isLoading,
+  isError,
+  onSubmit,
+  onImageUpload,
+  imageUploadStatus,
+}) {
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
+
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
+  const fileInputRef = useRef(null)
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      alert('Пожалуйста, выберите изображение в формате JPEG, PNG или WebP.')
+      return
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    if (file.size > maxSize) {
+      alert('Размер файла не должен превышать 10 МБ.')
+      return
+    }
+
+    setSelectedImage(file)
+
+    // Create preview
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleImageUploadClick = async () => {
+    if (!selectedImage) {
+      alert('Пожалуйста, выберите изображение для загрузки.')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const base64Image = reader.result
+      onImageUpload({
+        image: base64Image,
+        fileName: selectedImage.name,
+        contentType: selectedImage.type,
+      })
+    }
+    reader.readAsDataURL(selectedImage)
+  }
+
+  const handleCancelImage = () => {
+    setSelectedImage(null)
+    setImagePreview(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
 
   return (
     <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
@@ -59,14 +125,94 @@ export default function ProfileForm({ mentor, isLoading, isError, onSubmit }) {
       </div>
 
       <div>
-        <label className="block mb-2 font-medium text-gray-700">
-          <em>
-            Для редактирования фото напишите в телеграм{' '}
-            <Link href="https://t.me/glamcoder" rel="nofollow">
-              @glamcoder
-            </Link>
-          </em>
+        <label htmlFor="profilePicture" className="block mb-2 font-medium text-gray-700">
+          Фотография профиля{' '}
+          <a data-tip data-for="photo-tip">
+            <FontAwesomeIcon icon={faQuestionCircle} />
+          </a>
+          <ReactTooltip id="photo-tip" place="right" type="dark" effect="solid">
+            <span>
+              Загрузите своё фото для профиля. Поддерживаются форматы JPEG, PNG и WebP. Максимальный
+              размер файла - 10 МБ.
+            </span>
+          </ReactTooltip>
         </label>
+
+        <div className="mt-2 space-y-4">
+          {mentor.photo_url && !imagePreview && (
+            <div className="flex items-center space-x-4">
+              <img
+                src={mentor.photo_url}
+                alt="Current profile"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+              <span className="text-sm text-gray-600">Текущее фото</span>
+            </div>
+          )}
+
+          {imagePreview && (
+            <div className="flex items-center space-x-4">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+              <span className="text-sm text-gray-600">Предварительный просмотр</span>
+            </div>
+          )}
+
+          <div className="flex items-center space-x-4">
+            <input
+              ref={fileInputRef}
+              type="file"
+              id="profilePicture"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            />
+          </div>
+
+          {selectedImage && (
+            <div className="flex items-center space-x-4">
+              <button
+                type="button"
+                onClick={handleImageUploadClick}
+                className="button"
+                disabled={imageUploadStatus === 'loading'}
+              >
+                {imageUploadStatus === 'loading' ? (
+                  <>
+                    <FontAwesomeIcon className="animate-spin" icon={faCircleNotch} />
+                    <span className="ml-2">Загружаю...</span>
+                  </>
+                ) : (
+                  <span>Загрузить фото</span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCancelImage}
+                className="text-sm text-gray-600 hover:text-gray-800"
+                disabled={imageUploadStatus === 'loading'}
+              >
+                Отменить
+              </button>
+            </div>
+          )}
+
+          {imageUploadStatus === 'success' && (
+            <div className="text-sm text-green-700">
+              Фотография успешно загружена! Ваш профиль будет обновлен в ближайшее время.
+            </div>
+          )}
+
+          {imageUploadStatus === 'error' && (
+            <div className="text-sm text-red-700">
+              Ошибка при загрузке фотографии. Попробуйте еще раз.
+            </div>
+          )}
+        </div>
       </div>
 
       <div>

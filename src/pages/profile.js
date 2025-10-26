@@ -50,6 +50,7 @@ export default function Profile({ errorCode, mentor }) {
 
   const [readyStatus, setReadyStatus] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
+  const [imageUploadStatus, setImageUploadStatus] = useState('')
 
   const title = 'Профиль | ' + seo.title
 
@@ -97,6 +98,43 @@ export default function Profile({ errorCode, mentor }) {
       })
   }
 
+  const onImageUpload = (imageData) => {
+    if (imageUploadStatus === 'loading') {
+      return
+    }
+
+    setImageUploadStatus('loading')
+
+    analytics.event('Upload Profile Picture', {
+      'Mentor Id': mentor.id,
+      'Mentor Name': mentor.name,
+    })
+
+    fetch('/api/upload-profile-picture' + location.search, {
+      method: 'POST',
+      body: JSON.stringify(imageData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+        if (data.success) {
+          setImageUploadStatus('success')
+          // Reset status after 5 seconds
+          setTimeout(() => setImageUploadStatus(''), 5000)
+        } else {
+          setImageUploadStatus('error')
+        }
+      })
+      .catch((e) => {
+        setImageUploadStatus('error')
+        console.error(e)
+      })
+  }
+
   if (errorCode) {
     return <Error statusCode={403} title="Access denied" />
   }
@@ -128,6 +166,8 @@ export default function Profile({ errorCode, mentor }) {
             isLoading={readyStatus === 'loading'}
             isError={readyStatus === 'error'}
             onSubmit={onSubmit}
+            onImageUpload={onImageUpload}
+            imageUploadStatus={imageUploadStatus}
           />
         </div>
       </Section>
