@@ -1,7 +1,7 @@
 import { BlobServiceClient } from '@azure/storage-blob'
 
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
-const containerName = 'mentor-images'
+const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME
 
 if (!connectionString) {
   throw new Error('AZURE_STORAGE_CONNECTION_STRING environment variable is not set')
@@ -37,5 +37,5 @@ export async function uploadImageToAzure(buffer, fileName, contentType) {
 export function generateFileName(mentorId, originalFileName) {
   const timestamp = Date.now()
   const extension = originalFileName.split('.').pop()
-  return `${mentorId}-${timestamp}.${extension}`
+  return `tmp/${mentorId}-${timestamp}.${extension}`
 }

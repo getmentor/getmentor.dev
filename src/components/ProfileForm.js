@@ -8,6 +8,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import ReactTooltip from 'react-tooltip'
 import Link from 'next/link'
 import { useState, useRef } from 'react'
+import { imageLoader } from '../lib/azure-image-loader'
 
 const Url = require('url')
 
@@ -142,7 +143,7 @@ export default function ProfileForm({
           {mentor.photo_url && !imagePreview && (
             <div className="flex items-center space-x-4">
               <img
-                src={mentor.photo_url}
+                src={imageLoader({ src: mentor.slug, quality: 'full' })}
                 alt="Current profile"
                 className="w-24 h-24 rounded-full object-cover"
               />
