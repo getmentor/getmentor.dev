@@ -163,6 +163,7 @@ export default function ProfileForm({
                 src={imagePreview}
                 alt="Preview"
                 className="w-24 h-24 rounded-full object-cover"
+                unoptimized
                 width={40}
                 height={40}
               />
