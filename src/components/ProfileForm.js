@@ -141,6 +141,8 @@ export default function ProfileForm({
                 className="w-24 h-24 rounded-full object-cover"
                 width={40}
                 height={40}
+                unoptimized
+                key={mentor.photo_url}
               />
               <span className="text-sm text-gray-600">Текущее фото</span>
             </div>
