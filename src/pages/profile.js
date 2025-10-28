@@ -52,6 +52,7 @@ export default function Profile({ errorCode, mentor }) {
   const [showSuccess, setShowSuccess] = useState(false)
   const [imageUploadStatus, setImageUploadStatus] = useState('')
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null)
+  const [tempImagePreview, setTempImagePreview] = useState(null)
 
   const title = 'Профиль | ' + seo.title
 
@@ -105,6 +106,8 @@ export default function Profile({ errorCode, mentor }) {
     }
 
     setImageUploadStatus('loading')
+    // Show the uploaded image immediately and keep it until page refresh
+    setTempImagePreview(imageData.image)
 
     analytics.event('Upload Profile Picture', {
       'Mentor Id': mentor.id,
@@ -136,10 +139,12 @@ export default function Profile({ errorCode, mentor }) {
           setTimeout(() => setImageUploadStatus(''), 5000)
         } else {
           setImageUploadStatus('error')
+          setTempImagePreview(null)
         }
       })
       .catch((e) => {
         setImageUploadStatus('error')
+        setTempImagePreview(null)
         console.error(e)
       })
   }
@@ -179,6 +184,7 @@ export default function Profile({ errorCode, mentor }) {
             onSubmit={onSubmit}
             onImageUpload={onImageUpload}
             imageUploadStatus={imageUploadStatus}
+            tempImagePreview={tempImagePreview}
           />
         </div>
       </Section>

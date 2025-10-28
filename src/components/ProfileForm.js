@@ -20,6 +20,7 @@ export default function ProfileForm({
   onSubmit,
   onImageUpload,
   imageUploadStatus,
+  tempImagePreview,
 }) {
   const {
     control,
@@ -133,17 +134,25 @@ export default function ProfileForm({
         </label>
 
         <div className="mt-2 space-y-4">
-          {mentor.photo_url && !imagePreview && (
+          {(mentor.photo_url || tempImagePreview) && !imagePreview && (
             <div className="flex items-center space-x-4">
-              <Image
-                src={imageLoader({ src: mentor.slug, quality: 'full' })}
-                alt="Current profile"
-                className="w-24 h-24 rounded-full object-cover"
-                width={40}
-                height={40}
-                unoptimized
-                key={mentor.photo_url}
-              />
+              {tempImagePreview ? (
+                <img
+                  src={tempImagePreview}
+                  alt="Current profile"
+                  className="w-24 h-24 rounded-full object-cover"
+                />
+              ) : (
+                <Image
+                  src={imageLoader({ src: mentor.slug, quality: 'full' })}
+                  alt="Current profile"
+                  className="w-24 h-24 rounded-full object-cover"
+                  width={40}
+                  height={40}
+                  unoptimized
+                  key={mentor.photo_url}
+                />
+              )}
               <span className="text-sm text-gray-600">Текущее фото</span>
             </div>
           )}
