@@ -22,6 +22,7 @@ export default function MentorsList(props) {
                 style={{
                   objectFit: 'cover',
                 }}
+                unoptimized
               />
               {mentor.isNew && (
                 <div className="bg-gray-800 text-white w-20 h-1 absolute m-2 rounded-lg p-1.5 h-8 align-middle text-center text-sm">
