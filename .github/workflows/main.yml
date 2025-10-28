@@ -38,16 +38,16 @@ jobs:
           yarn install --frozen-lockfile
           yarn build
 
-  deploy-to-DO:
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      DIGITALOCEAN_APP_ID: ${{ secrets.DIGITALOCEAN_APP_ID }}
+  # deploy-to-DO:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     DIGITALOCEAN_APP_ID: ${{ secrets.DIGITALOCEAN_APP_ID }}
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - name: Deploy
-        run: doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }} --wait
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: digitalocean/action-doctl@v2
+  #       with:
+  #         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+  #     - name: Deploy
+  #       run: doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }} --wait
