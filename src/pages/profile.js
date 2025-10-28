@@ -98,7 +98,7 @@ export default function Profile({ errorCode, mentor }) {
       })
   }
 
-  const onImageUpload = (imageData) => {
+  const onImageUpload = (imageData, onSuccess) => {
     if (imageUploadStatus === 'loading') {
       return
     }
@@ -123,6 +123,10 @@ export default function Profile({ errorCode, mentor }) {
       .then((data) => {
         if (data.success) {
           setImageUploadStatus('success')
+          // Call the success callback to reset the form
+          if (onSuccess) {
+            onSuccess()
+          }
           // Reset status after 5 seconds
           setTimeout(() => setImageUploadStatus(''), 5000)
         } else {

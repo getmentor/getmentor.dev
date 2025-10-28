@@ -69,11 +69,21 @@ export default function ProfileForm({
     const reader = new FileReader()
     reader.onloadend = () => {
       const base64Image = reader.result
-      onImageUpload({
-        image: base64Image,
-        fileName: selectedImage.name,
-        contentType: selectedImage.type,
-      })
+      onImageUpload(
+        {
+          image: base64Image,
+          fileName: selectedImage.name,
+          contentType: selectedImage.type,
+        },
+        () => {
+          // Success callback - clear the selected image and preview
+          setSelectedImage(null)
+          setImagePreview(null)
+          if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+          }
+        }
+      )
     }
     reader.readAsDataURL(selectedImage)
   }
