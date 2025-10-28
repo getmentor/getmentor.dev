@@ -1,4 +1,5 @@
 import Multiselect from 'multiselect-react-dropdown'
+import Image from 'next/image'
 import { useForm, Controller } from 'react-hook-form'
 import Wysiwyg from './Wysiwyg'
 import filters from '../config/filters'
@@ -115,7 +116,8 @@ export default function ProfileForm({
           <ReactTooltip id="photo-tip" place="right" type="dark" effect="solid">
             <span>
               Загрузите своё фото для профиля. Поддерживаются форматы JPEG, PNG и WebP. Максимальный
-              размер файла - 10 МБ.
+              размер файла - 10 МБ.<br/>
+              Это пока экспериментальная функция. Если что-то пойдёт не так, напишите в телеграм @glamcoder.
             </span>
           </ReactTooltip>
         </label>
@@ -123,10 +125,12 @@ export default function ProfileForm({
         <div className="mt-2 space-y-4">
           {mentor.photo_url && !imagePreview && (
             <div className="flex items-center space-x-4">
-              <img
+              <Image
                 src={imageLoader({ src: mentor.slug, quality: 'full' })}
                 alt="Current profile"
                 className="w-24 h-24 rounded-full object-cover"
+                width={40}
+                height={40}
               />
               <span className="text-sm text-gray-600">Текущее фото</span>
             </div>
@@ -134,10 +138,12 @@ export default function ProfileForm({
 
           {imagePreview && (
             <div className="flex items-center space-x-4">
-              <img
+              <Image
                 src={imagePreview}
                 alt="Preview"
                 className="w-24 h-24 rounded-full object-cover"
+                width={40}
+                height={40}
               />
               <span className="text-sm text-gray-600">Предварительный просмотр</span>
             </div>
