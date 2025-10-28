@@ -22,6 +22,7 @@ docker build -f Dockerfile \
     --build-arg AIRTABLE_BASE_ID="$AIRTABLE_BASE_ID" \
     --build-arg AZURE_STORAGE_DOMAIN="$AZURE_STORAGE_DOMAIN" \
     --build-arg NEXT_PUBLIC_AZURE_STORAGE_DOMAIN="$NEXT_PUBLIC_AZURE_STORAGE_DOMAIN" \
+    --build-arg NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY="$NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY" \
     -t getmentor:multi-stage-test .
 
 echo ""
