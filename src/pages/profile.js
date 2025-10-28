@@ -51,6 +51,7 @@ export default function Profile({ errorCode, mentor }) {
   const [readyStatus, setReadyStatus] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
   const [imageUploadStatus, setImageUploadStatus] = useState('')
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null)
 
   const title = 'Профиль | ' + seo.title
 
@@ -123,6 +124,10 @@ export default function Profile({ errorCode, mentor }) {
       .then((data) => {
         if (data.success) {
           setImageUploadStatus('success')
+          // Store the new image URL to display it immediately
+          if (data.imageUrl) {
+            setUploadedImageUrl(data.imageUrl)
+          }
           // Call the success callback to reset the form
           if (onSuccess) {
             onSuccess()
@@ -166,6 +171,8 @@ export default function Profile({ errorCode, mentor }) {
             mentor={{
               ...mentor,
               tags: mentor.tags.filter((tag) => !filters.sponsors.includes(tag)),
+              // Use the newly uploaded image URL if available
+              photo_url: uploadedImageUrl || mentor.photo_url,
             }}
             isLoading={readyStatus === 'loading'}
             isError={readyStatus === 'error'}
