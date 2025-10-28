@@ -34,6 +34,7 @@ jobs:
             --build-arg AIRTABLE_BASE_ID="${{ secrets.AIRTABLE_BASE_ID }}" \
             --build-arg AZURE_STORAGE_DOMAIN="${{ secrets.AZURE_STORAGE_DOMAIN }}" \
             --build-arg NEXT_PUBLIC_AZURE_STORAGE_DOMAIN="${{ secrets.NEXT_PUBLIC_AZURE_STORAGE_DOMAIN }}" \
+            --build-arg RECAPTCHA_V2_SITE_KEY="${{ secrets.RECAPTCHA_V2_SITE_KEY }}" \
             --build-arg NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY="${{ secrets.NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY }}" \
             -t ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             -t ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:latest \
