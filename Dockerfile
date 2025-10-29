@@ -45,14 +45,35 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Install curl for healthchecks, ca-certificates for HTTPS, and unzip for Grafana Agent
+RUN apk add --no-cache curl ca-certificates unzip
+
+# Download and install Grafana Agent
+ARG GRAFANA_AGENT_VERSION=v0.40.2
+RUN curl -L -o /tmp/grafana-agent.zip \
+    "https://github.com/grafana/agent/releases/download/${GRAFANA_AGENT_VERSION}/grafana-agent-linux-amd64.zip" && \
+    unzip /tmp/grafana-agent.zip -d /tmp && \
+    mv /tmp/grafana-agent-linux-amd64 /usr/bin/grafana-agent && \
+    chmod +x /usr/bin/grafana-agent && \
+    rm /tmp/grafana-agent.zip
+
 # Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+# Create logs directory and temporary directories for Grafana Agent
+RUN mkdir -p /app/logs /tmp/grafana-agent-wal /tmp/grafana-agent-positions && \
+    chown -R nextjs:nodejs /app/logs /tmp/grafana-agent-wal /tmp/grafana-agent-positions
 
 # Copy only necessary files for production
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+
+# Copy Grafana Agent configuration and startup script
+COPY grafana-agent-config.yaml ./grafana-agent-config.yaml
+COPY start-with-agent.sh ./start-with-agent.sh
+RUN chmod +x ./start-with-agent.sh
 
 # Set proper permissions
 RUN chown -R nextjs:nodejs /app
@@ -64,5 +85,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Use the custom start command with memory limit
-CMD ["node", "--max-old-space-size=512", "server.js"]
+# Use the startup script that launches both Grafana Agent and Next.js
+CMD ["/app/start-with-agent.sh"]

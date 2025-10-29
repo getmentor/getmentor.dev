@@ -1,6 +1,7 @@
 import Cors from 'cors'
 import initMiddleware from '../../../lib/init-middleware'
 import { AUTH_TOKEN, CALENDAR_URL } from '../../../lib/entities'
+import { cacheHits, cacheMisses, cacheSize } from '../../../lib/metrics'
 
 import { getMentors as getMentorsFromData } from '../../../server/airtable-mentors'
 
@@ -62,8 +63,14 @@ export default handler
 export async function getMentors(params) {
   let result = mentorsCache.get('main')
   if (result == undefined) {
+    cacheMisses.inc({ cache_name: 'mentors' })
     result = await refresh()
+  } else {
+    cacheHits.inc({ cache_name: 'mentors' })
   }
+
+  // Update cache size metric
+  cacheSize.set({ cache_name: 'mentors' }, mentorsCache.keys().length)
 
   if (params.only_visible) {
     result = result.filter((m) => m.isVisible)
