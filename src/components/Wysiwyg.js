@@ -16,6 +16,7 @@ export default function Wysiwyg({ content, onUpdate }) {
     onUpdate({ editor }) {
       onUpdate(editor)
     },
+    immediatelyRender: false,
   })
 
   return (

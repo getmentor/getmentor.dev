@@ -50,6 +50,9 @@ export default function Profile({ errorCode, mentor }) {
 
   const [readyStatus, setReadyStatus] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
+  const [imageUploadStatus, setImageUploadStatus] = useState('')
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null)
+  const [tempImagePreview, setTempImagePreview] = useState(null)
 
   const title = 'Профиль | ' + seo.title
 
@@ -97,6 +100,55 @@ export default function Profile({ errorCode, mentor }) {
       })
   }
 
+  const onImageUpload = (imageData, onSuccess) => {
+    if (imageUploadStatus === 'loading') {
+      return
+    }
+
+    setImageUploadStatus('loading')
+    // Show the uploaded image immediately and keep it until page refresh
+    setTempImagePreview(imageData.image)
+
+    analytics.event('Upload Profile Picture', {
+      'Mentor Id': mentor.id,
+      'Mentor Name': mentor.name,
+    })
+
+    fetch('/api/upload-profile-picture' + location.search, {
+      method: 'POST',
+      body: JSON.stringify(imageData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+        if (data.success) {
+          setImageUploadStatus('success')
+          // Store the new image URL to display it immediately
+          if (data.imageUrl) {
+            setUploadedImageUrl(data.imageUrl)
+          }
+          // Call the success callback to reset the form
+          if (onSuccess) {
+            onSuccess()
+          }
+          // Reset status after 5 seconds
+          setTimeout(() => setImageUploadStatus(''), 5000)
+        } else {
+          setImageUploadStatus('error')
+          setTempImagePreview(null)
+        }
+      })
+      .catch((e) => {
+        setImageUploadStatus('error')
+        setTempImagePreview(null)
+        console.error(e)
+      })
+  }
+
   if (errorCode) {
     return <Error statusCode={403} title="Access denied" />
   }
@@ -124,10 +176,15 @@ export default function Profile({ errorCode, mentor }) {
             mentor={{
               ...mentor,
               tags: mentor.tags.filter((tag) => !filters.sponsors.includes(tag)),
+              // Use the newly uploaded image URL if available
+              photo_url: uploadedImageUrl || mentor.photo_url,
             }}
             isLoading={readyStatus === 'loading'}
             isError={readyStatus === 'error'}
             onSubmit={onSubmit}
+            onImageUpload={onImageUpload}
+            imageUploadStatus={imageUploadStatus}
+            tempImagePreview={tempImagePreview}
           />
         </div>
       </Section>

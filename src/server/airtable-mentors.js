@@ -157,6 +157,21 @@ function calendarType(url) {
   }
 }
 
+/**
+ * @param {string} recordId
+ * @param {string} imageUrl
+ * @returns {Promise<Record>}
+ */
+export async function updateMentorImage(recordId, imageUrl) {
+  return airtableBase('Mentors').update(recordId, {
+    Image_Attachment: [
+      {
+        url: imageUrl,
+      },
+    ],
+  })
+}
+
 function testData() {
   return [
     {
