@@ -15,6 +15,7 @@ const handler = async (req, res) => {
 
     res.status(200).send(metrics)
   } catch (error) {
+    console.error('[METRICS ERROR]', error)
     res.status(500).json({ error: 'Failed to collect metrics' })
   }
 }

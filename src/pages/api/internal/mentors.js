@@ -15,7 +15,11 @@ const mentorsCache = new NodeCache({
 })
 mentorsCache.on('expired', refresh)
 
-refresh()
+// Immediately populate cache on module load (not awaited to avoid blocking module initialization)
+// The first request may be a cache miss if this hasn't completed yet
+refresh().catch((error) => {
+  console.error('Initial cache population failed:', error)
+})
 
 // Initialize the cors middleware
 const cors = initMiddleware(
@@ -63,6 +67,7 @@ export default withObservability(handler)
 
 export async function getMentors(params) {
   let result = mentorsCache.get('main')
+
   if (result == undefined) {
     cacheMisses.inc({ cache_name: 'mentors' })
     result = await refresh()

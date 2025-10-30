@@ -19,6 +19,7 @@ prometheus.scrape "nextjs_app" {
   ]
   forward_to      = [prometheus.remote_write.grafana_cloud.receiver]
   scrape_interval = "60s"
+  metrics_path    = "/api/metrics"
 }
 
 // Self-monitoring: Grafana Alloy metrics
