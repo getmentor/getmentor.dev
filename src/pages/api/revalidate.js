@@ -1,3 +1,6 @@
+import { withObservability } from '../../lib/with-observability'
+import logger from '../../lib/logger'
+
 const handler = async function handler(req, res) {
   // Check for secret to confirm this is a valid request
   if (req.query.secret !== process.env.REVALIDATE_SECRET_TOKEN) {
@@ -14,10 +17,12 @@ const handler = async function handler(req, res) {
       res.revalidate(`/mentor/${slug}/contact`),
     ])
 
+    logger.info('Pages revalidated', { slug })
     return res.json({ revalidated: true })
   } catch (err) {
+    logger.error('Error revalidating pages', { slug: req.query.slug, error: err.message })
     return res.status(500).send('Error revalidating: ' + err)
   }
 }
 
-export default handler
+export default withObservability(handler)

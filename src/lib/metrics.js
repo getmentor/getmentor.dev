@@ -113,5 +113,20 @@ export const mentorSearches = new promClient.Counter({
   registers: [register],
 })
 
+export const pageViews = new promClient.Counter({
+  name: 'nextjs_page_views_total',
+  help: 'Total number of page views (SSR)',
+  labelNames: ['page'],
+  registers: [register],
+})
+
+export const serverSideRenderDuration = new promClient.Histogram({
+  name: 'nextjs_ssr_duration_seconds',
+  help: 'Duration of server-side rendering in seconds',
+  labelNames: ['page', 'status'],
+  buckets: [0.1, 0.3, 0.5, 1, 2, 5, 10],
+  registers: [register],
+})
+
 // Export the register for Prometheus to scrape
 export default register

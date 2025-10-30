@@ -14,15 +14,24 @@ import { InlineWidget } from 'react-calendly'
 import Koalendar from '../../../components/Koalendar'
 import CalendlabWidget from '../../../components/CalendlabWidget'
 import { imageLoader } from '../../../lib/azure-image-loader'
+import { withSSRObservability } from '../../../lib/with-ssr-observability'
+import logger from '../../../lib/logger'
 
-export async function getServerSideProps(context) {
+async function _getServerSideProps(context) {
   const mentor = await getOneMentorBySlug(context.params.slug)
 
   if (!mentor) {
+    logger.warn('Mentor not found for contact page', { slug: context.params.slug })
     return {
       notFound: true,
     }
   }
+
+  logger.info('Mentor contact page rendered', {
+    mentorId: mentor.id,
+    mentorSlug: mentor.slug,
+    calendarType: mentor.calendarType,
+  })
 
   return {
     props: {
@@ -30,6 +39,8 @@ export async function getServerSideProps(context) {
     },
   }
 }
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'mentor-contact')
 
 export default function OrderMentor({ mentor }) {
   const [readyStatus, setReadyStatus] = useState('')

@@ -2,6 +2,7 @@ import Cors from 'cors'
 import initMiddleware from '../../../lib/init-middleware'
 import { AUTH_TOKEN, CALENDAR_URL } from '../../../lib/entities'
 import { cacheHits, cacheMisses, cacheSize } from '../../../lib/metrics'
+import { withObservability } from '../../../lib/with-observability'
 
 import { getMentors as getMentorsFromData } from '../../../server/airtable-mentors'
 
@@ -58,7 +59,7 @@ const handler = async (req, res) => {
   }
 }
 
-export default handler
+export default withObservability(handler)
 
 export async function getMentors(params) {
   let result = mentorsCache.get('main')
