@@ -38,11 +38,11 @@ prometheus.scrape "alloy_self_monitoring" {
 // Prometheus remote write to Grafana Cloud
 prometheus.remote_write "grafana_cloud" {
   endpoint {
-    url = env("GRAFANA_CLOUD_METRICS_URL")
+    url = env("GCLOUD_HOSTED_METRICS_URL")
 
     basic_auth {
-      username = env("GRAFANA_CLOUD_METRICS_USERNAME")
-      password = env("GRAFANA_CLOUD_API_KEY")
+      username = env("GCLOUD_HOSTED_METRICS_ID")
+      password = env("GCLOUD_RW_API_KEY")
     }
   }
 }
@@ -105,11 +105,11 @@ loki.process "parse_json" {
 // Loki write to Grafana Cloud
 loki.write "grafana_cloud" {
   endpoint {
-    url = env("GRAFANA_CLOUD_LOGS_URL")
+    url = env("GCLOUD_HOSTED_LOGS_URL")
 
     basic_auth {
-      username = env("GRAFANA_CLOUD_LOGS_USERNAME")
-      password = env("GRAFANA_CLOUD_API_KEY")
+      username = env("GCLOUD_HOSTED_LOGS_ID")
+      password = env("GCLOUD_RW_API_KEY")
     }
   }
 }
