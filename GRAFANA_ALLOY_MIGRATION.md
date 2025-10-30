@@ -23,11 +23,18 @@ This document describes the migration from **Grafana Agent** to **Grafana Alloy*
 - **Old:** `start-with-agent.sh`
 - **New:** `start-with-alloy.sh`
 
-### 4. **Docker Image**
-- **Old:** Downloaded from `grafana/agent` releases
-- **New:** Downloaded from `grafana/alloy` releases
+### 4. **Docker Base Image**
+- **Old:** `node:20.19.5-alpine3.22` (musl libc)
+- **New:** `node:20.19.5-bookworm-slim` (glibc, Debian-based)
+  - **Why:** Alloy binaries require glibc, but Alpine uses musl libc
+  - **Solution:** Switch to Debian-based Node.js image for glibc compatibility
 
-### 5. **Data Directories**
+### 5. **Alloy Binary Installation**
+- **Old:** Downloaded Grafana Agent from GitHub releases
+- **New:** Copied from official `grafana/alloy:latest` Docker image
+  - Uses multi-stage build to extract the working binary
+
+### 6. **Data Directories**
 - **Old:**
   - `/tmp/grafana-agent-wal` (metrics WAL)
   - `/tmp/grafana-agent-positions` (log positions)
@@ -211,6 +218,31 @@ After deployment, verify:
 ---
 
 ## Troubleshooting
+
+### Alloy Binary "Not Found" Error
+
+**Problem:** `/usr/local/bin/alloy: not found` even though the file exists with correct permissions.
+
+**Root Cause:** Alloy binaries are dynamically linked against **glibc** (GNU C Library), but Alpine Linux uses **musl libc**. The binary looks for `/lib/ld-linux-aarch64.so.1` (glibc dynamic linker) which doesn't exist on Alpine, causing the "not found" error.
+
+**Solution (Implemented):** Switch from Alpine to Debian-based Node.js image which includes glibc:
+
+```dockerfile
+# Copy Alloy from official Ubuntu-based image
+FROM grafana/alloy:latest AS alloy
+
+# Use Debian-based Node.js instead of Alpine
+FROM node:20.19.5-bookworm-slim AS runner
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+
+# Copy Alloy binary (now compatible!)
+COPY --from=alloy /bin/alloy /usr/local/bin/alloy
+```
+
+**Image Size Impact:** Debian slim images are slightly larger (~50-70MB more) than Alpine, but the trade-off is worth it for binary compatibility and easier maintenance.
 
 ### Alloy Not Starting
 

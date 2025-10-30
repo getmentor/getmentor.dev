@@ -38,24 +38,25 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Build the Next.js application
 RUN yarn build
 
-# Stage 3: Production image
-FROM node:20.19.5-alpine3.22 AS runner
+# Stage 3: Get Grafana Alloy binary from official image
+FROM grafana/alloy:latest AS alloy
+
+# Stage 4: Production image (using Debian-based image for glibc compatibility)
+FROM node:20.19.5-bookworm-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install curl for healthchecks, ca-certificates for HTTPS, and unzip for Grafana Alloy
-RUN apk add --no-cache curl ca-certificates unzip
+# Install curl for healthchecks and ca-certificates for HTTPS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# Download and install Grafana Alloy
-ARG GRAFANA_ALLOY_VERSION=v1.5.1
-RUN curl -L -o /tmp/grafana-alloy.zip \
-    "https://github.com/grafana/alloy/releases/download/${GRAFANA_ALLOY_VERSION}/alloy-linux-amd64.zip" && \
-    unzip /tmp/grafana-alloy.zip -d /tmp && \
-    mv /tmp/alloy-linux-amd64 /usr/bin/alloy && \
-    chmod +x /usr/bin/alloy && \
-    rm /tmp/grafana-alloy.zip
+# Copy Grafana Alloy binary from official image
+COPY --from=alloy /bin/alloy /usr/local/bin/alloy
+RUN chmod +x /usr/local/bin/alloy
 
 # Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs

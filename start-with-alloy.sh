@@ -6,7 +6,7 @@ mkdir -p /app/logs
 
 # Start Grafana Alloy in the background
 echo "Starting Grafana Alloy..."
-/usr/bin/alloy run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /app/config.alloy &
+/usr/local/bin/alloy run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /app/config.alloy &
 
 # Store the PID
 ALLOY_PID=$!
