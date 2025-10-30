@@ -45,35 +45,35 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install curl for healthchecks, ca-certificates for HTTPS, and unzip for Grafana Agent
+# Install curl for healthchecks, ca-certificates for HTTPS, and unzip for Grafana Alloy
 RUN apk add --no-cache curl ca-certificates unzip
 
-# Download and install Grafana Agent
-ARG GRAFANA_AGENT_VERSION=v0.40.2
-RUN curl -L -o /tmp/grafana-agent.zip \
-    "https://github.com/grafana/agent/releases/download/${GRAFANA_AGENT_VERSION}/grafana-agent-linux-amd64.zip" && \
-    unzip /tmp/grafana-agent.zip -d /tmp && \
-    mv /tmp/grafana-agent-linux-amd64 /usr/bin/grafana-agent && \
-    chmod +x /usr/bin/grafana-agent && \
-    rm /tmp/grafana-agent.zip
+# Download and install Grafana Alloy
+ARG GRAFANA_ALLOY_VERSION=v1.5.1
+RUN curl -L -o /tmp/grafana-alloy.zip \
+    "https://github.com/grafana/alloy/releases/download/${GRAFANA_ALLOY_VERSION}/alloy-linux-amd64.zip" && \
+    unzip /tmp/grafana-alloy.zip -d /tmp && \
+    mv /tmp/alloy-linux-amd64 /usr/bin/alloy && \
+    chmod +x /usr/bin/alloy && \
+    rm /tmp/grafana-alloy.zip
 
 # Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Create logs directory and temporary directories for Grafana Agent
-RUN mkdir -p /app/logs /tmp/grafana-agent-wal /tmp/grafana-agent-positions && \
-    chown -R nextjs:nodejs /app/logs /tmp/grafana-agent-wal /tmp/grafana-agent-positions
+# Create logs directory and data directory for Grafana Alloy
+RUN mkdir -p /app/logs /var/lib/alloy/data && \
+    chown -R nextjs:nodejs /app/logs /var/lib/alloy/data
 
 # Copy only necessary files for production
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Copy Grafana Agent configuration and startup script
-COPY grafana-agent-config.yaml ./grafana-agent-config.yaml
-COPY start-with-agent.sh ./start-with-agent.sh
-RUN chmod +x ./start-with-agent.sh
+# Copy Grafana Alloy configuration and startup script
+COPY config.alloy ./config.alloy
+COPY start-with-alloy.sh ./start-with-alloy.sh
+RUN chmod +x ./start-with-alloy.sh
 
 # Set proper permissions
 RUN chown -R nextjs:nodejs /app
@@ -85,5 +85,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Use the startup script that launches both Grafana Agent and Next.js
-CMD ["/app/start-with-agent.sh"]
+# Use the startup script that launches both Grafana Alloy and Next.js
+CMD ["/app/start-with-alloy.sh"]

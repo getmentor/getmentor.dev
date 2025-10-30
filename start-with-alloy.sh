@@ -4,24 +4,24 @@ set -e
 # Create logs directory
 mkdir -p /app/logs
 
-# Start Grafana Agent in the background
-echo "Starting Grafana Agent..."
-/usr/bin/grafana-agent --config.file=/app/grafana-agent-config.yaml --config.expand-env &
+# Start Grafana Alloy in the background
+echo "Starting Grafana Alloy..."
+/usr/bin/alloy run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /app/config.alloy &
 
 # Store the PID
-AGENT_PID=$!
+ALLOY_PID=$!
 
 # Function to handle shutdown gracefully
 shutdown() {
     echo "Shutting down..."
-    kill -TERM "$AGENT_PID" 2>/dev/null || true
+    kill -TERM "$ALLOY_PID" 2>/dev/null || true
     exit 0
 }
 
 # Trap signals for graceful shutdown
 trap shutdown SIGTERM SIGINT
 
-# Wait a moment for agent to start
+# Wait a moment for Alloy to start
 sleep 2
 
 # Start Next.js application
