@@ -12,8 +12,8 @@ prometheus.scrape "nextjs_app" {
   targets = [
     {
       __address__ = "localhost:3000",
-      instance    = env("HOSTNAME") != "" ? env("HOSTNAME") : "localhost",
-      environment = env("NODE_ENV") != "" ? env("NODE_ENV") : "production",
+      instance    = coalesce(env("HOSTNAME"), "localhost"),
+      environment = coalesce(env("NODE_ENV"), "production"),
       app         = "getmentor",
     },
   ]
@@ -26,8 +26,8 @@ prometheus.scrape "alloy_self_monitoring" {
   targets = [
     {
       __address__ = "localhost:12345",
-      instance    = env("HOSTNAME") != "" ? env("HOSTNAME") : "localhost",
-      environment = env("NODE_ENV") != "" ? env("NODE_ENV") : "production",
+      instance    = coalesce(env("HOSTNAME"), "localhost"),
+      environment = coalesce(env("NODE_ENV"), "production"),
       app         = "getmentor",
     },
   ]
@@ -51,11 +51,11 @@ prometheus.remote_write "grafana_cloud" {
 local.file_match "app_logs" {
   path_targets = [
     {
-      __path__ = "/app/logs/*.log",
-      job      = "nextjs-app",
-      instance = env("HOSTNAME") != "" ? env("HOSTNAME") : "localhost",
-      environment = env("NODE_ENV") != "" ? env("NODE_ENV") : "production",
-      app      = "getmentor",
+      __path__    = "/app/logs/*.log",
+      job         = "nextjs-app",
+      instance    = coalesce(env("HOSTNAME"), "localhost"),
+      environment = coalesce(env("NODE_ENV"), "production"),
+      app         = "getmentor",
     },
   ]
 }
@@ -114,7 +114,8 @@ loki.write "grafana_cloud" {
   }
 }
 
-// OpenTelemetry receiver for traces (HTTP)
+// OpenTelemetry receiver for traces (HTTP & gRPC)
+// Note: Traces are collected but not exported yet - configure GRAFANA_CLOUD_TRACES_URL to enable
 otelcol.receiver.otlp "default" {
   http {
     endpoint = "0.0.0.0:4318"
@@ -125,34 +126,7 @@ otelcol.receiver.otlp "default" {
   }
 
   output {
-    metrics = [otelcol.processor.batch.default.input]
-    logs    = [otelcol.processor.batch.default.input]
-    traces  = [otelcol.processor.batch.default.input]
+    // Traces are received but not forwarded - uncomment when traces endpoint is configured
+    // traces  = [otelcol.exporter.otlp.grafana_cloud.input]
   }
-}
-
-// Batch processor for OTLP data
-otelcol.processor.batch "default" {
-  output {
-    metrics = [otelcol.exporter.otlphttp.grafana_cloud.input]
-    logs    = [otelcol.exporter.otlphttp.grafana_cloud.input]
-    traces  = [otelcol.exporter.otlphttp.grafana_cloud.input]
-  }
-}
-
-// OTLP exporter to Grafana Cloud
-otelcol.exporter.otlphttp "grafana_cloud" {
-  client {
-    endpoint = env("GRAFANA_CLOUD_TRACES_URL")
-
-    auth {
-      authenticator = otelcol.auth.basic.grafana_cloud.handler
-    }
-  }
-}
-
-// Basic auth for OTLP
-otelcol.auth.basic "grafana_cloud" {
-  username = env("GRAFANA_CLOUD_TRACES_USERNAME")
-  password = env("GRAFANA_CLOUD_API_KEY")
 }
