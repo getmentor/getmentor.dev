@@ -12,29 +12,44 @@ import Notification from '../components/Notification'
 import Error from 'next/error'
 import analytics from '../lib/analytics'
 import Link from 'next/link'
+import { withSSRObservability } from '../lib/with-ssr-observability'
+import logger from '../lib/logger'
 
-export async function getServerSideProps(context) {
+async function _getServerSideProps(context) {
   context.query.id = parseInt(context.query.id, 10)
   if (isNaN(context.query.id)) {
+    logger.warn('Invalid mentor ID for profile edit', { id: context.query.id })
     return { notFound: true }
   }
 
   const mentor = await getOneMentorById(context.query.id, { showHiddenFields: true })
 
   if (!mentor) {
+    logger.warn('Mentor not found for profile edit', { id: context.query.id })
     return { notFound: true }
   }
 
   if (!context.query.token || mentor.authToken !== context.query.token) {
+    logger.warn('Unauthorized profile edit attempt', {
+      mentorId: context.query.id,
+      hasToken: !!context.query.token,
+    })
     return {
       props: { errorCode: 403, mentor: null },
     }
   }
 
+  logger.info('Profile edit page rendered', {
+    mentorId: mentor.id,
+    mentorSlug: mentor.slug,
+  })
+
   return {
     props: { errorCode: 0, mentor },
   }
 }
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'profile-edit')
 
 export default function Profile({ errorCode, mentor }) {
   useEffect(() => {
