@@ -20,6 +20,7 @@ module.exports = {
 
   experimental: {
     largePageDataBytes: 10 * 1024 * 1024,
+    instrumentationHook: true,
   },
 
   async headers() {
