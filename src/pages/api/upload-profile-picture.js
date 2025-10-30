@@ -2,7 +2,11 @@ import { uploadImageToAzure, generateFileName } from '../../lib/azure-storage'
 import { updateMentorImage } from '../../server/airtable-mentors'
 import { getOneMentorById } from '../../server/mentors-data'
 import { withObservability } from '../../lib/with-observability'
-import { azureStorageRequestDuration, azureStorageRequestTotal } from '../../lib/metrics'
+import {
+  azureStorageRequestDuration,
+  azureStorageRequestTotal,
+  profilePictureUploads,
+} from '../../lib/metrics'
 import logger from '../../lib/logger'
 
 export const config = {
@@ -77,6 +81,7 @@ const uploadProfilePictureHandler = async (req, res) => {
 
       azureStorageRequestDuration.observe({ operation: 'upload', status: uploadStatus }, duration)
       azureStorageRequestTotal.inc({ operation: 'upload', status: uploadStatus })
+      profilePictureUploads.inc({ status: 'success' })
 
       logger.info('Profile picture uploaded to Azure', {
         mentorId: mentor.id,
@@ -105,6 +110,7 @@ const uploadProfilePictureHandler = async (req, res) => {
       const duration = (Date.now() - start) / 1000
       azureStorageRequestDuration.observe({ operation: 'upload', status: uploadStatus }, duration)
       azureStorageRequestTotal.inc({ operation: 'upload', status: uploadStatus })
+      profilePictureUploads.inc({ status: 'error' })
       throw uploadError
     }
   } catch (error) {

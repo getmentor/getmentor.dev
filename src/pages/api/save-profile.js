@@ -3,6 +3,7 @@ import * as airtableMentors from '../../server/airtable-mentors'
 import { getOneMentorById } from '../../server/mentors-data'
 import filters from '../../config/filters'
 import { withObservability } from '../../lib/with-observability'
+import { profileUpdates } from '../../lib/metrics'
 import logger from '../../lib/logger'
 
 const bodySchema = yup.object().shape({
@@ -60,12 +61,16 @@ const saveProfileHandler = async (req, res) => {
       // forceRefreshCache(),
     ])
 
+    profileUpdates.inc({ status: 'success' })
+
     logger.info('Mentor profile updated', {
       mentorId: mentor.id,
       airtableId: mentor.airtableId,
       fieldsUpdated: Object.keys(newProps),
     })
   } catch (e) {
+    profileUpdates.inc({ status: 'error' })
+
     logger.error('Failed to update mentor profile', {
       mentorId: mentor.id,
       error: e.message,

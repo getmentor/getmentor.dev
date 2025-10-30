@@ -6,7 +6,7 @@ const register = new promClient.Registry()
 // Add default metrics (CPU, memory, event loop lag, etc.)
 promClient.collectDefaultMetrics({
   register,
-  prefix: 'nextjs_',
+  prefix: 'gm_nextjs_',
   gcDurationBuckets: [0.001, 0.01, 0.1, 1, 2, 5],
 })
 
@@ -109,7 +109,21 @@ export const contactFormSubmissions = new promClient.Counter({
 export const mentorSearches = new promClient.Counter({
   name: 'nextjs_mentor_searches_total',
   help: 'Total number of mentor searches performed',
-  labelNames: ['has_filters'],
+  labelNames: ['has_filters', 'search_type'],
+  registers: [register],
+})
+
+export const profileUpdates = new promClient.Counter({
+  name: 'nextjs_profile_updates_total',
+  help: 'Total number of mentor profile updates',
+  labelNames: ['status'],
+  registers: [register],
+})
+
+export const profilePictureUploads = new promClient.Counter({
+  name: 'nextjs_profile_picture_uploads_total',
+  help: 'Total number of profile picture uploads',
+  labelNames: ['status'],
   registers: [register],
 })
 
