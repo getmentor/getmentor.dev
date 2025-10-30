@@ -76,7 +76,7 @@ export async function getMentors(params) {
   }
 
   // Update cache size metric
-  cacheSize.set({ cache_name: 'mentors' }, mentorsCache.keys().length)
+  cacheSize.set({ cache_name: 'mentors' }, result.length)
 
   if (params.only_visible) {
     result = result.filter((m) => m.isVisible)
