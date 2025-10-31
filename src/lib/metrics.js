@@ -4,6 +4,9 @@ import promClient from 'prom-client'
 // This ensures all metrics across all API routes use the same registry instance
 const register = promClient.register
 
+// General metrics prefix
+const prefix = 'getmentor_app_'
+
 // Only initialize default metrics if not already done
 const hasDefaultMetrics = register.getSingleMetric('gm_nextjs_process_cpu_user_seconds_total') !== undefined
 
@@ -19,8 +22,7 @@ if (!hasDefaultMetrics) {
 // Helper function to get or create metric
 // This prevents "metric already registered" errors in Next.js
 function getOrCreateMetric(metricType, config) {
-  const prefix = 'getmentor_app_'
-  const existing = register.getSingleMetric(prefix + config.name)
+  const existing = register.getSingleMetric(config.name)
   if (existing) {
     return existing
   }
@@ -31,7 +33,7 @@ function getOrCreateMetric(metricType, config) {
 
 // HTTP request duration histogram
 export const httpRequestDuration = getOrCreateMetric(promClient.Histogram, {
-  name: 'http_request_duration_seconds',
+  name: prefix + 'http_request_duration_seconds',
   help: 'Duration of HTTP requests in seconds',
   labelNames: ['method', 'route', 'status_code'],
   buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
@@ -40,7 +42,7 @@ export const httpRequestDuration = getOrCreateMetric(promClient.Histogram, {
 
 // HTTP request counter
 export const httpRequestTotal = getOrCreateMetric(promClient.Counter, {
-  name: 'http_requests_total',
+  name: prefix + 'http_requests_total',
   help: 'Total number of HTTP requests',
   labelNames: ['method', 'route', 'status_code'],
   registers: [register],
@@ -48,7 +50,7 @@ export const httpRequestTotal = getOrCreateMetric(promClient.Counter, {
 
 // Active requests gauge
 export const activeRequests = getOrCreateMetric(promClient.Gauge, {
-  name: 'http_active_requests',
+  name: prefix + 'http_active_requests',
   help: 'Number of active HTTP requests',
   labelNames: ['method', 'route'],
   registers: [register],
@@ -64,7 +66,7 @@ export const airtableRequestDuration = getOrCreateMetric(promClient.Histogram, {
 })
 
 export const airtableRequestTotal = getOrCreateMetric(promClient.Counter, {
-  name: 'airtable_requests_total',
+  name: prefix + 'airtable_requests_total',
   help: 'Total number of Airtable API requests',
   labelNames: ['operation', 'status'],
   registers: [register],
@@ -72,21 +74,21 @@ export const airtableRequestTotal = getOrCreateMetric(promClient.Counter, {
 
 // Cache metrics
 export const cacheHits = getOrCreateMetric(promClient.Counter, {
-  name: 'cache_hits_total',
+  name: prefix + 'cache_hits_total',
   help: 'Total number of cache hits',
   labelNames: ['cache_name'],
   registers: [register],
 })
 
 export const cacheMisses = getOrCreateMetric(promClient.Counter, {
-  name: 'cache_misses_total',
+  name: prefix + 'cache_misses_total',
   help: 'Total number of cache misses',
   labelNames: ['cache_name'],
   registers: [register],
 })
 
 export const cacheSize = getOrCreateMetric(promClient.Gauge, {
-  name: 'cache_size',
+  name: prefix + 'cache_size',
   help: 'Number of items in cache',
   labelNames: ['cache_name'],
   registers: [register],
@@ -102,7 +104,7 @@ export const azureStorageRequestDuration = getOrCreateMetric(promClient.Histogra
 })
 
 export const azureStorageRequestTotal = getOrCreateMetric(promClient.Counter, {
-  name: 'azure_storage_requests_total',
+  name: prefix + 'azure_storage_requests_total',
   help: 'Total number of Azure Storage requests',
   labelNames: ['operation', 'status'],
   registers: [register],
@@ -110,7 +112,7 @@ export const azureStorageRequestTotal = getOrCreateMetric(promClient.Counter, {
 
 // Business metrics
 export const mentorProfileViews = getOrCreateMetric(promClient.Counter, {
-  name: 'mentor_profile_views_total',
+  name: prefix + 'mentor_profile_views_total',
   help: 'Total number of mentor profile views',
   labelNames: ['mentor_slug'],
   registers: [register],
@@ -124,35 +126,35 @@ export const contactFormSubmissions = getOrCreateMetric(promClient.Counter, {
 })
 
 export const mentorSearches = getOrCreateMetric(promClient.Counter, {
-  name: 'mentor_searches_total',
+  name: prefix + 'mentor_searches_total',
   help: 'Total number of mentor searches performed',
   labelNames: ['has_filters', 'search_type'],
   registers: [register],
 })
 
 export const profileUpdates = getOrCreateMetric(promClient.Counter, {
-  name: 'profile_updates_total',
+  name: prefix + 'profile_updates_total',
   help: 'Total number of mentor profile updates',
   labelNames: ['status'],
   registers: [register],
 })
 
 export const profilePictureUploads = getOrCreateMetric(promClient.Counter, {
-  name: 'profile_picture_uploads_total',
+  name: prefix + 'profile_picture_uploads_total',
   help: 'Total number of profile picture uploads',
   labelNames: ['status'],
   registers: [register],
 })
 
 export const pageViews = getOrCreateMetric(promClient.Counter, {
-  name: 'page_views_total',
+  name: prefix + 'page_views_total',
   help: 'Total number of page views (SSR)',
   labelNames: ['page'],
   registers: [register],
 })
 
 export const serverSideRenderDuration = getOrCreateMetric(promClient.Histogram, {
-  name: 'ssr_duration_seconds',
+  name: prefix + 'ssr_duration_seconds',
   help: 'Duration of server-side rendering in seconds',
   labelNames: ['page', 'status'],
   buckets: [0.1, 0.3, 0.5, 1, 2, 5, 10],
