@@ -11,7 +11,7 @@ logging {
 prometheus.scrape "nextjs_app" {
   targets = [
     {
-      __address__ = string.format("localhost:%s", coalesce(env("PORT), "3000"))
+      __address__ = string.format("localhost:%s", coalesce(env("PORT"), "3000"))
       instance    = coalesce(env("HOSTNAME"), "localhost"),
       environment = coalesce(env("NODE_ENV"), "production"),
       app         = "getmentor",
