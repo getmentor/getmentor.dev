@@ -38,21 +38,43 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Build the Next.js application
 RUN yarn build
 
-# Stage 3: Production image
-FROM node:20.19.5-alpine3.22 AS runner
+# Stage 3: Get Grafana Alloy binary from official image
+FROM grafana/alloy:latest AS alloy
+
+# Stage 4: Production image (using Debian-based image for glibc compatibility)
+FROM node:20.19.5-bookworm-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Install curl for healthchecks and ca-certificates for HTTPS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Grafana Alloy binary from official image
+COPY --from=alloy /bin/alloy /usr/local/bin/alloy
+RUN chmod +x /usr/local/bin/alloy
+
 # Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+# Create logs directory and data directory for Grafana Alloy
+RUN mkdir -p /app/logs /var/lib/alloy/data && \
+    chown -R nextjs:nodejs /app/logs /var/lib/alloy/data
 
 # Copy only necessary files for production
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+
+# Copy Grafana Alloy configuration and startup script
+COPY config.alloy ./config.alloy
+COPY start-with-alloy.sh ./start-with-alloy.sh
+RUN chmod +x ./start-with-alloy.sh
 
 # Set proper permissions
 RUN chown -R nextjs:nodejs /app
@@ -64,5 +86,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Use the custom start command with memory limit
-CMD ["node", "--max-old-space-size=512", "server.js"]
+# Use the startup script that launches both Grafana Alloy and Next.js
+CMD ["/app/start-with-alloy.sh"]

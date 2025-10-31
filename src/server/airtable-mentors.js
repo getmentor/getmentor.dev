@@ -2,6 +2,8 @@ import { airtableBase } from './airtable-base'
 import { AUTH_TOKEN, CALENDAR_URL } from '../lib/entities'
 import { getAllTagsCached } from './airtable-tags'
 import allFilters from '../config/filters'
+import { airtableRequestDuration, airtableRequestTotal } from '../lib/metrics'
+import { logApiCall, logError } from '../lib/logger'
 const Url = require('url')
 
 /**
@@ -12,76 +14,110 @@ async function getMentorsInternal(formula = '') {
     return testData()
   }
 
-  const mentorsRaw = await airtableBase('Mentors')
-    .select({
-      filterByFormula: formula,
-      view: 'All Approved',
-      fields: [
-        'Id',
-        'Alias',
-        'Name',
-        'Description',
-        'JobTitle',
-        'Workplace',
-        'Details',
-        'About',
-        'Competencies',
-        'Experience',
-        'Price',
-        'Done Sessions Count',
-        'Image_Attachment',
-        'Image',
-        'Tags',
-        'SortOrder',
-        'OnSite',
-        'Status',
-        'AuthToken',
-        'Calendly Url',
-        'Is New',
-      ],
+  const start = Date.now()
+  const operation = formula ? 'select_with_formula' : 'select_all'
+  let status = 'success'
+
+  try {
+    const mentorsRaw = await airtableBase('Mentors')
+      .select({
+        filterByFormula: formula,
+        view: 'All Approved',
+        fields: [
+          'Id',
+          'Alias',
+          'Name',
+          'Description',
+          'JobTitle',
+          'Workplace',
+          'Details',
+          'About',
+          'Competencies',
+          'Experience',
+          'Price',
+          'Done Sessions Count',
+          'Image_Attachment',
+          'Image',
+          'Tags',
+          'SortOrder',
+          'OnSite',
+          'Status',
+          'AuthToken',
+          'Calendly Url',
+          'Is New',
+        ],
+      })
+      .all()
+
+    const duration = Date.now() - start
+
+    // Record metrics
+    airtableRequestDuration.observe({ operation, status }, duration / 1000)
+    airtableRequestTotal.inc({ operation, status })
+
+    // Log the API call
+    logApiCall('airtable', operation, status, duration, {
+      formula: formula || 'none',
+      records_count: mentorsRaw.length,
     })
-    .all()
 
-  /** @var {Mentor[]} mentors */
-  const mentors = mentorsRaw.map((item) => {
-    let tags = []
-    if (item.fields['Tags']) {
-      tags = item.fields['Tags'].split(',').map((tag) => tag.trim())
-    }
+    /** @var {Mentor[]} mentors */
+    const mentors = mentorsRaw.map((item) => {
+      let tags = []
+      if (item.fields['Tags']) {
+        tags = item.fields['Tags'].split(',').map((tag) => tag.trim())
+      }
 
-    return {
-      id: item.fields['Id'],
-      airtableId: item.id,
-      slug: item.fields['Alias'],
-      name: item.fields['Name'],
-      job: item.fields['JobTitle'] || '-',
-      workplace: item.fields['Workplace'] || '-',
-      description: item.fields['Details'],
-      about: item.fields['About'] || '',
-      competencies: item.fields['Competencies'] || '',
-      experience: item.fields['Experience'],
-      price: item.fields['Price'],
-      menteeCount: item.fields['Done Sessions Count'],
-      photo_url: item.fields['Image'],
-      tags: tags,
-      sortOrder: item.fields['SortOrder'] || 10000,
-      isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
-      sponsors: getMentorSponsor(tags),
-      calendarType: calendarType(item.fields['Calendly Url']),
-      isNew: item.fields['Is New'] === 1,
+      return {
+        id: item.fields['Id'],
+        airtableId: item.id,
+        slug: item.fields['Alias'],
+        name: item.fields['Name'],
+        job: item.fields['JobTitle'] || '-',
+        workplace: item.fields['Workplace'] || '-',
+        description: item.fields['Details'],
+        about: item.fields['About'] || '',
+        competencies: item.fields['Competencies'] || '',
+        experience: item.fields['Experience'],
+        price: item.fields['Price'],
+        menteeCount: item.fields['Done Sessions Count'],
+        photo_url: item.fields['Image'],
+        tags: tags,
+        sortOrder: item.fields['SortOrder'] || 10000,
+        isVisible: item.fields['OnSite'] === 1 && item.fields['Status'] === 'active',
+        sponsors: getMentorSponsor(tags),
+        calendarType: calendarType(item.fields['Calendly Url']),
+        isNew: item.fields['Is New'] === 1,
 
-      // symbol props will not be serialized and sent to client
-      // TODO token will not be serialized event you will want save it to cache
-      [AUTH_TOKEN]: item.fields['AuthToken'],
-      [CALENDAR_URL]: item.fields['Calendly Url'],
-    }
-  })
+        // symbol props will not be serialized and sent to client
+        // TODO token will not be serialized event you will want save it to cache
+        [AUTH_TOKEN]: item.fields['AuthToken'],
+        [CALENDAR_URL]: item.fields['Calendly Url'],
+      }
+    })
 
-  mentors.sort((a, b) => {
-    return a.sortOrder - b.sortOrder
-  })
+    mentors.sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
 
-  return mentors
+    return mentors
+  } catch (error) {
+    status = 'error'
+    const duration = Date.now() - start
+
+    // Record error metrics
+    airtableRequestDuration.observe({ operation, status }, duration / 1000)
+    airtableRequestTotal.inc({ operation, status })
+
+    // Log the error
+    logError(error, {
+      service: 'airtable',
+      operation,
+      formula: formula || 'none',
+    })
+
+    throw error
+  }
 }
 
 export async function getMentors() {

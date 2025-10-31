@@ -17,9 +17,16 @@ import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
 import VisibilitySensor from 'react-visibility-sensor'
+import { withSSRObservability } from '../lib/with-ssr-observability'
+import logger from '../lib/logger'
 
-export async function getServerSideProps(context) {
+async function _getServerSideProps(context) {
   const pageMentors = await getAllMentors({ onlyVisible: true, drop_long_fields: true })
+
+  logger.info('Index page rendered', {
+    mentorCount: pageMentors.length,
+    userAgent: context.req.headers['user-agent'],
+  })
 
   return {
     props: {
@@ -27,6 +34,8 @@ export async function getServerSideProps(context) {
     },
   }
 }
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'index')
 
 function Feature(props) {
   return (

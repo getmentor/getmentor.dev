@@ -1,0 +1,133 @@
+// Grafana Alloy Configuration for GetMentor.dev
+// This configuration replaces the previous Grafana Agent setup
+
+// Logging configuration
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+// Prometheus metrics scraping
+prometheus.scrape "nextjs_app" {
+  targets = [
+    {
+      __address__ = "localhost:3000",
+      instance    = coalesce(env("HOSTNAME"), "localhost"),
+      environment = coalesce(env("NODE_ENV"), "production"),
+      app         = "getmentor",
+    },
+  ]
+  forward_to      = [prometheus.remote_write.grafana_cloud.receiver]
+  scrape_interval = "60s"
+  metrics_path    = "/api/metrics"
+}
+
+// Self-monitoring: Grafana Alloy metrics
+prometheus.scrape "alloy_self_monitoring" {
+  targets = [
+    {
+      __address__ = "localhost:12345",
+      instance    = coalesce(env("HOSTNAME"), "localhost"),
+      environment = coalesce(env("NODE_ENV"), "production"),
+      app         = "getmentor",
+    },
+  ]
+  forward_to      = [prometheus.remote_write.grafana_cloud.receiver]
+  scrape_interval = "60s"
+}
+
+// Prometheus remote write to Grafana Cloud
+prometheus.remote_write "grafana_cloud" {
+  endpoint {
+    url = env("GCLOUD_HOSTED_METRICS_URL")
+
+    basic_auth {
+      username = env("GCLOUD_HOSTED_METRICS_ID")
+      password = env("GCLOUD_RW_API_KEY")
+    }
+  }
+}
+
+// Local file match for log files
+local.file_match "app_logs" {
+  path_targets = [
+    {
+      __path__    = "/app/logs/*.log",
+      job         = "nextjs-app",
+      instance    = coalesce(env("HOSTNAME"), "localhost"),
+      environment = coalesce(env("NODE_ENV"), "production"),
+      app         = "getmentor",
+    },
+  ]
+}
+
+// Loki source file - tail application logs
+loki.source.file "app_logs" {
+  targets    = local.file_match.app_logs.targets
+  forward_to = [loki.process.parse_json.receiver]
+}
+
+// Loki process - parse JSON logs and extract fields
+loki.process "parse_json" {
+  forward_to = [loki.write.grafana_cloud.receiver]
+
+  // Parse JSON log format
+  stage.json {
+    expressions = {
+      timestamp = "timestamp",
+      level     = "level",
+      message   = "message",
+      service   = "service",
+      trace_id  = "trace_id",
+      span_id   = "span_id",
+    }
+  }
+
+  // Use timestamp from log entry
+  stage.timestamp {
+    source = "timestamp"
+    format = "RFC3339"
+  }
+
+  // Add labels for level and service
+  stage.labels {
+    values = {
+      level   = "level",
+      service = "service",
+    }
+  }
+
+  // Set message as output
+  stage.output {
+    source = "message"
+  }
+}
+
+// Loki write to Grafana Cloud
+loki.write "grafana_cloud" {
+  endpoint {
+    url = env("GCLOUD_HOSTED_LOGS_URL")
+
+    basic_auth {
+      username = env("GCLOUD_HOSTED_LOGS_ID")
+      password = env("GCLOUD_RW_API_KEY")
+    }
+  }
+}
+
+// OpenTelemetry receiver for traces (HTTP & gRPC)
+// Note: Traces are collected but not exported yet - configure GRAFANA_CLOUD_TRACES_URL to enable
+otelcol.receiver.otlp "default" {
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+
+  output {
+    // Traces are received but not forwarded - uncomment when traces endpoint is configured
+    // traces  = [otelcol.exporter.otlp.grafana_cloud.input]
+  }
+}

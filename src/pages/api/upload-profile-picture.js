@@ -1,6 +1,13 @@
 import { uploadImageToAzure, generateFileName } from '../../lib/azure-storage'
 import { updateMentorImage } from '../../server/airtable-mentors'
 import { getOneMentorById } from '../../server/mentors-data'
+import { withObservability } from '../../lib/with-observability'
+import {
+  azureStorageRequestDuration,
+  azureStorageRequestTotal,
+  profilePictureUploads,
+} from '../../lib/metrics'
+import logger from '../../lib/logger'
 
 export const config = {
   api: {
@@ -65,23 +72,53 @@ const uploadProfilePictureHandler = async (req, res) => {
     // Generate unique filename
     const uniqueFileName = generateFileName(mentor.id, fileName)
 
-    // Upload to Azure Storage
-    const azureImageUrl = await uploadImageToAzure(buffer, uniqueFileName, contentType)
+    // Upload to Azure Storage with metrics
+    const start = Date.now()
+    let uploadStatus = 'success'
+    try {
+      const azureImageUrl = await uploadImageToAzure(buffer, uniqueFileName, contentType)
+      const duration = (Date.now() - start) / 1000
 
-    // Return success immediately - the Airtable update will happen asynchronously
-    res.status(200).send({
-      success: true,
-      message: 'Image uploaded successfully. Your profile will be updated shortly.',
-      imageUrl: azureImageUrl,
-    })
+      azureStorageRequestDuration.observe({ operation: 'upload', status: uploadStatus }, duration)
+      azureStorageRequestTotal.inc({ operation: 'upload', status: uploadStatus })
+      profilePictureUploads.inc({ status: 'success' })
 
-    // Update Airtable asynchronously (don't await)
-    updateMentorImage(mentor.airtableId, azureImageUrl).catch((error) => {
-      console.error('Error updating Airtable with new image:', error)
-      // Log the error but don't fail the request since Azure upload succeeded
-    })
+      logger.info('Profile picture uploaded to Azure', {
+        mentorId: mentor.id,
+        fileName: uniqueFileName,
+        fileSize: fileSizeInMB.toFixed(2) + 'MB',
+        duration_ms: duration * 1000,
+      })
+
+      // Return success immediately - the Airtable update will happen asynchronously
+      res.status(200).send({
+        success: true,
+        message: 'Image uploaded successfully. Your profile will be updated shortly.',
+        imageUrl: azureImageUrl,
+      })
+
+      // Update Airtable asynchronously (don't await)
+      updateMentorImage(mentor.airtableId, azureImageUrl).catch((error) => {
+        logger.error('Error updating Airtable with new image', {
+          mentorId: mentor.id,
+          error: error.message,
+        })
+        // Log the error but don't fail the request since Azure upload succeeded
+      })
+    } catch (uploadError) {
+      uploadStatus = 'error'
+      const duration = (Date.now() - start) / 1000
+      azureStorageRequestDuration.observe({ operation: 'upload', status: uploadStatus }, duration)
+      azureStorageRequestTotal.inc({ operation: 'upload', status: uploadStatus })
+      profilePictureUploads.inc({ status: 'error' })
+      throw uploadError
+    }
   } catch (error) {
-    console.error('Error in upload-profile-picture handler:', error)
+    logger.error('Error in upload-profile-picture handler', {
+      mentorId: req.query.id,
+      error: error.message,
+      stack: error.stack,
+    })
     return res.status(500).send({
       success: false,
       error: 'An error occurred while uploading your profile picture. Please try again later.',
@@ -89,4 +126,4 @@ const uploadProfilePictureHandler = async (req, res) => {
   }
 }
 
-export default uploadProfilePictureHandler
+export default withObservability(uploadProfilePictureHandler)

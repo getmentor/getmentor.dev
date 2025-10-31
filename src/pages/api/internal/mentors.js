@@ -1,6 +1,8 @@
 import Cors from 'cors'
 import initMiddleware from '../../../lib/init-middleware'
 import { AUTH_TOKEN, CALENDAR_URL } from '../../../lib/entities'
+import { cacheHits, cacheMisses, cacheSize } from '../../../lib/metrics'
+import { withObservability } from '../../../lib/with-observability'
 
 import { getMentors as getMentorsFromData } from '../../../server/airtable-mentors'
 
@@ -13,7 +15,11 @@ const mentorsCache = new NodeCache({
 })
 mentorsCache.on('expired', refresh)
 
-refresh()
+// Immediately populate cache on module load (not awaited to avoid blocking module initialization)
+// The first request may be a cache miss if this hasn't completed yet
+refresh().catch((error) => {
+  console.error('Initial cache population failed:', error)
+})
 
 // Initialize the cors middleware
 const cors = initMiddleware(
@@ -57,13 +63,20 @@ const handler = async (req, res) => {
   }
 }
 
-export default handler
+export default withObservability(handler)
 
 export async function getMentors(params) {
   let result = mentorsCache.get('main')
+
   if (result == undefined) {
+    cacheMisses.inc({ cache_name: 'mentors' })
     result = await refresh()
+  } else {
+    cacheHits.inc({ cache_name: 'mentors' })
   }
+
+  // Update cache size metric
+  cacheSize.set({ cache_name: 'mentors' }, result.length)
 
   if (params.only_visible) {
     result = result.filter((m) => m.isVisible)

@@ -15,18 +15,27 @@ import { htmlContent } from '../../../lib/html-content'
 import { polyfill } from 'interweave-ssr'
 import pluralize from '../../../lib/pluralize'
 import { imageLoader } from '../../../lib/azure-image-loader'
+import { withSSRObservability } from '../../../lib/with-ssr-observability'
+import logger from '../../../lib/logger'
 
 // This enables rendering profile HTML on server
 polyfill()
 
-export async function getServerSideProps(context) {
+async function _getServerSideProps(context) {
   const mentor = await getOneMentorBySlug(context.params.slug)
 
   if (!mentor) {
+    logger.warn('Mentor not found', { slug: context.params.slug })
     return {
       notFound: true,
     }
   }
+
+  logger.info('Mentor profile page rendered', {
+    mentorId: mentor.id,
+    mentorSlug: mentor.slug,
+    mentorName: mentor.name,
+  })
 
   return {
     props: {
@@ -34,6 +43,8 @@ export async function getServerSideProps(context) {
     },
   }
 }
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'mentor-detail')
 
 export default function Mentor(props) {
   const mentor = props.mentor

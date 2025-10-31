@@ -14,11 +14,18 @@ import MentorsSearch from '../components/MentorsSearch'
 import MetaHeader from '../components/MetaHeader'
 import analytics from '../lib/analytics'
 import { useEffect } from 'react'
+import { withSSRObservability } from '../lib/with-ssr-observability'
+import logger from '../lib/logger'
 
-export async function getServerSideProps(context) {
+async function _getServerSideProps(context) {
   const allMentors = await getAllMentors({ onlyVisible: true, drop_long_fields: true })
 
   const pageMentors = allMentors.filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
+
+  logger.info('Ontico page rendered', {
+    totalMentors: allMentors.length,
+    onticoMentors: pageMentors.length,
+  })
 
   return {
     props: {
@@ -26,6 +33,8 @@ export async function getServerSideProps(context) {
     },
   }
 }
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'ontico')
 
 const ontico_landing_url =
   'https://ontico.ru/?utm_source=getmentor&utm_medium=cpc&utm_campaign=landing'

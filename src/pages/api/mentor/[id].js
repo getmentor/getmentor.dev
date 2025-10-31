@@ -2,6 +2,7 @@ import { getOneMentorById } from '../../../server/mentors-data'
 import seo from '../../../config/seo'
 import Cors from 'cors'
 import initMiddleware from '../../../lib/init-middleware'
+import { withObservability } from '../../../lib/with-observability'
 
 // Initialize the cors middleware
 const cors = initMiddleware(
@@ -52,4 +53,4 @@ const handler = async (req, res) => {
   }
 }
 
-export default handler
+export default withObservability(handler)

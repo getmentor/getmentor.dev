@@ -1,6 +1,9 @@
 import * as yup from 'yup'
 import { createClientRequest } from '../../server/airtable-client-requests'
 import { getOneMentorByRecordId } from '../../server/mentors-data'
+import { withObservability } from '../../lib/with-observability'
+import { contactFormSubmissions } from '../../lib/metrics'
+import logger from '../../lib/logger'
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
@@ -40,12 +43,24 @@ const handler = async (req, res) => {
           Description: req.body['intro'],
           Telegram: req.body['telegramUsername'],
         })
+
+        // Track successful submission
+        contactFormSubmissions.inc({ status: 'success' })
+        logger.info('Contact form submitted', {
+          mentorId: req.body['mentorAirtableId'],
+          hasExperience: !!req.body['experience'],
+        })
       } catch (e) {
+        contactFormSubmissions.inc({ status: 'error' })
+        logger.error('Failed to save contact form', { error: e.message })
         return res.status(400).json({ success: false, error: 'Save to storage failed' })
       }
+    } else {
+      contactFormSubmissions.inc({ status: 'success_dev' })
     }
   } else {
-    console.warn('Captcha validation failed')
+    contactFormSubmissions.inc({ status: 'captcha_failed' })
+    logger.warn('Captcha validation failed')
     return res.status(400).json({ success: false, error: 'Captcha validation failed' })
   }
 
@@ -55,4 +70,4 @@ const handler = async (req, res) => {
   res.status(200).json({ success: true, calendar_url: mentor.calendarUrl })
 }
 
-export default handler
+export default withObservability(handler)

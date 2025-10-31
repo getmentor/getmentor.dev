@@ -2,6 +2,9 @@ import * as yup from 'yup'
 import * as airtableMentors from '../../server/airtable-mentors'
 import { getOneMentorById } from '../../server/mentors-data'
 import filters from '../../config/filters'
+import { withObservability } from '../../lib/with-observability'
+import { profileUpdates } from '../../lib/metrics'
+import logger from '../../lib/logger'
 
 const bodySchema = yup.object().shape({
   name: yup.string().required(),
@@ -57,7 +60,21 @@ const saveProfileHandler = async (req, res) => {
       airtableMentors.updateMentor(mentor.airtableId, newProps),
       // forceRefreshCache(),
     ])
+
+    profileUpdates.inc({ status: 'success' })
+
+    logger.info('Mentor profile updated', {
+      mentorId: mentor.id,
+      airtableId: mentor.airtableId,
+      fieldsUpdated: Object.keys(newProps),
+    })
   } catch (e) {
+    profileUpdates.inc({ status: 'error' })
+
+    logger.error('Failed to update mentor profile', {
+      mentorId: mentor.id,
+      error: e.message,
+    })
     return res.status(503).send({ success: false })
   }
 
@@ -68,4 +85,4 @@ const saveProfileHandler = async (req, res) => {
   res.send({ success: true })
 }
 
-export default saveProfileHandler
+export default withObservability(saveProfileHandler)

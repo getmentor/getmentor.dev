@@ -2,13 +2,19 @@ import Head from 'next/head'
 import { getAllMentors } from '../server/mentors-data'
 import seo from '../config/seo'
 import { imageLoader } from '../lib/azure-image-loader'
+import { withSSRObservability } from '../lib/with-ssr-observability'
+import logger from '../lib/logger'
 
-export async function getServerSideProps(context) {
+async function _getServerSideProps(context) {
   // console.log(context.query)
   // if (context?.query?.ai_secret !== process.env.MENTORS_API_LIST_AUTH_TOKEN_AIKB) {
   //   return { props: {} }
   // } else {
   const pageMentors = await getAllMentors({ onlyVisible: true })
+
+  logger.info('AIKB mentors page rendered', {
+    mentorCount: pageMentors.length,
+  })
 
   return {
     props: {
@@ -17,6 +23,8 @@ export async function getServerSideProps(context) {
   }
   // }
 }
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'mentors-aikb')
 
 export default function MentorsAIKB({ pageMentors }) {
   return (

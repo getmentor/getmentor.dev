@@ -3,6 +3,7 @@ import seo from '../../config/seo'
 import Cors from 'cors'
 import initMiddleware from '../../lib/init-middleware'
 import { imageLoader } from '../../lib/azure-image-loader'
+import { withObservability } from '../../lib/with-observability'
 
 // Initialize the cors middleware
 const cors = initMiddleware(
@@ -53,4 +54,4 @@ const handler = async (req, res) => {
   return res.status(200).json({ mentors })
 }
 
-export default handler
+export default withObservability(handler)
