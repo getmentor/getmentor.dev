@@ -3,7 +3,7 @@
 
 // Logging configuration
 logging {
-  level  = "info"
+  level  = coalesce(env("LOG_LEVEL"), "info")
   format = "logfmt"
 }
 
