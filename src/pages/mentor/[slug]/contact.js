@@ -111,7 +111,8 @@ export default function OrderMentor({ mentor }) {
 
     setFormData({ ...data })
 
-    fetch('/api/contact-mentor', {
+    const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
+    fetch(`${goApiUrl}/api/contact-mentor`, {
       method: 'POST',
       body: JSON.stringify({
         ...data,

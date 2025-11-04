@@ -96,7 +96,8 @@ export default function Profile({ errorCode, mentor }) {
       'Mentor Price': mentor.price,
     })
 
-    fetch('/api/save-profile' + location.search, {
+    const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
+    fetch(`${goApiUrl}/api/save-profile${location.search}`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -129,7 +130,8 @@ export default function Profile({ errorCode, mentor }) {
       'Mentor Name': mentor.name,
     })
 
-    fetch('/api/upload-profile-picture' + location.search, {
+    const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
+    fetch(`${goApiUrl}/api/upload-profile-picture${location.search}`, {
       method: 'POST',
       body: JSON.stringify(imageData),
       headers: {
