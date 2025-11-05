@@ -52,6 +52,25 @@ async function _getServerSideProps(context) {
 export const getServerSideProps = withSSRObservability(_getServerSideProps, 'profile-edit')
 
 export default function Profile({ errorCode, mentor }) {
+  // SECURITY: Extract auth credentials from URL once on page load, use in headers
+  const [authCredentials, setAuthCredentials] = useState({ id: null, token: null })
+
+  useEffect(() => {
+    // Get auth from URL query parameters (only on initial page load)
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get('id')
+    const token = params.get('token')
+
+    if (id && token) {
+      setAuthCredentials({ id, token })
+
+      // SECURITY: Remove credentials from URL to prevent exposure
+      // Keep them only in component state
+      const newUrl = window.location.pathname
+      window.history.replaceState({}, '', newUrl)
+    }
+  }, [])
+
   useEffect(() => {
     if (mentor) {
       analytics.event('Open Profile', {
@@ -61,7 +80,7 @@ export default function Profile({ errorCode, mentor }) {
         'Mentor Price': mentor.price,
       })
     }
-  }, [])
+  }, [mentor])
 
   const [readyStatus, setReadyStatus] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
@@ -96,12 +115,15 @@ export default function Profile({ errorCode, mentor }) {
       'Mentor Price': mentor.price,
     })
 
+    // SECURITY: Send auth credentials in headers, not URL
     const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
-    fetch(`${goApiUrl}/api/save-profile${location.search}`, {
+    fetch(`${goApiUrl}/api/save-profile`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',
+        'X-Mentor-ID': authCredentials.id,
+        'X-Auth-Token': authCredentials.token,
       },
     })
       .then((res) => {
@@ -130,12 +152,15 @@ export default function Profile({ errorCode, mentor }) {
       'Mentor Name': mentor.name,
     })
 
+    // SECURITY: Send auth credentials in headers, not URL
     const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
-    fetch(`${goApiUrl}/api/upload-profile-picture${location.search}`, {
+    fetch(`${goApiUrl}/api/upload-profile-picture`, {
       method: 'POST',
       body: JSON.stringify(imageData),
       headers: {
         'Content-Type': 'application/json',
+        'X-Mentor-ID': authCredentials.id,
+        'X-Auth-Token': authCredentials.token,
       },
     })
       .then((res) => {
