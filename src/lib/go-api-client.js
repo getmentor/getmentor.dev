@@ -114,12 +114,47 @@ class GoApiClient {
   }
 
   /**
-   * Force refresh the cache in Go API
+   * Save mentor profile
+   * @param {string} mentorId - Mentor ID
+   * @param {string} authToken - Auth token
+   * @param {object} profileData - Profile data to save
    * @returns {Promise<object>} Response
    */
-  async forceRefreshCache() {
-    return this.request('POST', '/api/internal/mentors?force_reset_cache=true', {
-      body: {},
+  async saveProfile(mentorId, authToken, profileData) {
+    return this.request('POST', '/api/save-profile', {
+      headers: {
+        'X-Mentor-ID': mentorId,
+        'X-Auth-Token': authToken,
+      },
+      body: profileData,
+    })
+  }
+
+  /**
+   * Upload profile picture
+   * @param {string} mentorId - Mentor ID
+   * @param {string} authToken - Auth token
+   * @param {object} imageData - Image data (base64)
+   * @returns {Promise<object>} Response
+   */
+  async uploadProfilePicture(mentorId, authToken, imageData) {
+    return this.request('POST', '/api/upload-profile-picture', {
+      headers: {
+        'X-Mentor-ID': mentorId,
+        'X-Auth-Token': authToken,
+      },
+      body: imageData,
+    })
+  }
+
+  /**
+   * Contact a mentor
+   * @param {object} contactData - Contact form data
+   * @returns {Promise<object>} Response
+   */
+  async contactMentor(contactData) {
+    return this.request('POST', '/api/contact-mentor', {
+      body: contactData,
     })
   }
 }
@@ -133,11 +168,11 @@ let clientInstance = null
  */
 export function getGoApiClient() {
   if (!clientInstance) {
-    const baseURL = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
+    const baseURL = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8081'
     const token = process.env.GO_API_INTERNAL_TOKEN || ''
 
     if (!token) {
-      console.warn('GO_API_INTERNAL_TOKEN not set, API calls may fail')
+      console.warn('INTERNAL_MENTORS_API not set, API calls may fail')
     }
 
     clientInstance = new GoApiClient(baseURL, token)

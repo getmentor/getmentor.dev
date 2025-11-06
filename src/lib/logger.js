@@ -1,10 +1,11 @@
 /**
- * Simplified logger for frontend-only Next.js application
- * Outputs to stdout only - Docker/container orchestration handles log collection
- * No file transports needed since Grafana Alloy is hosted elsewhere
+ * Next.js frontend logger with HTTP log shipping
+ * Logs are sent to console (for local debugging) and also shipped to Go API
+ * Go API writes them to file for Grafana Alloy collection
  */
 
 import winston from 'winston'
+import HttpLogTransport from './http-log-transport.js'
 
 const { combine, timestamp, json, errors, printf } = winston.format
 
@@ -31,14 +32,25 @@ const logger = winston.createLogger({
     hostname: process.env.HOSTNAME || 'localhost',
   },
   transports: [
-    // Always output to console (stdout/stderr)
-    // Docker captures this automatically
+    // Always output to console (stdout/stderr) for immediate debugging
     new winston.transports.Console({
       format:
         process.env.NODE_ENV !== 'production'
           ? combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), consoleFormat)
           : undefined, // JSON format in production
     }),
+    // Ship logs to Go API for centralized collection by Grafana Alloy
+    // Only enable in server-side context (not in browser)
+    ...(typeof window === 'undefined'
+      ? [
+          new HttpLogTransport({
+            level: process.env.LOG_LEVEL || 'info',
+            goApiUrl: process.env.GO_API_URL || 'http://localhost:8081',
+            batchSize: 50, // Send after 50 logs
+            flushInterval: 5000, // Or every 5 seconds
+          }),
+        ]
+      : []),
   ],
 })
 

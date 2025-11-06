@@ -1,3 +1,5 @@
+import { getGoApiClient } from '../../lib/go-api-client'
+
 /**
  * SECURITY: Next.js API proxy for contact-mentor endpoint
  * This allows Go API to remain on localhost only (not publicly exposed)
@@ -9,19 +11,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Forward request to Go API via localhost
-    const response = await fetch(`${process.env.GO_API_URL || 'http://localhost:8080'}/api/contact-mentor`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(req.body),
-    })
+    // Use Go API client to forward request
+    const client = getGoApiClient()
+    const data = await client.contactMentor(req.body)
 
-    const data = await response.json()
-
-    // Forward response status and data
-    return res.status(response.status).json(data)
+    return res.status(200).json(data)
   } catch (error) {
     console.error('Contact mentor proxy error:', error)
     return res.status(500).json({ error: 'Internal server error' })
