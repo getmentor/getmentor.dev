@@ -111,8 +111,9 @@ export default function OrderMentor({ mentor }) {
 
     setFormData({ ...data })
 
-    const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
-    fetch(`${goApiUrl}/api/contact-mentor`, {
+    // SECURITY: Call Next.js API route (proxy), which calls Go API on localhost
+    // This keeps Go API private (localhost only), not exposed to public internet
+    fetch('/api/contact-mentor', {
       method: 'POST',
       body: JSON.stringify({
         ...data,

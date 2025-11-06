@@ -115,9 +115,9 @@ export default function Profile({ errorCode, mentor }) {
       'Mentor Price': mentor.price,
     })
 
-    // SECURITY: Send auth credentials in headers, not URL
-    const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
-    fetch(`${goApiUrl}/api/save-profile`, {
+    // SECURITY: Call Next.js API route (proxy), which calls Go API on localhost
+    // This keeps Go API private (localhost only), not exposed to public internet
+    fetch('/api/save-profile', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -152,9 +152,9 @@ export default function Profile({ errorCode, mentor }) {
       'Mentor Name': mentor.name,
     })
 
-    // SECURITY: Send auth credentials in headers, not URL
-    const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL || 'http://localhost:8080'
-    fetch(`${goApiUrl}/api/upload-profile-picture`, {
+    // SECURITY: Call Next.js API route (proxy), which calls Go API on localhost
+    // This keeps Go API private (localhost only), not exposed to public internet
+    fetch('/api/upload-profile-picture', {
       method: 'POST',
       body: JSON.stringify(imageData),
       headers: {
