@@ -38,12 +38,15 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install curl for healthchecks
-RUN apk add --no-cache curl
+# Install dependencies for healthchecks and proper process handling
+RUN apk add --no-cache curl dumb-init
 
 # Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
+
+# Create logs directory for application logs
+RUN mkdir -p /app/logs && chown nextjs:nodejs /app/logs
 
 # Copy only necessary files for production
 COPY --from=builder /app/public ./public
@@ -60,5 +63,10 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Start Next.js directly with memory limit
+# Health check to ensure the application is responding
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:3000/api/healthcheck || exit 1
+
+# Start Next.js with dumb-init for proper signal handling and memory limit
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["node", "--max-old-space-size=512", "server.js"]
