@@ -6,7 +6,7 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: process.env.AZURE_STORAGE_DOMAIN,
+        hostname: process.env.NEXT_PUBLIC_AZURE_STORAGE_DOMAIN,
         port: '',
         pathname: '/mentor-images/**',
       },
@@ -19,7 +19,7 @@ module.exports = {
   },
 
   async headers() {
-    return [
+    const headers = [
       // this header fixed bad behaviors of next <Image /> component
       // now local images from /images directory will be cached for 1 day
       // otherwise cache image will regenerate every 60 seconds
@@ -32,8 +32,11 @@ module.exports = {
           },
         ],
       },
-      // SECURITY: Comprehensive security headers for all pages
-      {
+    ]
+
+    // Only add security headers in production
+    if (process.env.NODE_ENV === 'production') {
+      headers.push({
         source: '/:path*',
         headers: [
           {
@@ -60,11 +63,11 @@ module.exports = {
             key: 'Content-Security-Policy',
             value:
               "default-src 'self'; " +
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.mxpnl.com https://www.google.com https://www.gstatic.com https://decide.mixpanel.com; " +
-              "style-src 'self' 'unsafe-inline'; " +
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.mxpnl.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://mc.yandex.ru https://cdn.amplitude.com https://decide.mixpanel.com; " +
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
               "img-src 'self' https: data:; " +
-              "font-src 'self' data:; " +
-              "connect-src 'self' https://api.mixpanel.com https://decide.mixpanel.com https://getmentor.dev; " +
+              "font-src 'self' data: https://fonts.gstatic.com https://at.alicdn.com; " +
+              "connect-src 'self' https://api.mixpanel.com https://decide.mixpanel.com https://getmentor.dev https://mc.yandex.ru https://api.amplitude.com; " +
               "frame-src https://www.google.com; " +
               "object-src 'none'; " +
               "base-uri 'self'; " +
@@ -72,8 +75,10 @@ module.exports = {
               "upgrade-insecure-requests;",
           },
         ],
-      },
-    ]
+      })
+    }
+
+    return headers
   },
 
   async redirects() {

@@ -172,7 +172,7 @@ export function getGoApiClient() {
     const token = process.env.GO_API_INTERNAL_TOKEN || ''
 
     if (!token) {
-      console.warn('INTERNAL_MENTORS_API not set, API calls may fail')
+      console.warn('GO_API_INTERNAL_TOKEN not set, API calls may fail')
     }
 
     clientInstance = new GoApiClient(baseURL, token)
