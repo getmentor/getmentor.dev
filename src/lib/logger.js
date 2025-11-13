@@ -1,11 +1,10 @@
 /**
- * Next.js frontend logger with HTTP log shipping
- * Logs are sent to console (for local debugging) and also shipped to Go API
- * Go API writes them to file for Grafana Alloy collection
+ * Next.js frontend logger with file-based logging
+ * Logs are sent to console (for local debugging) and written to file
+ * Grafana Alloy tails log files directly for collection
  */
 
 import winston from 'winston'
-import HttpLogTransport from './http-log-transport.js'
 
 const { combine, timestamp, json, errors, printf } = winston.format
 
@@ -17,6 +16,44 @@ const consoleFormat = printf(({ level, message, timestamp, service, ...metadata 
   }
   return msg
 })
+
+// Build transports array
+const transports = [
+  // Always output to console (stdout/stderr) for immediate debugging
+  new winston.transports.Console({
+    format:
+      process.env.NODE_ENV !== 'production'
+        ? combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), consoleFormat)
+        : undefined, // JSON format in production
+  }),
+]
+
+// Add file transport only in server-side context (not in browser)
+if (typeof window === 'undefined') {
+  const logDir = process.env.LOG_DIR || '/app/logs'
+
+  // Add file transport for all logs
+  transports.push(
+    new winston.transports.File({
+      filename: `${logDir}/frontend.log`,
+      level: process.env.LOG_LEVEL || 'info',
+      maxsize: 10485760, // 10MB
+      maxFiles: 5,
+      tailable: true,
+    })
+  )
+
+  // Add separate file for errors
+  transports.push(
+    new winston.transports.File({
+      filename: `${logDir}/frontend-error.log`,
+      level: 'error',
+      maxsize: 10485760, // 10MB
+      maxFiles: 5,
+      tailable: true,
+    })
+  )
+}
 
 // Create the logger
 const logger = winston.createLogger({
@@ -31,27 +68,7 @@ const logger = winston.createLogger({
     environment: process.env.NODE_ENV || 'development',
     hostname: process.env.HOSTNAME || 'localhost',
   },
-  transports: [
-    // Always output to console (stdout/stderr) for immediate debugging
-    new winston.transports.Console({
-      format:
-        process.env.NODE_ENV !== 'production'
-          ? combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), consoleFormat)
-          : undefined, // JSON format in production
-    }),
-    // Ship logs to Go API for centralized collection by Grafana Alloy
-    // Only enable in server-side context (not in browser)
-    ...(typeof window === 'undefined'
-      ? [
-          new HttpLogTransport({
-            level: process.env.LOG_LEVEL || 'info',
-            goApiUrl: process.env.GO_API_URL || 'http://localhost:8081',
-            batchSize: 50, // Send after 50 logs
-            flushInterval: 5000, // Or every 5 seconds
-          }),
-        ]
-      : []),
-  ],
+  transports,
 })
 
 // Helper methods for adding context to logs
