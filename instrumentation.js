@@ -6,6 +6,10 @@
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
+    // Initialize OpenTelemetry server-side tracing FIRST
+    const { registerServerTracing } = await import('./src/lib/tracing-server')
+    registerServerTracing()
+
     // Initialize metrics and logger
     // These will be available throughout the application
     const { default: register } = await import('./src/lib/metrics')
