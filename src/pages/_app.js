@@ -12,6 +12,7 @@ function MyApp({ Component, pageProps }) {
     // Initialize OpenTelemetry browser tracing
     registerClientTracing()
   }, [])
+
   return <Component {...pageProps} />
 }
 

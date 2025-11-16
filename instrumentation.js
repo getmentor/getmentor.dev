@@ -1,10 +1,8 @@
-/**
- * Next.js Instrumentation Hook
- * This file is loaded before the Next.js server starts
- * Use it to initialize observability and monitoring
- */
+// instrumentation.ts - Next.js server-side OpenTelemetry instrumentation
+// This file is automatically loaded by Next.js 13+ when experimental.instrumentationHook is enabled
 
 export async function register() {
+  // Only initialize on Node.js runtime (SSR, API routes)
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     // Initialize OpenTelemetry server-side tracing FIRST
     const { registerServerTracing } = await import('./src/lib/tracing-server')
