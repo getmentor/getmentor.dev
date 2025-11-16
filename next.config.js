@@ -67,7 +67,7 @@ module.exports = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
               "img-src 'self' https: data:; " +
               "font-src 'self' data: https://fonts.gstatic.com https://at.alicdn.com; " +
-              "connect-src 'self' https://api.mixpanel.com https://decide.mixpanel.com https://getmentor.dev https://гетментор.рф https://mc.yandex.ru https://api.amplitude.com; " +
+              "connect-src 'self' https://api.mixpanel.com https://decide.mixpanel.com https://getmentor.dev https://xn--c1aea1aggold.xn--p1ai https://mc.yandex.ru https://api.amplitude.com; " +
               "frame-src https://www.google.com; " +
               "object-src 'none'; " +
               "base-uri 'self'; " +
