@@ -34,16 +34,8 @@ export function registerClientTracing() {
     headers: {},
   })
 
-  // Create tracer provider with resource attributes
-  const provider = new WebTracerProvider({
-    resource: {
-      attributes: {
-        'service.name': serviceName,
-        'service.version': serviceVersion,
-        'deployment.environment': environment,
-      },
-    },
-  })
+  // Create tracer provider without resource (browser compatibility)
+  const provider = new WebTracerProvider()
 
   // Add batch span processor
   provider.addSpanProcessor(new BatchSpanProcessor(exporter))
