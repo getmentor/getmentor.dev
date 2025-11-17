@@ -38,9 +38,19 @@ export function registerClientTracing() {
     // Create tracer provider without resource (browser compatibility)
     const provider = new WebTracerProvider()
 
+    // Debug logging
+    // eslint-disable-next-line no-console
+    console.log('[Tracing] WebTracerProvider created:', {
+      provider: !!provider,
+      hasAddSpanProcessor: typeof provider?.addSpanProcessor,
+      providerType: provider?.constructor?.name,
+    })
+
     // Verify provider was created successfully
     if (!provider || typeof provider.addSpanProcessor !== 'function') {
-      throw new Error('WebTracerProvider not initialized correctly')
+      throw new Error(
+        `WebTracerProvider not initialized correctly: provider=${!!provider}, addSpanProcessor=${typeof provider?.addSpanProcessor}`
+      )
     }
 
     // Add batch span processor
