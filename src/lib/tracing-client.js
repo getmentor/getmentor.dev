@@ -15,54 +15,65 @@ export function registerClientTracing() {
     return
   }
 
-  const alloyEndpoint = process.env.NEXT_PUBLIC_ALLOY_ENDPOINT || 'http://localhost:4318'
-  const serviceName = process.env.NEXT_PUBLIC_SERVICE_NAME || 'getmentor-frontend'
-  const serviceVersion = process.env.NEXT_PUBLIC_SERVICE_VERSION || '1.0.0'
-  const environment = process.env.NEXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'production'
+  try {
+    const alloyEndpoint = process.env.NEXT_PUBLIC_ALLOY_ENDPOINT || 'http://localhost:4318'
+    const serviceName = process.env.NEXT_PUBLIC_SERVICE_NAME || 'getmentor-frontend'
+    const serviceVersion = process.env.NEXT_PUBLIC_SERVICE_VERSION || '1.0.0'
+    const environment = process.env.NEXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'production'
 
-  // eslint-disable-next-line no-console
-  console.log('[Tracing] Initializing client-side OpenTelemetry tracing', {
-    serviceName,
-    serviceVersion,
-    environment,
-    endpoint: `${alloyEndpoint}/v1/traces`,
-  })
+    // eslint-disable-next-line no-console
+    console.log('[Tracing] Initializing client-side OpenTelemetry tracing', {
+      serviceName,
+      serviceVersion,
+      environment,
+      endpoint: `${alloyEndpoint}/v1/traces`,
+    })
 
-  // Create OTLP HTTP exporter pointing to Grafana Alloy
-  const exporter = new OTLPTraceExporter({
-    url: `${alloyEndpoint}/v1/traces`,
-    headers: {},
-  })
+    // Create OTLP HTTP exporter pointing to Grafana Alloy
+    const exporter = new OTLPTraceExporter({
+      url: `${alloyEndpoint}/v1/traces`,
+      headers: {},
+    })
 
-  // Create tracer provider without resource (browser compatibility)
-  const provider = new WebTracerProvider()
+    // Create tracer provider without resource (browser compatibility)
+    const provider = new WebTracerProvider()
 
-  // Add batch span processor
-  provider.addSpanProcessor(new BatchSpanProcessor(exporter))
+    // Verify provider was created successfully
+    if (!provider || typeof provider.addSpanProcessor !== 'function') {
+      throw new Error('WebTracerProvider not initialized correctly')
+    }
 
-  // Register the provider
-  provider.register({
-    propagator: new W3CTraceContextPropagator(),
-  })
+    // Add batch span processor
+    provider.addSpanProcessor(new BatchSpanProcessor(exporter))
 
-  // Auto-instrument fetch() calls
-  registerInstrumentations({
-    instrumentations: [
-      new FetchInstrumentation({
-        // Propagate trace context to backend
-        propagateTraceHeaderCorsUrls: [
-          /localhost:8081/, // Local development
-          /backend:8081/, // Docker Compose
-          new RegExp(process.env.NEXT_PUBLIC_GO_API_URL || ''), // Production
-        ],
-        clearTimingResources: true,
-      }),
-    ],
-  })
+    // Register the provider
+    provider.register({
+      propagator: new W3CTraceContextPropagator(),
+    })
 
-  isInitialized = true
-  // eslint-disable-next-line no-console
-  console.log('[Tracing] Client-side OpenTelemetry initialized successfully')
+    // Auto-instrument fetch() calls
+    registerInstrumentations({
+      instrumentations: [
+        new FetchInstrumentation({
+          // Propagate trace context to backend
+          propagateTraceHeaderCorsUrls: [
+            /localhost:8081/, // Local development
+            /backend:8081/, // Docker Compose
+            new RegExp(process.env.NEXT_PUBLIC_GO_API_URL || ''), // Production
+          ],
+          clearTimingResources: true,
+        }),
+      ],
+    })
+
+    isInitialized = true
+    // eslint-disable-next-line no-console
+    console.log('[Tracing] Client-side OpenTelemetry initialized successfully')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[Tracing] Failed to initialize client-side tracing:', error)
+    // Don't throw - allow app to continue without tracing
+  }
 }
 
 // Export tracer for manual instrumentation
