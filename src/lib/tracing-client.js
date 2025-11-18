@@ -6,6 +6,13 @@ import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch'
 import { registerInstrumentations } from '@opentelemetry/instrumentation'
 import { W3CTraceContextPropagator } from '@opentelemetry/core'
 import { trace } from '@opentelemetry/api'
+import { Resource } from '@opentelemetry/resources'
+import {
+  SEMRESATTRS_SERVICE_NAME,
+  SEMRESATTRS_SERVICE_VERSION,
+  SEMRESATTRS_SERVICE_NAMESPACE,
+  SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
+} from '@opentelemetry/semantic-conventions'
 
 let isInitialized = false
 
@@ -16,9 +23,9 @@ export function registerClientTracing() {
   }
 
   try {
-    const alloyEndpoint = process.env.NEXT_PUBLIC_O11Y_EXPORTER_ENDPOINT || 'http://localhost:4318'
-    const serviceName = process.env.NEXT_PUBLIC_O11Y_SERVICE_NAME || 'getmentor-frontend'
-    const serviceVersion = process.env.NEXT_PUBLIC_O11Y_SERVICE_VERSION || '1.0.0'
+    const alloyEndpoint = process.env.NEXT_PUBLIC_ALLOY_ENDPOINT || 'http://localhost:4318'
+    const serviceName = process.env.NEXT_PUBLIC_SERVICE_NAME || 'getmentor-frontend'
+    const serviceVersion = process.env.NEXT_PUBLIC_SERVICE_VERSION || '1.0.0'
     const environment = process.env.NEXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'production'
 
     // eslint-disable-next-line no-console
@@ -35,8 +42,16 @@ export function registerClientTracing() {
       headers: {},
     })
 
-    // Create tracer provider without resource (browser compatibility)
-    const provider = new WebTracerProvider()
+    // Create resource with service information (matches backend namespace)
+    const resource = new Resource({
+      [SEMRESATTRS_SERVICE_NAME]: serviceName,
+      [SEMRESATTRS_SERVICE_VERSION]: serviceVersion,
+      [SEMRESATTRS_SERVICE_NAMESPACE]: 'yc_gm',
+      [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: environment,
+    })
+
+    // Create tracer provider with resource
+    const provider = new WebTracerProvider({ resource })
 
     // Verify provider was created successfully
     if (!provider || typeof provider.addSpanProcessor !== 'function') {

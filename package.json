@@ -27,7 +27,7 @@
     "@opentelemetry/exporter-trace-otlp-http": "^0.55.0",
     "@opentelemetry/instrumentation": "^0.55.0",
     "@opentelemetry/instrumentation-fetch": "^0.55.0",
-    "@opentelemetry/resources": "^2.2.0",
+    "@opentelemetry/resources": "^1.30.0",
     "@opentelemetry/sdk-node": "^0.208.0",
     "@opentelemetry/sdk-trace-base": "^1.28.0",
     "@opentelemetry/sdk-trace-node": "^2.2.0",
