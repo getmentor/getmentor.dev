@@ -3,11 +3,6 @@
 const { NodeSDK } = require('@opentelemetry/sdk-node')
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http')
 const { Resource } = require('@opentelemetry/resources')
-const {
-  SEMRESATTRS_SERVICE_NAME,
-  SEMRESATTRS_SERVICE_VERSION,
-  SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
-} = require('@opentelemetry/semantic-conventions')
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node')
 
 let sdk
@@ -15,23 +10,14 @@ let sdk
 function registerServerTracing() {
   // Prevent double initialization
   if (sdk) {
-    // eslint-disable-next-line no-console
-    console.log('[Tracing] Server tracing already initialized')
     return
   }
 
   const alloyEndpoint = process.env.O11Y_EXPORTER_ENDPOINT || 'http://alloy:4318'
   const serviceName = process.env.O11Y_SERVICE_NAME || 'getmentor-frontend'
+  const serviceNamespace = process.env.O11Y_SERVICE_NAMESPACE || 'getmentor-dev'
   const serviceVersion = process.env.O11Y_SERVICE_VERSION || '1.0.0'
   const environment = process.env.APP_ENV || process.env.NODE_ENV || 'production'
-
-  // eslint-disable-next-line no-console
-  console.log('[Tracing] Initializing server-side OpenTelemetry tracing', {
-    serviceName,
-    serviceVersion,
-    environment,
-    endpoint: `${alloyEndpoint}/v1/traces`,
-  })
 
   // Create OTLP HTTP exporter pointing to Grafana Alloy
   const traceExporter = new OTLPTraceExporter({
@@ -41,9 +27,10 @@ function registerServerTracing() {
 
   // Create resource with service information
   const resource = new Resource({
-    [SEMRESATTRS_SERVICE_NAME]: serviceName,
-    [SEMRESATTRS_SERVICE_VERSION]: serviceVersion,
-    [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: environment,
+    'service.name': serviceName,
+    'service.version': serviceVersion,
+    'service.namespace': serviceNamespace,
+    'deployment.environment': environment,
   })
 
   // Initialize Node.js SDK with automatic instrumentation
@@ -65,14 +52,10 @@ function registerServerTracing() {
   // Start the SDK
   sdk.start()
 
-  // eslint-disable-next-line no-console
-  console.log('[Tracing] Server-side OpenTelemetry initialized successfully')
-
   // Graceful shutdown on process termination
   process.on('SIGTERM', () => {
     sdk
       ?.shutdown()
-      .then(() => console.log('[Tracing] Server tracing shut down successfully')) // eslint-disable-line no-console
       .catch((error) => console.error('[Tracing] Error shutting down server tracing', error)) // eslint-disable-line no-console
       .finally(() => process.exit(0))
   })

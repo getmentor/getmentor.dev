@@ -17,9 +17,10 @@ export function registerClientTracing() {
   }
 
   try {
-    const alloyEndpoint = process.env.NEXT_PUBLIC_ALLOY_ENDPOINT || 'http://localhost:4318'
-    const serviceName = process.env.NEXT_PUBLIC_SERVICE_NAME || 'getmentor-frontend'
-    const serviceVersion = process.env.NEXT_PUBLIC_SERVICE_VERSION || '1.0.0'
+    const alloyEndpoint = process.env.NEXT_PUBLIC_O11Y_EXPORTER_ENDPOINT || 'http://localhost:4318'
+    const serviceName = process.env.NEXT_PUBLIC_O11Y_SERVICE_NAME || 'getmentor-frontend'
+    const serviceNamespace = process.env.NEXT_PUBLIC_O11Y_SERVICE_NAMESPACE || 'getmentor-dev'
+    const serviceVersion = process.env.NEXT_PUBLIC_O11Y_SERVICE_VERSION || '1.0.0'
     const environment = process.env.NEXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'production'
 
     // eslint-disable-next-line no-console
@@ -40,7 +41,7 @@ export function registerClientTracing() {
     const resource = new Resource({
       'service.name': serviceName,
       'service.version': serviceVersion,
-      'service.namespace': 'yc_gm',
+      'service.namespace': serviceNamespace,
       'deployment.environment': environment,
     })
 
