@@ -1,30 +1,40 @@
-// instrumentation.ts - Next.js server-side OpenTelemetry instrumentation
+// instrumentation.js - Next.js server-side OpenTelemetry instrumentation
 // This file is automatically loaded by Next.js 13+ when experimental.instrumentationHook is enabled
 
 export async function register() {
-  // Only initialize on Node.js runtime (SSR, API routes)
-  if (process.env.NEXT_RUNTIME === 'nodejs') {
-    // Initialize OpenTelemetry server-side tracing FIRST
-    const { registerServerTracing } = await import('./src/lib/tracing-server')
-    registerServerTracing()
+  // Check if we're in a Node.js environment (not edge runtime)
+  // NEXT_RUNTIME is not available during register() hook, so we check other indicators
+  if (typeof process !== 'undefined' && process.versions?.node) {
+    // eslint-disable-next-line no-console
+    console.log('[Instrumentation] Initializing observability stack...')
 
-    // Initialize metrics and logger
-    // These will be available throughout the application
-    const { default: register } = await import('./src/lib/metrics')
-    const { default: logger } = await import('./src/lib/logger')
+    try {
+      // Initialize OpenTelemetry server-side tracing FIRST
+      // This must happen before any HTTP requests are made
+      const { registerServerTracing } = await import('./src/lib/tracing-server')
+      registerServerTracing()
 
-    logger.info('Observability instrumentation initialized', {
-      runtime: 'nodejs',
-      env: process.env.NODE_ENV,
-    })
+      // Initialize metrics and logger
+      // These will be available throughout the application
+      const { default: register } = await import('./src/lib/metrics')
+      const { default: logger } = await import('./src/lib/logger')
 
-    // Log on process exit
-    process.on('SIGTERM', () => {
-      logger.info('Received SIGTERM, shutting down gracefully')
-    })
+      logger.info('Observability instrumentation initialized', {
+        runtime: 'nodejs',
+        env: process.env.NODE_ENV,
+      })
 
-    process.on('SIGINT', () => {
-      logger.info('Received SIGINT, shutting down gracefully')
-    })
+      // Log on process exit
+      process.on('SIGTERM', () => {
+        logger.info('Received SIGTERM, shutting down gracefully')
+      })
+
+      process.on('SIGINT', () => {
+        logger.info('Received SIGINT, shutting down gracefully')
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[Instrumentation] Failed to initialize observability:', error)
+    }
   }
 }
