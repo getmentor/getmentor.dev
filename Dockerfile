@@ -63,6 +63,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
+# Copy instrumentation file for OpenTelemetry
+COPY --from=builder /app/instrumentation.js ./instrumentation.js
+
 # Set proper permissions
 RUN chown -R nextjs:nodejs /app
 
