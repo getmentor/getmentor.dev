@@ -63,8 +63,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Copy instrumentation file for OpenTelemetry
+# Copy observability files
 COPY --from=builder /app/instrumentation.js ./instrumentation.js
+COPY --from=builder /app/start-server.js ./start-server.js
 
 # Set proper permissions
 RUN chown -R nextjs:nodejs /app
@@ -80,6 +81,7 @@ ENV HOSTNAME="0.0.0.0"
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:3000/api/healthcheck || exit 1
 
-# Start Next.js with dumb-init for proper signal handling and memory limit
+# Start Next.js with observability wrapper for proper signal handling and memory limit
+# Use start-server.js instead of server.js to initialize tracing before Next.js starts
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["node", "--max-old-space-size=512", "server.js"]
+CMD ["node", "--max-old-space-size=512", "start-server.js"]
