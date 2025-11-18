@@ -40,17 +40,40 @@ function registerServerTracing() {
     instrumentations: [
       getNodeAutoInstrumentations({
         // Automatically instrument:
-        '@opentelemetry/instrumentation-http': {}, // HTTP/HTTPS requests
+        '@opentelemetry/instrumentation-http': {
+          // Enable trace context propagation
+          requireParentforOutgoingSpans: false,
+          requireParentforIncomingSpans: false,
+          headersToSpanAttributes: {
+            client: {
+              requestHeaders: ['x-internal-mentors-api-auth-token'],
+            },
+          },
+        },
         '@opentelemetry/instrumentation-express': {}, // Express (used by Next.js)
-        '@opentelemetry/instrumentation-fs': {}, // File system operations
-        '@opentelemetry/instrumentation-dns': {}, // DNS lookups
-        '@opentelemetry/instrumentation-net': {}, // Network operations
+        '@opentelemetry/instrumentation-fs': { enabled: false }, // Disable noisy FS operations
+        '@opentelemetry/instrumentation-dns': { enabled: false }, // Disable noisy DNS lookups
+        '@opentelemetry/instrumentation-net': { enabled: false }, // Disable noisy network operations
+        // Undici is used by Node.js fetch() - enable for trace propagation
+        '@opentelemetry/instrumentation-undici': {
+          requireParentforOutgoingSpans: false,
+          requireParentforIncomingSpans: false,
+        },
       }),
     ],
   })
 
   // Start the SDK
   sdk.start()
+
+  // eslint-disable-next-line no-console
+  console.log('[Tracing] Server-side OpenTelemetry initialized', {
+    serviceName,
+    serviceNamespace,
+    serviceVersion,
+    environment,
+    alloyEndpoint,
+  })
 
   // Graceful shutdown on process termination
   process.on('SIGTERM', () => {
