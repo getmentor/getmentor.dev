@@ -16,9 +16,9 @@ export function registerClientTracing() {
   }
 
   try {
-    const alloyEndpoint = process.env.NEXT_PUBLIC_ALLOY_ENDPOINT || 'http://localhost:4318'
-    const serviceName = process.env.NEXT_PUBLIC_SERVICE_NAME || 'getmentor-frontend'
-    const serviceVersion = process.env.NEXT_PUBLIC_SERVICE_VERSION || '1.0.0'
+    const alloyEndpoint = process.env.NEXT_PUBLIC_O11Y_EXPORTER_ENDPOINT || 'http://localhost:4318'
+    const serviceName = process.env.NEXT_PUBLIC_O11Y_SERVICE_NAME || 'getmentor-frontend'
+    const serviceVersion = process.env.NEXT_PUBLIC_O11Y_SERVICE_VERSION || '1.0.0'
     const environment = process.env.NEXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'production'
 
     // eslint-disable-next-line no-console
@@ -38,19 +38,9 @@ export function registerClientTracing() {
     // Create tracer provider without resource (browser compatibility)
     const provider = new WebTracerProvider()
 
-    // Debug logging
-    // eslint-disable-next-line no-console
-    console.log('[Tracing] WebTracerProvider created:', {
-      provider: !!provider,
-      hasAddSpanProcessor: typeof provider?.addSpanProcessor,
-      providerType: provider?.constructor?.name,
-    })
-
     // Verify provider was created successfully
     if (!provider || typeof provider.addSpanProcessor !== 'function') {
-      throw new Error(
-        `WebTracerProvider not initialized correctly: provider=${!!provider}, addSpanProcessor=${typeof provider?.addSpanProcessor}`
-      )
+      throw new Error('WebTracerProvider not initialized correctly')
     }
 
     // Add batch span processor

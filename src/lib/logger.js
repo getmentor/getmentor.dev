@@ -64,7 +64,7 @@ const logger = winston.createLogger({
     json() // JSON format for structured logging
   ),
   defaultMeta: {
-    service: 'getmentor-frontend',
+    service: process.env.O11Y_SERVICE_NAME || 'getmentor-frontend',
     environment: process.env.NODE_ENV || 'development',
     hostname: process.env.HOSTNAME || 'localhost',
   },

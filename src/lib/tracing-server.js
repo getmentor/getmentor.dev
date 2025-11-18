@@ -20,9 +20,9 @@ function registerServerTracing() {
     return
   }
 
-  const alloyEndpoint = process.env.ALLOY_ENDPOINT || 'http://alloy:4318'
-  const serviceName = process.env.SERVICE_NAME || 'getmentor-frontend'
-  const serviceVersion = process.env.SERVICE_VERSION || '1.0.0'
+  const alloyEndpoint = process.env.O11Y_EXPORTER_ENDPOINT || 'http://alloy:4318'
+  const serviceName = process.env.O11Y_SERVICE_NAME || 'getmentor-frontend'
+  const serviceVersion = process.env.O11Y_SERVICE_VERSION || '1.0.0'
   const environment = process.env.APP_ENV || process.env.NODE_ENV || 'production'
 
   // eslint-disable-next-line no-console
