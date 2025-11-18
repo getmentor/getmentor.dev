@@ -7,12 +7,6 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation'
 import { W3CTraceContextPropagator } from '@opentelemetry/core'
 import { trace } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
-import {
-  SEMRESATTRS_SERVICE_NAME,
-  SEMRESATTRS_SERVICE_VERSION,
-  SEMRESATTRS_SERVICE_NAMESPACE,
-  SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
-} from '@opentelemetry/semantic-conventions'
 
 let isInitialized = false
 
@@ -44,10 +38,10 @@ export function registerClientTracing() {
 
     // Create resource with service information (matches backend namespace)
     const resource = new Resource({
-      [SEMRESATTRS_SERVICE_NAME]: serviceName,
-      [SEMRESATTRS_SERVICE_VERSION]: serviceVersion,
-      [SEMRESATTRS_SERVICE_NAMESPACE]: 'yc_gm',
-      [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: environment,
+      'service.name': serviceName,
+      'service.version': serviceVersion,
+      'service.namespace': 'yc_gm',
+      'deployment.environment': environment,
     })
 
     // Create tracer provider with resource
