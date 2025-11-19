@@ -1,9 +1,9 @@
 // tracing-server.js - OpenTelemetry server-side (Next.js SSR/API routes) tracing
 
-const { NodeSDK } = require('@opentelemetry/sdk-node')
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http')
-const { Resource } = require('@opentelemetry/resources')
-const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node')
+import { NodeSDK } from '@opentelemetry/sdk-node'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
+import { Resource } from '@opentelemetry/resources'
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 
 let sdk
 
@@ -84,4 +84,4 @@ function registerServerTracing() {
   })
 }
 
-module.exports = { registerServerTracing }
+export { registerServerTracing }

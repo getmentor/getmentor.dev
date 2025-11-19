@@ -18,6 +18,29 @@ module.exports = {
     instrumentationHook: true,
   },
 
+  // Webpack configuration to exclude server-side packages from bundling
+  // These packages use Node.js built-ins and should be loaded at runtime
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Exclude all server-side observability packages from webpack bundling
+      config.externals = config.externals || []
+      config.externals.push({
+        // OpenTelemetry packages
+        '@opentelemetry/sdk-node': 'commonjs @opentelemetry/sdk-node',
+        '@opentelemetry/auto-instrumentations-node':
+          'commonjs @opentelemetry/auto-instrumentations-node',
+        '@opentelemetry/exporter-trace-otlp-http':
+          'commonjs @opentelemetry/exporter-trace-otlp-http',
+        '@opentelemetry/resources': 'commonjs @opentelemetry/resources',
+        // Prometheus metrics
+        'prom-client': 'commonjs prom-client',
+        // Winston logger
+        winston: 'commonjs winston',
+      })
+    }
+    return config
+  },
+
   async headers() {
     const headers = [
       // this header fixed bad behaviors of next <Image /> component
@@ -68,11 +91,11 @@ module.exports = {
               "img-src 'self' https: data:; " +
               "font-src 'self' data: https://fonts.gstatic.com https://at.alicdn.com; " +
               "connect-src 'self' https://api.mixpanel.com https://decide.mixpanel.com https://getmentor.dev https://xn--c1aea1aggold.xn--p1ai https://mc.yandex.ru https://api.amplitude.com; " +
-              "frame-src https://www.google.com; " +
+              'frame-src https://www.google.com; ' +
               "object-src 'none'; " +
               "base-uri 'self'; " +
               "form-action 'self'; " +
-              "upgrade-insecure-requests;",
+              'upgrade-insecure-requests;',
           },
         ],
       })
