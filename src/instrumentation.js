@@ -1,16 +1,11 @@
-import { registerServerTracing } from './src/lib/tracing-server'
-import { register as registerMetrics } from './src/lib/metrics'
-import logger from './src/lib/logger'
+import { registerServerTracing } from './lib/tracing-server'
+import { register as registerMetrics } from './lib/metrics'
+import logger from './lib/logger'
 
 // instrumentation.js - Next.js server-side OpenTelemetry instrumentation
 // This file is automatically loaded by Next.js 13+ when experimental.instrumentationHook is enabled
 
 export function register() {
-  // eslint-disable-next-line no-console
-  console.log(
-    `[Instrumentation] BEFORE Initializing observability stack... VERSIONS: ${process.versions?.node}`
-  )
-
   // Check if we're in a Node.js environment (not edge runtime)
   // NEXT_RUNTIME is not available during register() hook, so we check other indicators
   if (typeof process !== 'undefined' && process.versions?.node) {
