@@ -64,7 +64,7 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
 # Copy observability files
-COPY --from=builder /app/instrumentation.js ./instrumentation.js
+# COPY --from=builder /app/instrumentation.js ./instrumentation.js
 # COPY --from=builder /app/start-server.js ./start-server.js
 
 # Set proper permissions
