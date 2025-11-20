@@ -3,6 +3,19 @@
  * Handles authentication, retries, error handling for calls to the Go API
  */
 
+/**
+ * Custom error class for HTTP errors with status code
+ */
+class HttpError extends Error {
+  constructor(statusCode, statusText, body) {
+    super(`Go API error: ${statusCode} ${statusText} - ${body}`)
+    this.name = 'HttpError'
+    this.statusCode = statusCode
+    this.statusText = statusText
+    this.body = body
+  }
+}
+
 class GoApiClient {
   constructor(baseURL, internalToken) {
     this.baseURL = baseURL
@@ -40,7 +53,7 @@ class GoApiClient {
 
       if (!response.ok) {
         const errorText = await response.text()
-        throw new Error(`Go API error: ${response.status} ${response.statusText} - ${errorText}`)
+        throw new HttpError(response.status, response.statusText, errorText)
       }
 
       return await response.json()
@@ -84,7 +97,7 @@ class GoApiClient {
       })
     } catch (error) {
       // Return null for 404 (mentor not found) - this is expected behavior
-      if (error.message && error.message.includes('404')) {
+      if (error.statusCode === 404) {
         return null
       }
       // Re-throw other errors
@@ -108,7 +121,7 @@ class GoApiClient {
       })
     } catch (error) {
       // Return null for 404 (mentor not found) - this is expected behavior
-      if (error.message && error.message.includes('404')) {
+      if (error.statusCode === 404) {
         return null
       }
       // Re-throw other errors
