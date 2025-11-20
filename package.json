@@ -91,7 +91,9 @@
     ]
   },
   "resolutions": {
-    "@swc/helpers": "^0.4.11"
+    "@swc/helpers": "^0.4.11",
+    "@opentelemetry/otlp-transformer": "0.208.0",
+    "@opentelemetry/otlp-exporter-base": "0.208.0"
   },
   "optionalDependencies": {
     "@next/swc-android-arm-eabi": "^12.3.4",
