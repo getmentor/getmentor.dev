@@ -26,17 +26,14 @@ function registerServerTracing() {
   // Initialize Node.js SDK with automatic instrumentation
   // Let the SDK create the exporter internally to ensure version compatibility
   sdk = new NodeSDK({
-    // Use environment variables for resource attributes
-    // This ensures compatibility with SDK's internal Resource creation
+    // Service name and resource attributes
     serviceName,
-    resource: {
-      attributes: {
-        'service.version': serviceVersion,
-        'service.namespace': serviceNamespace,
-        'deployment.environment': environment,
-      },
+    resourceAttributes: {
+      'service.version': serviceVersion,
+      'service.namespace': serviceNamespace,
+      'deployment.environment': environment,
     },
-    // Configure OTLP exporter via environment variable for the SDK
+    // Configure OTLP exporter via SDK config
     traceExporter: {
       url: exporterUrl,
       headers: {},
