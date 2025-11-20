@@ -1,8 +1,6 @@
 // tracing-server.js - OpenTelemetry server-side (Next.js SSR/API routes) tracing
 
 import { NodeSDK } from '@opentelemetry/sdk-node'
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
-import { Resource } from '@opentelemetry/resources'
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 
 let sdk
@@ -25,24 +23,24 @@ function registerServerTracing() {
     ? `${alloyEndpoint}/v1/traces`
     : `http://${alloyEndpoint}/v1/traces`
 
-  // Create OTLP HTTP exporter pointing to Grafana Alloy
-  const traceExporter = new OTLPTraceExporter({
-    url: exporterUrl,
-    headers: {},
-  })
-
-  // Create resource with service information
-  const resource = new Resource({
-    'service.name': serviceName,
-    'service.version': serviceVersion,
-    'service.namespace': serviceNamespace,
-    'deployment.environment': environment,
-  })
-
   // Initialize Node.js SDK with automatic instrumentation
+  // Let the SDK create the exporter internally to ensure version compatibility
   sdk = new NodeSDK({
-    resource,
-    traceExporter,
+    // Use environment variables for resource attributes
+    // This ensures compatibility with SDK's internal Resource creation
+    serviceName,
+    resource: {
+      attributes: {
+        'service.version': serviceVersion,
+        'service.namespace': serviceNamespace,
+        'deployment.environment': environment,
+      },
+    },
+    // Configure OTLP exporter via environment variable for the SDK
+    traceExporter: {
+      url: exporterUrl,
+      headers: {},
+    },
     instrumentations: [
       getNodeAutoInstrumentations({
         // Automatically instrument:
