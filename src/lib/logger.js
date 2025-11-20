@@ -94,21 +94,12 @@ export const logHttpRequest = (req, res, duration) => {
 }
 
 // Helper for logging errors
-// 404 errors are logged as warnings (not critical errors)
 export const logError = (error, context = {}) => {
-  const message = error.message
-  const logData = {
+  logger.error(error.message, {
     error: error.name,
     stack: error.stack,
     ...context,
-  }
-
-  // Log 404 errors as warnings since they're expected during cache refresh
-  if (message && message.includes('404')) {
-    logger.warn(message, logData)
-  } else {
-    logger.error(message, logData)
-  }
+  })
 }
 
 export default logger

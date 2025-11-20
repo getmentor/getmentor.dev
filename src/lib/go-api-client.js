@@ -73,14 +73,23 @@ class GoApiClient {
    * @param {string} slug - Mentor slug
    * @param {object} params - Query parameters
    * @param {boolean} params.showHiddenFields - Include hidden fields
-   * @returns {Promise<object>} Mentor object
+   * @returns {Promise<object|null>} Mentor object or null if not found
    */
   async getOneMentorBySlug(slug, params = {}) {
-    return this.request('POST', `/api/internal/mentors?slug=${slug}`, {
-      body: {
-        show_hidden: params.showHiddenFields,
-      },
-    })
+    try {
+      return await this.request('POST', `/api/internal/mentors?slug=${slug}`, {
+        body: {
+          show_hidden: params.showHiddenFields,
+        },
+      })
+    } catch (error) {
+      // Return null for 404 (mentor not found) - this is expected behavior
+      if (error.message && error.message.includes('404')) {
+        return null
+      }
+      // Re-throw other errors
+      throw error
+    }
   }
 
   /**
@@ -88,14 +97,23 @@ class GoApiClient {
    * @param {number} id - Mentor ID
    * @param {object} params - Query parameters
    * @param {boolean} params.showHiddenFields - Include hidden fields
-   * @returns {Promise<object>} Mentor object
+   * @returns {Promise<object|null>} Mentor object or null if not found
    */
   async getOneMentorById(id, params = {}) {
-    return this.request('POST', `/api/internal/mentors?id=${id}`, {
-      body: {
-        show_hidden: params.showHiddenFields,
-      },
-    })
+    try {
+      return await this.request('POST', `/api/internal/mentors?id=${id}`, {
+        body: {
+          show_hidden: params.showHiddenFields,
+        },
+      })
+    } catch (error) {
+      // Return null for 404 (mentor not found) - this is expected behavior
+      if (error.message && error.message.includes('404')) {
+        return null
+      }
+      // Re-throw other errors
+      throw error
+    }
   }
 
   /**
