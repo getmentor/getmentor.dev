@@ -19,9 +19,15 @@ function registerServerTracing() {
   const serviceVersion = process.env.O11Y_SERVICE_VERSION || '1.0.0'
   const environment = process.env.APP_ENV || process.env.NODE_ENV || 'production'
 
+  // Ensure endpoint has protocol (JavaScript OTLP exporter needs full URL)
+  // Backend uses Go client which expects host:port, frontend needs http://host:port
+  const exporterUrl = alloyEndpoint.startsWith('http')
+    ? `${alloyEndpoint}/v1/traces`
+    : `http://${alloyEndpoint}/v1/traces`
+
   // Create OTLP HTTP exporter pointing to Grafana Alloy
   const traceExporter = new OTLPTraceExporter({
-    url: `${alloyEndpoint}/v1/traces`,
+    url: exporterUrl,
     headers: {},
   })
 
@@ -72,7 +78,7 @@ function registerServerTracing() {
     serviceNamespace,
     serviceVersion,
     environment,
-    alloyEndpoint,
+    exporterUrl,
   })
 
   // Graceful shutdown on process termination
