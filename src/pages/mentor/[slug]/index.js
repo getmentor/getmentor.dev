@@ -65,7 +65,8 @@ export default function Mentor(props) {
       price: mentor.price,
       menteeCount: mentor.menteeCount,
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - analytics tracking
 
   return (
     <>

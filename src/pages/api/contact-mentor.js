@@ -1,12 +1,13 @@
 import { getGoApiClient } from '../../lib/go-api-client'
 import { logError } from '../../lib/logger'
+import { withObservability } from '../../lib/with-observability'
 
 /**
  * SECURITY: Next.js API proxy for contact-mentor endpoint
  * This allows Go API to remain on localhost only (not publicly exposed)
  * Client -> Next.js API Route (this file) -> Go API (localhost)
  */
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
@@ -22,3 +23,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Internal server error' })
   }
 }
+
+export default withObservability(handler)

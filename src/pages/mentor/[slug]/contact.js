@@ -52,17 +52,29 @@ export default function OrderMentor({ mentor }) {
 
   const title = 'Запись к ментору | ' + mentor.name + ' | ' + seo.title
 
-  let requestsToday = 0
-
-  useEffect(() => {
+  // Helper function to get current request count from localStorage
+  const getRequestsToday = () => {
     const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
     if (storage !== null) {
       const nr_requests = JSON.parse(storage)
-      if (nr_requests[today]) {
-        requestsToday = nr_requests[today]
-      }
+      return nr_requests[today] || 0
     }
+    return 0
+  }
 
+  const hasRequestPerDayLeft = () => {
+    const requestsToday = getRequestsToday()
+    return requestsToday < MAX_REQUESTS_PER_DAY
+  }
+
+  const incrementRequestsPerDay = () => {
+    const requestsToday = getRequestsToday()
+    const nr_requests = {}
+    nr_requests[today] = requestsToday + 1
+    window.localStorage.setItem('requests_per_day', JSON.stringify(nr_requests))
+  }
+
+  useEffect(() => {
     analytics.event('Request a Mentor', {
       'Mentor Id': mentor.id,
       'Mentor Name': mentor.name,
@@ -76,26 +88,16 @@ export default function OrderMentor({ mentor }) {
       experience: mentor.experience,
       price: mentor.price,
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - analytics tracking
 
   useEffect(() => {
     if (!hasRequestPerDayLeft()) {
       setReadyStatus('limit')
       return
     }
-  }, [])
-
-  const hasRequestPerDayLeft = () => {
-    return requestsToday && requestsToday >= MAX_REQUESTS_PER_DAY ? false : true
-  }
-
-  const incerementRequestsPerDay = () => {
-    const nr_requests = {}
-    requestsToday++
-    nr_requests[today] = requestsToday
-
-    window.localStorage.setItem('requests_per_day', JSON.stringify(nr_requests))
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - check rate limit
 
   const onSubmit = (data) => {
     if (readyStatus === 'loading') {
@@ -124,13 +126,16 @@ export default function OrderMentor({ mentor }) {
       },
     })
       .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
         return res.json()
       })
       .then((data) => {
         if (data.success) {
           mentor.calendarUrl = data.calendar_url
           setReadyStatus('success')
-          incerementRequestsPerDay()
+          incrementRequestsPerDay()
         } else {
           setReadyStatus('error')
         }
@@ -239,7 +244,8 @@ function SuccessMessage({ mentor, formData }) {
       experience: mentor.experience,
       price: mentor.price,
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - analytics tracking
 
   return (
     <div className="text-center">
@@ -300,7 +306,8 @@ function LimitMessage({ mentor }) {
       experience: mentor.experience,
       price: mentor.price,
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - analytics tracking
 
   return (
     <div className="text-center">

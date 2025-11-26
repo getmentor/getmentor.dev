@@ -127,6 +127,9 @@ export default function Profile({ errorCode, mentor }) {
       },
     })
       .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
         return res.json()
       })
       .then((data) => {
@@ -165,6 +168,9 @@ export default function Profile({ errorCode, mentor }) {
       },
     })
       .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
         return res.json()
       })
       .then((data) => {

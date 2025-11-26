@@ -29,7 +29,8 @@ export default function MentorsFilters(props) {
         })
       }
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - read URL hash on initial load
 
   const onResetAll = () => {
     appliedFilters.tags.reset()
