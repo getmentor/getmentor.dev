@@ -19,7 +19,7 @@ export default function useMentors(allMentors, pageSize = DEFAULT_PAGE_SIZE) {
   // reset pagination on filters change
   useEffect(() => {
     setMentorsCount(pageSize)
-  }, [searchInput, selectedTags])
+  }, [searchInput, selectedTags, pageSize])
 
   const showMoreMentors = () => {
     setMentorsCount(mentorsCount + pageSize)

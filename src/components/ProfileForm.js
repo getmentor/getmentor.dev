@@ -142,6 +142,7 @@ export default function ProfileForm({
           {(mentor.photo_url || tempImagePreview) && !imagePreview && (
             <div className="flex items-center space-x-4">
               {tempImagePreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={tempImagePreview}
                   alt="Current profile"
