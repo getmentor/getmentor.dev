@@ -52,7 +52,7 @@ export default function OrderMentor({ mentor }) {
 
   const title = 'Запись к ментору | ' + mentor.name + ' | ' + seo.title
 
-  var requestsToday = 0
+  let requestsToday = 0
 
   useEffect(() => {
     const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
@@ -137,7 +137,8 @@ export default function OrderMentor({ mentor }) {
       })
       .catch((e) => {
         setReadyStatus('error')
-        console.error(e)
+        // Client-side error - console.error is appropriate here
+        console.error('Contact mentor error:', e)
       })
   }
 

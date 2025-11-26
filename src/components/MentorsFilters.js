@@ -183,9 +183,7 @@ export default function MentorsFilters(props) {
             allSelectedValues={appliedFilters.tags.values}
           />
         </li>
-        {/* </ul>
 
-      <ul className="flex flex-wrap justify-left -m-1 mb-3"> */}
         {allFilters.byTags.rest.map((tag) => {
           const isActive = appliedFilters.tags.values.includes(tag)
 
@@ -252,15 +250,6 @@ export default function MentorsFilters(props) {
           onClick={onClickNoSessions}
         >
           🫶 Без сессий
-          {/*
-          <span className="absolute top-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100 z-50 w-80 text-left">
-            Сортировка спика сделана так, так что каждый ментор имеет равный шанс оказаться в
-            топе. Однако некоторым менторам не везёт, и они не сразу добираются до внимания
-            посетителей. Это напрямую сказывается на количестве сессий, которые они получают – их
-            просто нет. Но это не значит, что такие менторы плохие. Этот фильтр поможет вам найти
-            скрытые таланты.
-          </span>
-          */}
         </li>
 
         <li

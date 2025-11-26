@@ -1,4 +1,5 @@
 import { getGoApiClient } from '../../lib/go-api-client'
+import { logError } from '../../lib/logger'
 
 /**
  * SECURITY: Next.js API proxy for contact-mentor endpoint
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data)
   } catch (error) {
-    console.error('Contact mentor proxy error:', error)
+    logError(error, { context: 'contact-mentor-proxy', method: req.method, url: req.url })
     return res.status(500).json({ error: 'Internal server error' })
   }
 }

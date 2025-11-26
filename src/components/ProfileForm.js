@@ -10,8 +10,7 @@ import ReactTooltip from 'react-tooltip'
 import Link from 'next/link'
 import { useState, useRef } from 'react'
 import { imageLoader } from '../lib/azure-image-loader'
-
-const Url = require('url')
+import Url from 'url'
 
 export default function ProfileForm({
   mentor,
@@ -127,8 +126,10 @@ export default function ProfileForm({
           <ReactTooltip id="photo-tip" place="right" type="dark" effect="solid">
             <span>
               Загрузите своё фото для профиля. Поддерживаются форматы JPEG, PNG и WebP. Максимальный
-              размер файла - 10 МБ.<br/>
-              Это пока экспериментальная функция. Если что-то пойдёт не так, напишите в телеграм @glamcoder.
+              размер файла - 10 МБ.
+              <br />
+              Это пока экспериментальная функция. Если что-то пойдёт не так, напишите в телеграм
+              @glamcoder.
             </span>
           </ReactTooltip>
         </label>

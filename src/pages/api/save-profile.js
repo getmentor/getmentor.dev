@@ -1,4 +1,5 @@
 import { getGoApiClient } from '../../lib/go-api-client'
+import { logError } from '../../lib/logger'
 
 /**
  * SECURITY: Next.js API proxy for save-profile endpoint
@@ -25,7 +26,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data)
   } catch (error) {
-    console.error('Save profile proxy error:', error)
+    logError(error, { context: 'save-profile-proxy', method: req.method, url: req.url })
     return res.status(500).json({ error: 'Internal server error' })
   }
 }

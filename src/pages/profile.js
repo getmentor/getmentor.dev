@@ -134,7 +134,8 @@ export default function Profile({ errorCode, mentor }) {
       })
       .catch((e) => {
         setReadyStatus('error')
-        console.error(e)
+        // Client-side error - console.error is appropriate here
+        console.error('Profile save error:', e)
       })
   }
 
@@ -187,7 +188,8 @@ export default function Profile({ errorCode, mentor }) {
       .catch((e) => {
         setImageUploadStatus('error')
         setTempImagePreview(null)
-        console.error(e)
+        // Client-side error - console.error is appropriate here
+        console.error('Profile picture upload error:', e)
       })
   }
 
