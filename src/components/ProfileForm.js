@@ -30,23 +30,26 @@ export default function ProfileForm({
 
   const [selectedImage, setSelectedImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
+  const [imageError, setImageError] = useState('')
   const fileInputRef = useRef(null)
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
+    setImageError('') // Clear any previous errors
+
     if (!file) return
 
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
     if (!allowedTypes.includes(file.type)) {
-      alert('Пожалуйста, выберите изображение в формате JPEG, PNG или WebP.')
+      setImageError('Пожалуйста, выберите изображение в формате JPEG, PNG или WebP.')
       return
     }
 
     // Validate file size (max 10MB)
     const maxSize = 10 * 1024 * 1024 // 10MB
     if (file.size > maxSize) {
-      alert('Размер файла не должен превышать 10 МБ.')
+      setImageError('Размер файла не должен превышать 10 МБ.')
       return
     }
 
@@ -62,7 +65,7 @@ export default function ProfileForm({
 
   const handleImageUploadClick = async () => {
     if (!selectedImage) {
-      alert('Пожалуйста, выберите изображение для загрузки.')
+      setImageError('Пожалуйста, выберите изображение для загрузки.')
       return
     }
 
@@ -91,6 +94,7 @@ export default function ProfileForm({
   const handleCancelImage = () => {
     setSelectedImage(null)
     setImagePreview(null)
+    setImageError('')
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -221,6 +225,12 @@ export default function ProfileForm({
           {imageUploadStatus === 'error' && (
             <div className="text-sm text-red-700">
               Ошибка при загрузке фотографии. Попробуйте еще раз.
+            </div>
+          )}
+
+          {imageError && (
+            <div className="text-sm text-red-700" role="alert">
+              {imageError}
             </div>
           )}
         </div>

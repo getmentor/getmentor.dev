@@ -17,6 +17,12 @@ import { imageLoader } from '../../../lib/azure-image-loader'
 import { withSSRObservability } from '../../../lib/with-ssr-observability'
 import logger from '../../../lib/logger'
 
+// Rate limiting configuration
+const RATE_LIMIT_CONFIG = {
+  MAX_REQUESTS_PER_DAY: 5,
+  STORAGE_KEY: 'requests_per_day',
+}
+
 async function _getServerSideProps(context) {
   const mentor = await getOneMentorBySlug(context.params.slug)
 
@@ -46,15 +52,12 @@ export default function OrderMentor({ mentor }) {
   const [readyStatus, setReadyStatus] = useState('')
   const [formData, setFormData] = useState()
 
-  const REQUESTS_PER_DAY_KEY = 'requests_per_day'
   const today = new Date().toISOString().slice(0, 10)
-  const MAX_REQUESTS_PER_DAY = 5
-
   const title = 'Запись к ментору | ' + mentor.name + ' | ' + seo.title
 
   // Helper function to get current request count from localStorage
   const getRequestsToday = () => {
-    const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
+    const storage = window.localStorage.getItem(RATE_LIMIT_CONFIG.STORAGE_KEY)
     if (storage !== null) {
       const nr_requests = JSON.parse(storage)
       return nr_requests[today] || 0
@@ -64,14 +67,14 @@ export default function OrderMentor({ mentor }) {
 
   const hasRequestPerDayLeft = () => {
     const requestsToday = getRequestsToday()
-    return requestsToday < MAX_REQUESTS_PER_DAY
+    return requestsToday < RATE_LIMIT_CONFIG.MAX_REQUESTS_PER_DAY
   }
 
   const incrementRequestsPerDay = () => {
     const requestsToday = getRequestsToday()
     const nr_requests = {}
     nr_requests[today] = requestsToday + 1
-    window.localStorage.setItem('requests_per_day', JSON.stringify(nr_requests))
+    window.localStorage.setItem(RATE_LIMIT_CONFIG.STORAGE_KEY, JSON.stringify(nr_requests))
   }
 
   useEffect(() => {
@@ -81,12 +84,6 @@ export default function OrderMentor({ mentor }) {
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
       'Mentor Sponsors': mentor.sponsors,
-
-      // legacy props
-      id: mentor.airtableId,
-      name: mentor.name,
-      experience: mentor.experience,
-      price: mentor.price,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Intentionally run once on mount - analytics tracking
@@ -237,12 +234,6 @@ function SuccessMessage({ mentor, formData }) {
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
       'Mentor Sponsors': mentor.sponsors,
-
-      // legacy props
-      id: mentor.airtableId,
-      name: mentor.name,
-      experience: mentor.experience,
-      price: mentor.price,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Intentionally run once on mount - analytics tracking
@@ -299,12 +290,6 @@ function LimitMessage({ mentor }) {
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
       'Mentor Sponsors': mentor.sponsors,
-
-      // legacy props
-      id: mentor.airtableId,
-      name: mentor.name,
-      experience: mentor.experience,
-      price: mentor.price,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Intentionally run once on mount - analytics tracking

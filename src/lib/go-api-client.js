@@ -3,6 +3,11 @@
  * Handles authentication, retries, error handling for calls to the Go API
  */
 
+// HTTP client configuration
+const HTTP_CONFIG = {
+  TIMEOUT_MS: 30000, // 30 seconds
+}
+
 /**
  * Custom error class for HTTP errors with status code
  */
@@ -20,7 +25,7 @@ class GoApiClient {
   constructor(baseURL, internalToken) {
     this.baseURL = baseURL
     this.internalToken = internalToken
-    this.timeout = 30000 // 30 seconds
+    this.timeout = HTTP_CONFIG.TIMEOUT_MS
   }
 
   /**

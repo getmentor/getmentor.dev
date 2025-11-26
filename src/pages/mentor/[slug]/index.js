@@ -57,13 +57,7 @@ export default function Mentor(props) {
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
       'Mentor Sponsors': mentor.sponsors,
-
-      // legacy props
-      id: mentor.airtableId,
-      name: mentor.name,
-      experience: mentor.experience,
-      price: mentor.price,
-      menteeCount: mentor.menteeCount,
+      'Mentee Count': mentor.menteeCount,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Intentionally run once on mount - analytics tracking
