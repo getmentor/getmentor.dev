@@ -40,13 +40,7 @@ if (typeof window === 'undefined') {
   const logDir =
     process.env.LOG_DIR || (process.env.NODE_ENV === 'production' ? '/app/logs' : './logs')
 
-  // Create log directory if it doesn't exist (for local development)
   try {
-    const fs = require('fs')
-    if (!fs.existsSync(logDir)) {
-      fs.mkdirSync(logDir, { recursive: true })
-    }
-
     // Add file transport for all logs
     transports.push(
       new winston.transports.File({
