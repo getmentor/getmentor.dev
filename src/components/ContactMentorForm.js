@@ -28,9 +28,15 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
           <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>
         )}
 
+        {errors.email && errors.email.type === 'pattern' && (
+          <div className="text-sm text-red-700 mt-3 mb-2">
+            Пожалуйста, введите корректный адрес электронной почты.
+          </div>
+        )}
+
         <input
           type="email"
-          {...register('email', { required: true })}
+          {...register('email', { required: true, pattern: /^\S+@\S+$/i })}
           id="email"
           autoComplete="email"
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
@@ -68,13 +74,25 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
           </div>
         )}
 
+        {errors.intro && errors.intro.type === 'maxLength' && (
+          <div className="text-sm text-red-700 mt-3 mb-2">
+            Превышен лимит символов (не более 4000).
+          </div>
+        )}
+
+        {errors.intro && errors.intro.type === 'minLength' && (
+          <div className="text-sm text-red-700 mt-3 mb-2">
+            Минимальная длина сообщения - 10 символов.
+          </div>
+        )}
+
         {errors.intro && errors.intro.type === 'required' && (
           <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>
         )}
 
         <div className="mt-1">
           <TextareaAutosize
-            {...register('intro', { required: true, maxLength: 4000 })}
+            {...register('intro', { required: true, maxLength: 4000, minLength: 10 })}
             id="intro"
             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"
             minRows={3}
@@ -116,9 +134,15 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
           <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>
         )}
 
+        {errors.telegramUsername && errors.telegramUsername.type === 'maxLength' && (
+          <div className="text-sm text-red-700 mt-3 mb-2">
+            Максимальная длина username - 50 символов.
+          </div>
+        )}
+
         <input
           type="text"
-          {...register('telegramUsername', { required: true })}
+          {...register('telegramUsername', { required: true, maxLength: 50 })}
           id="telegramUsername"
           autoComplete="username"
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
