@@ -12,11 +12,11 @@ module.exports = {
     node: true,
   },
 
-  plugins: ['react'],
+  plugins: ['react', 'react-hooks'],
 
   settings: {
     react: {
-      version: '17.0.2',
+      version: 'detect',
     },
   },
 
@@ -25,5 +25,7 @@ module.exports = {
     'no-unused-vars': ['warn', { vars: 'all', args: 'none' }],
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
   },
 }

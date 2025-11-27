@@ -1,5 +1,4 @@
 import { registerServerTracing } from './lib/tracing-server'
-import { register as registerMetrics } from './lib/metrics'
 import logger from './lib/logger'
 
 // instrumentation.js - Next.js server-side OpenTelemetry instrumentation

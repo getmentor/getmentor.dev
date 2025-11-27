@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
 import Head from 'next/head'
+import Image from 'next/image'
 import NavHeader from '../../../components/NavHeader'
 import Footer from '../../../components/Footer'
 import { getOneMentorBySlug } from '../../../server/mentors-data'
@@ -57,15 +58,10 @@ export default function Mentor(props) {
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
       'Mentor Sponsors': mentor.sponsors,
-
-      // legacy props
-      id: mentor.airtableId,
-      name: mentor.name,
-      experience: mentor.experience,
-      price: mentor.price,
-      menteeCount: mentor.menteeCount,
+      'Mentee Count': mentor.menteeCount,
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - analytics tracking
 
   return (
     <>
@@ -105,11 +101,16 @@ export default function Mentor(props) {
             </div>
 
             <div className="mb-4 md:hidden">
-              <img
-                className="w-full"
-                src={imageLoader({ src: mentor.slug, quality: 'full' })}
-                alt={mentor.name}
-              />
+              <div className="aspect-w-1 aspect-h-1">
+                <Image
+                  src={imageLoader({ src: mentor.slug, quality: 'full' })}
+                  alt={mentor.name}
+                  fill
+                  sizes="100vw"
+                  style={{ objectFit: 'cover' }}
+                  priority
+                />
+              </div>
             </div>
 
             {!mentor.isVisible && (
@@ -177,7 +178,16 @@ export default function Mentor(props) {
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
-            <img src={imageLoader({ src: mentor.slug, quality: 'large' })} alt={mentor.name} />
+            <div className="aspect-w-1 aspect-h-1">
+              <Image
+                src={imageLoader({ src: mentor.slug, quality: 'large' })}
+                alt={mentor.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{ objectFit: 'cover' }}
+                priority
+              />
+            </div>
           </div>
         </div>
       </Section>

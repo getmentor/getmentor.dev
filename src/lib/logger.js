@@ -8,6 +8,12 @@ import winston from 'winston'
 
 const { combine, timestamp, json, errors, printf } = winston.format
 
+// Logger configuration
+const LOGGER_CONFIG = {
+  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+  MAX_FILES: 5,
+}
+
 // Custom format for console output in development
 const consoleFormat = printf(({ level, message, timestamp, service, ...metadata }) => {
   let msg = `${timestamp} [${level}] [${service}]: ${message}`
@@ -30,29 +36,36 @@ const transports = [
 
 // Add file transport only in server-side context (not in browser)
 if (typeof window === 'undefined') {
-  const logDir = process.env.LOG_DIR || '/app/logs'
+  // Use ./logs for local dev, /app/logs for production
+  const logDir =
+    process.env.LOG_DIR || (process.env.NODE_ENV === 'production' ? '/app/logs' : './logs')
 
-  // Add file transport for all logs
-  transports.push(
-    new winston.transports.File({
-      filename: `${logDir}/frontend.log`,
-      level: process.env.LOG_LEVEL || 'info',
-      maxsize: 10485760, // 10MB
-      maxFiles: 5,
-      tailable: true,
-    })
-  )
+  try {
+    // Add file transport for all logs
+    transports.push(
+      new winston.transports.File({
+        filename: `${logDir}/frontend.log`,
+        level: process.env.LOG_LEVEL || 'info',
+        maxsize: LOGGER_CONFIG.MAX_FILE_SIZE,
+        maxFiles: LOGGER_CONFIG.MAX_FILES,
+        tailable: true,
+      })
+    )
 
-  // Add separate file for errors
-  transports.push(
-    new winston.transports.File({
-      filename: `${logDir}/frontend-error.log`,
-      level: 'error',
-      maxsize: 10485760, // 10MB
-      maxFiles: 5,
-      tailable: true,
-    })
-  )
+    // Add separate file for errors
+    transports.push(
+      new winston.transports.File({
+        filename: `${logDir}/frontend-error.log`,
+        level: 'error',
+        maxsize: LOGGER_CONFIG.MAX_FILE_SIZE,
+        maxFiles: LOGGER_CONFIG.MAX_FILES,
+        tailable: true,
+      })
+    )
+  } catch (error) {
+    // If file transport fails (e.g., permission issues), just log to console
+    console.warn('Failed to initialize file logging, using console only:', error.message)
+  }
 }
 
 // Create the logger
