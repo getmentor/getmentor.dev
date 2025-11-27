@@ -15,31 +15,24 @@ module.exports = {
 
   experimental: {
     largePageDataBytes: 10 * 1024 * 1024,
-    instrumentationHook: true,
   },
 
-  // Webpack configuration to exclude server-side packages from bundling
+  // Next.js 16 way to exclude server-side packages from bundling
   // These packages use Node.js built-ins and should be loaded at runtime
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      // Exclude all server-side observability packages from webpack bundling
-      config.externals = config.externals || []
-      config.externals.push({
-        // OpenTelemetry packages
-        '@opentelemetry/sdk-node': 'commonjs @opentelemetry/sdk-node',
-        '@opentelemetry/auto-instrumentations-node':
-          'commonjs @opentelemetry/auto-instrumentations-node',
-        '@opentelemetry/exporter-trace-otlp-http':
-          'commonjs @opentelemetry/exporter-trace-otlp-http',
-        '@opentelemetry/resources': 'commonjs @opentelemetry/resources',
-        // Prometheus metrics
-        'prom-client': 'commonjs prom-client',
-        // Winston logger
-        winston: 'commonjs winston',
-      })
-    }
-    return config
-  },
+  serverExternalPackages: [
+    // OpenTelemetry packages
+    '@opentelemetry/sdk-node',
+    '@opentelemetry/auto-instrumentations-node',
+    '@opentelemetry/exporter-trace-otlp-http',
+    '@opentelemetry/resources',
+    // Prometheus metrics
+    'prom-client',
+    // Winston logger
+    'winston',
+  ],
+
+  // Enable Turbopack (Next.js 16 default)
+  turbopack: {},
 
   async headers() {
     const headers = [

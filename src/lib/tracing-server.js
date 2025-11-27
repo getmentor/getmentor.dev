@@ -80,13 +80,8 @@ function registerServerTracing() {
     exporterUrl,
   })
 
-  // Graceful shutdown on process termination
-  process.on('SIGTERM', () => {
-    sdk
-      ?.shutdown()
-      .catch((error) => console.error('[Tracing] Error shutting down server tracing', error)) // eslint-disable-line no-console
-      .finally(() => process.exit(0))
-  })
+  // Note: No graceful shutdown handler - SDK will export periodically
+  // Accepting potential data loss on termination for code simplicity
 }
 
 export { registerServerTracing }

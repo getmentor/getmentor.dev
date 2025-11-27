@@ -80,7 +80,6 @@ export function registerClientTracing() {
     // eslint-disable-next-line no-console
     console.log('[Tracing] Client-side OpenTelemetry initialized successfully')
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('[Tracing] Failed to initialize client-side tracing:', error)
     // Don't throw - allow app to continue without tracing
   }
