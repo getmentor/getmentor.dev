@@ -101,7 +101,7 @@ export default function Mentor(props) {
             </div>
 
             <div className="mb-4 md:hidden">
-              <div className="relative w-full aspect-square">
+              <div className="aspect-w-1 aspect-h-1">
                 <Image
                   src={imageLoader({ src: mentor.slug, quality: 'full' })}
                   alt={mentor.name}
@@ -178,7 +178,7 @@ export default function Mentor(props) {
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
-            <div className="relative w-full aspect-square">
+            <div className="aspect-w-1 aspect-h-1">
               <Image
                 src={imageLoader({ src: mentor.slug, quality: 'large' })}
                 alt={mentor.name}
