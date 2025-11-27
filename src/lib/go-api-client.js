@@ -31,7 +31,7 @@ class GoApiClient {
   /**
    * Make an HTTP request to the Go API
    * @param {string} method - HTTP method (GET, POST, etc.)
-   * @param {string} path - API path (e.g., /api/mentors)
+   * @param {string} path - API path (e.g., /api/v1/mentors)
    * @param {object} options - Request options
    * @returns {Promise<any>} Response data
    */
@@ -78,7 +78,7 @@ class GoApiClient {
    * @returns {Promise<Array>} Array of mentors
    */
   async getAllMentors(params = {}) {
-    return this.request('POST', '/api/internal/mentors', {
+    return this.request('POST', '/api/v1/internal/mentors', {
       body: {
         only_visible: params.onlyVisible,
         drop_long_fields: params.drop_long_fields,
@@ -95,7 +95,7 @@ class GoApiClient {
    */
   async getOneMentorBySlug(slug, params = {}) {
     try {
-      return await this.request('POST', `/api/internal/mentors?slug=${slug}`, {
+      return await this.request('POST', `/api/v1/internal/mentors?slug=${slug}`, {
         body: {
           show_hidden: params.showHiddenFields,
         },
@@ -119,7 +119,7 @@ class GoApiClient {
    */
   async getOneMentorById(id, params = {}) {
     try {
-      return await this.request('POST', `/api/internal/mentors?id=${id}`, {
+      return await this.request('POST', `/api/v1/internal/mentors?id=${id}`, {
         body: {
           show_hidden: params.showHiddenFields,
         },
@@ -142,7 +142,7 @@ class GoApiClient {
    * @returns {Promise<object>} Mentor object
    */
   async getOneMentorByRecordId(rec, params = {}) {
-    return this.request('POST', `/api/internal/mentors?rec=${rec}`, {
+    return this.request('POST', `/api/v1/internal/mentors?rec=${rec}`, {
       body: {
         show_hidden: params.showHiddenFields,
       },
@@ -157,7 +157,7 @@ class GoApiClient {
    * @returns {Promise<object>} Response
    */
   async saveProfile(mentorId, authToken, profileData) {
-    return this.request('POST', '/api/save-profile', {
+    return this.request('POST', '/api/v1/save-profile', {
       headers: {
         'X-Mentor-ID': mentorId,
         'X-Auth-Token': authToken,
@@ -174,7 +174,7 @@ class GoApiClient {
    * @returns {Promise<object>} Response
    */
   async uploadProfilePicture(mentorId, authToken, imageData) {
-    return this.request('POST', '/api/upload-profile-picture', {
+    return this.request('POST', '/api/v1/upload-profile-picture', {
       headers: {
         'X-Mentor-ID': mentorId,
         'X-Auth-Token': authToken,
@@ -189,7 +189,7 @@ class GoApiClient {
    * @returns {Promise<object>} Response
    */
   async contactMentor(contactData) {
-    return this.request('POST', '/api/contact-mentor', {
+    return this.request('POST', '/api/v1/contact-mentor', {
       body: contactData,
     })
   }
