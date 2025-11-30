@@ -33,3 +33,6 @@ Thumbs.db
 
 # Other
 *.pem
+
+# Grafana dashboards and monitoring configs
+grafana

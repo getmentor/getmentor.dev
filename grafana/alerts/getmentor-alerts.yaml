@@ -1,0 +1,371 @@
+# Prometheus Alert Rules for GetMentor.dev
+# Configure these alerts in Grafana Cloud or your Prometheus instance
+
+groups:
+  # ============================================================================
+  # CRITICAL ALERTS - User Journey & Service Availability
+  # ============================================================================
+  - name: getmentor_critical_alerts
+    interval: 1m
+    rules:
+      # Service Availability SLO (99%)
+      - alert: ServiceAvailabilityBelowSLO
+        expr: |
+          100 - (
+            100 * (
+              sum(increase(getmentor_app_http_requests_total{status_code=~"5.."}[1h]))
+              /
+              sum(increase(getmentor_app_http_requests_total[1h]))
+            )
+          ) < 99
+        for: 5m
+        labels:
+          severity: critical
+          component: service
+          slo: availability
+        annotations:
+          summary: "Service availability below 99% SLO"
+          description: "Service availability is {{ $value | humanizePercentage }} over the last hour, which is below the 99% SLO threshold."
+
+      # Index Page High Error Rate
+      - alert: IndexPageHighErrorRate
+        expr: |
+          100 * (
+            sum(rate(getmentor_app_http_requests_total{route="/",status_code=~"5.."}[5m]))
+            /
+            sum(rate(getmentor_app_http_requests_total{route="/"}[5m]))
+          ) > 5
+        for: 5m
+        labels:
+          severity: critical
+          component: index_page
+          journey_step: "1"
+        annotations:
+          summary: "High error rate on index page"
+          description: "Index page error rate is {{ $value | humanizePercentage }} (threshold: 5%). This affects the first step of the critical user journey."
+
+      # Index Page High Latency (P95 > 500ms)
+      - alert: IndexPageHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(getmentor_app_http_request_duration_seconds_bucket{route="/"}[5m])) by (le)
+          ) * 1000 > 500
+        for: 10m
+        labels:
+          severity: critical
+          component: index_page
+          journey_step: "1"
+          slo: latency
+        annotations:
+          summary: "Index page P95 latency above 500ms SLO"
+          description: "Index page P95 latency is {{ $value | humanize }}ms, exceeding the 500ms SLO threshold."
+
+      # Mentor Profile Page High Error Rate
+      - alert: MentorProfilePageHighErrorRate
+        expr: |
+          100 * (
+            sum(rate(getmentor_app_http_requests_total{route="/mentor/[slug]",status_code=~"5.."}[5m]))
+            /
+            sum(rate(getmentor_app_http_requests_total{route="/mentor/[slug]"}[5m]))
+          ) > 5
+        for: 5m
+        labels:
+          severity: critical
+          component: mentor_profile
+          journey_step: "2"
+        annotations:
+          summary: "High error rate on mentor profile pages"
+          description: "Mentor profile page error rate is {{ $value | humanizePercentage }} (threshold: 5%). This affects the second step of the critical user journey."
+
+      # Mentor Profile Page High Latency (P95 > 500ms)
+      - alert: MentorProfilePageHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(getmentor_app_http_request_duration_seconds_bucket{route="/mentor/[slug]"}[5m])) by (le)
+          ) * 1000 > 500
+        for: 10m
+        labels:
+          severity: critical
+          component: mentor_profile
+          journey_step: "2"
+          slo: latency
+        annotations:
+          summary: "Mentor profile page P95 latency above 500ms SLO"
+          description: "Mentor profile page P95 latency is {{ $value | humanize }}ms, exceeding the 500ms SLO threshold."
+
+      # Contact Form High Failure Rate
+      - alert: ContactFormHighFailureRate
+        expr: |
+          100 * (
+            sum(rate(contact_form_submissions_total{status=~"error|captcha_failed"}[5m]))
+            /
+            sum(rate(contact_form_submissions_total[5m]))
+          ) > 10
+        for: 5m
+        labels:
+          severity: critical
+          component: contact_form
+          journey_step: "3"
+        annotations:
+          summary: "High failure rate on contact form submissions"
+          description: "Contact form failure rate is {{ $value | humanizePercentage }} (threshold: 10%). This affects the final step of the critical user journey."
+
+      # Contact Form API Errors
+      - alert: ContactFormAPIErrors
+        expr: |
+          sum(rate(getmentor_app_http_requests_total{route="/api/contact-mentor",status_code=~"5.."}[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          component: contact_form_api
+          journey_step: "3"
+        annotations:
+          summary: "Contact form API returning errors"
+          description: "Contact form API error rate is {{ $value | humanize }} req/s. Users cannot submit contact forms."
+
+      # No Successful Contact Form Submissions
+      - alert: NoContactFormSubmissions
+        expr: |
+          sum(rate(contact_form_submissions_total{status="success"}[15m])) == 0
+          and
+          sum(rate(getmentor_app_http_requests_total{route="/api/contact-mentor"}[15m])) > 0
+        for: 15m
+        labels:
+          severity: critical
+          component: contact_form
+          journey_step: "3"
+        annotations:
+          summary: "No successful contact form submissions"
+          description: "No successful contact form submissions in the last 15 minutes, but requests are being made. The contact form may be broken."
+
+      # Service Down (no metrics being scraped)
+      - alert: ServiceDown
+        expr: up{job="getmentor-metrics"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: service
+        annotations:
+          summary: "GetMentor service is down"
+          description: "Grafana Alloy cannot scrape metrics from the service. The application may be down."
+
+  # ============================================================================
+  # WARNING ALERTS - Dependencies & Infrastructure
+  # ============================================================================
+  - name: getmentor_warning_alerts
+    interval: 1m
+    rules:
+      # Airtable High Error Rate
+      - alert: AirtableHighErrorRate
+        expr: |
+          100 * (
+            sum(rate(getmentor_app_airtable_requests_total{status="error"}[5m]))
+            /
+            sum(rate(getmentor_app_airtable_requests_total[5m]))
+          ) > 5
+        for: 10m
+        labels:
+          severity: warning
+          component: airtable
+          dependency: external
+        annotations:
+          summary: "High error rate from Airtable integration"
+          description: "Airtable error rate is {{ $value | humanizePercentage }} (threshold: 5%). Mentor data may not be loading correctly."
+
+      # Airtable Slow Requests
+      - alert: AirtableSlowRequests
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(airtable_request_duration_seconds_bucket[5m])) by (le, operation)
+          ) * 1000 > 5000
+        for: 10m
+        labels:
+          severity: warning
+          component: airtable
+          dependency: external
+        annotations:
+          summary: "Airtable requests are slow"
+          description: "Airtable {{ $labels.operation }} P95 latency is {{ $value | humanize }}ms (threshold: 5000ms). Page loads may be affected."
+
+      # Azure Storage Errors
+      - alert: AzureStorageErrors
+        expr: |
+          sum(rate(getmentor_app_azure_storage_requests_total{status="error"}[5m])) > 0.01
+        for: 10m
+        labels:
+          severity: warning
+          component: azure_storage
+          dependency: external
+        annotations:
+          summary: "Azure Storage upload errors detected"
+          description: "Azure Storage error rate is {{ $value | humanize }} req/s. Profile picture uploads may be failing."
+
+      # Cache Hit Rate Low
+      - alert: CacheHitRateLow
+        expr: |
+          100 * (
+            sum(rate(getmentor_app_cache_hits_total[10m]))
+            /
+            (sum(rate(getmentor_app_cache_hits_total[10m])) + sum(rate(getmentor_app_cache_misses_total[10m])))
+          ) < 50
+        for: 15m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "Cache hit rate is low"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} (threshold: 50%). This may increase load on Airtable."
+
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: |
+          (gm_nextjs_process_resident_memory_bytes / 1024 / 1024) > 1024
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+          resource: memory
+        annotations:
+          summary: "High memory usage detected"
+          description: "Process is using {{ $value | humanize }}MB of memory (threshold: 1024MB). May need to investigate for memory leaks."
+
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: |
+          (
+            rate(gm_nextjs_process_cpu_user_seconds_total[5m]) +
+            rate(gm_nextjs_process_cpu_system_seconds_total[5m])
+          ) * 100 > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+          resource: cpu
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value | humanizePercentage }} (threshold: 80%). Service may be under heavy load."
+
+      # Event Loop Lag High
+      - alert: EventLoopLagHigh
+        expr: |
+          gm_nextjs_nodejs_eventloop_lag_seconds * 1000 > 100
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+          resource: event_loop
+        annotations:
+          summary: "High event loop lag detected"
+          description: "Event loop lag is {{ $value | humanize }}ms (threshold: 100ms). Application may be struggling to process requests."
+
+      # Heap Usage High
+      - alert: HeapUsageHigh
+        expr: |
+          100 * (
+            gm_nextjs_nodejs_heap_size_used_bytes
+            /
+            gm_nextjs_nodejs_heap_size_total_bytes
+          ) > 90
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+          resource: memory
+        annotations:
+          summary: "Heap usage is high"
+          description: "Heap usage is {{ $value | humanizePercentage }} (threshold: 90%). May trigger garbage collection or out-of-memory errors."
+
+      # Garbage Collection Pause Time High
+      - alert: GarbageCollectionPauseHigh
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(gm_nextjs_nodejs_gc_duration_seconds_bucket[5m])) by (le)
+          ) * 1000 > 100
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+          resource: gc
+        annotations:
+          summary: "High garbage collection pause time"
+          description: "GC P95 pause time is {{ $value | humanize }}ms (threshold: 100ms). May impact application responsiveness."
+
+      # Too Many Active Requests
+      - alert: TooManyActiveRequests
+        expr: |
+          sum(getmentor_app_http_active_requests) > 50
+        for: 5m
+        labels:
+          severity: warning
+          component: service
+        annotations:
+          summary: "Too many concurrent active requests"
+          description: "There are {{ $value }} active requests being processed (threshold: 50). Service may be under heavy load or requests are slow."
+
+  # ============================================================================
+  # INFO ALERTS - Profile Management (Non-Critical)
+  # ============================================================================
+  - name: getmentor_info_alerts
+    interval: 5m
+    rules:
+      # Profile Update Errors
+      - alert: ProfileUpdateErrors
+        expr: |
+          sum(rate(getmentor_app_profile_updates_total{status="error"}[10m])) > 0.1
+        for: 15m
+        labels:
+          severity: info
+          component: profile_management
+        annotations:
+          summary: "Profile update errors detected"
+          description: "Profile update error rate is {{ $value | humanize }} req/s. Mentors may have issues updating their profiles."
+
+      # Profile Picture Upload Errors
+      - alert: ProfilePictureUploadErrors
+        expr: |
+          sum(rate(getmentor_app_profile_picture_uploads_total{status="error"}[10m])) > 0.1
+        for: 15m
+        labels:
+          severity: info
+          component: profile_management
+        annotations:
+          summary: "Profile picture upload errors detected"
+          description: "Profile picture upload error rate is {{ $value | humanize }} req/s. Mentors may have issues uploading profile pictures."
+
+  # ============================================================================
+  # RATE OF CHANGE ALERTS - Anomaly Detection
+  # ============================================================================
+  - name: getmentor_anomaly_alerts
+    interval: 1m
+    rules:
+      # Sudden Drop in Traffic
+      - alert: SuddenTrafficDrop
+        expr: |
+          sum(rate(getmentor_app_http_requests_total[5m])) < 0.5 *
+          sum(rate(getmentor_app_http_requests_total[5m] offset 1h))
+          and
+          sum(rate(getmentor_app_http_requests_total[5m] offset 1h)) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+          component: service
+          anomaly: traffic_drop
+        annotations:
+          summary: "Sudden drop in traffic detected"
+          description: "Traffic has dropped to {{ $value | humanize }} req/s, which is less than 50% of traffic 1 hour ago. May indicate an issue."
+
+      # Sudden Spike in Errors
+      - alert: SuddenErrorSpike
+        expr: |
+          sum(rate(getmentor_app_http_requests_total{status_code=~"5.."}[5m])) > 3 *
+          sum(rate(getmentor_app_http_requests_total{status_code=~"5.."}[5m] offset 30m))
+          and
+          sum(rate(getmentor_app_http_requests_total{status_code=~"5.."}[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: service
+          anomaly: error_spike
+        annotations:
+          summary: "Sudden spike in errors detected"
+          description: "Error rate has increased to {{ $value | humanize }} req/s, which is 3x higher than 30 minutes ago."

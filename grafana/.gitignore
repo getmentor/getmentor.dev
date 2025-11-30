@@ -1,0 +1,14 @@
+# Generated dashboard JSON files
+output/
+*.json
+
+# Jsonnet dependencies
+vendor/
+jsonnetfile.lock.json
+
+# Grafonnet library (if cloned locally)
+grafonnet-lib/
+
+# Build artifacts
+*.tmp
+*.bak
