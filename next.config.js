@@ -14,7 +14,7 @@ module.exports = {
         protocol: 'https',
         hostname: process.env.NEXT_PUBLIC_YANDEX_STORAGE_ENDPOINT,
         port: '',
-        pathname: `/${process.env.YANDEX_STORAGE_BUCKET}/**`,
+        pathname: `/${process.env.NEXT_PUBLIC_YANDEX_STORAGE_BUCKET}/**`,
       },
     ],
   },
