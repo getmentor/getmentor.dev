@@ -1,4 +1,5 @@
-const STORAGE_DOMAIN = process.env.NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
+const STORAGE_DOMAIN =
+  process.env.NEXT_PUBLIC_YANDEX_STORAGE_ENDPOINT || process.env.NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
 
 export function imageLoader({ src, width, quality }) {
   const url = 'https://' + STORAGE_DOMAIN + '/mentor-images/'
