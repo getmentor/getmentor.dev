@@ -5,13 +5,15 @@
  */
 
 import winston from 'winston'
+import DailyRotateFile from 'winston-daily-rotate-file'
 
 const { combine, timestamp, json, errors, printf } = winston.format
 
 // Logger configuration
 const LOGGER_CONFIG = {
-  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
-  MAX_FILES: 5,
+  MAX_FILE_SIZE: '100m', // 100MB per file
+  MAX_FILES: '7d', // Keep 7 days of logs
+  DATE_PATTERN: 'YYYY-MM-DD',
 }
 
 // Custom format for console output in development
@@ -41,25 +43,29 @@ if (typeof window === 'undefined') {
     process.env.LOG_DIR || (process.env.NODE_ENV === 'production' ? '/app/logs' : './logs')
 
   try {
-    // Add file transport for all logs
+    // Add daily rotating file transport for all logs
     transports.push(
-      new winston.transports.File({
-        filename: `${logDir}/frontend.log`,
+      new DailyRotateFile({
+        filename: `${logDir}/app-%DATE%.log`,
+        datePattern: LOGGER_CONFIG.DATE_PATTERN,
         level: process.env.LOG_LEVEL || 'info',
-        maxsize: LOGGER_CONFIG.MAX_FILE_SIZE,
+        maxSize: LOGGER_CONFIG.MAX_FILE_SIZE,
         maxFiles: LOGGER_CONFIG.MAX_FILES,
-        tailable: true,
+        zippedArchive: true, // Compress old logs
+        format: combine(timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), json()),
       })
     )
 
-    // Add separate file for errors
+    // Add separate rotating file for errors
     transports.push(
-      new winston.transports.File({
-        filename: `${logDir}/frontend-error.log`,
+      new DailyRotateFile({
+        filename: `${logDir}/error-%DATE%.log`,
+        datePattern: LOGGER_CONFIG.DATE_PATTERN,
         level: 'error',
-        maxsize: LOGGER_CONFIG.MAX_FILE_SIZE,
+        maxSize: LOGGER_CONFIG.MAX_FILE_SIZE,
         maxFiles: LOGGER_CONFIG.MAX_FILES,
-        tailable: true,
+        zippedArchive: true, // Compress old logs
+        format: combine(timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), json()),
       })
     )
   } catch (error) {
