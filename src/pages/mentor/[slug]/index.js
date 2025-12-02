@@ -109,6 +109,7 @@ export default function Mentor(props) {
                   sizes="100vw"
                   style={{ objectFit: 'cover' }}
                   priority
+                  unoptimized
                 />
               </div>
             </div>
@@ -186,6 +187,7 @@ export default function Mentor(props) {
                 sizes="(max-width: 768px) 100vw, 50vw"
                 style={{ objectFit: 'cover' }}
                 priority
+                unoptimized
               />
             </div>
           </div>

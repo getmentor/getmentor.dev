@@ -16,6 +16,12 @@ module.exports = {
         port: '',
         pathname: `/${process.env.NEXT_PUBLIC_YANDEX_STORAGE_BUCKET}/**`,
       },
+      {
+        protocol: 'https',
+        hostname: process.env.NEXT_PUBLIC_CDN_ENDPOINT,
+        port: '',
+        pathname: `/**`,
+      },
     ],
   },
 
