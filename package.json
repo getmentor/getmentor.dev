@@ -51,7 +51,7 @@
     "interweave": "^13.0.0",
     "interweave-ssr": "^2.0.0",
     "multiselect-react-dropdown": "^2.0.25",
-    "next": "16.0.5",
+    "next": "16.0.7",
     "object-hash": "^3.0.0",
     "postcss": "^8.4.14",
     "prom-client": "^15.1.3",
