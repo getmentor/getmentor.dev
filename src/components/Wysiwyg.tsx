@@ -1,4 +1,4 @@
-import { useEditor, EditorContent, type Editor } from '@tiptap/react'
+import { useEditor, EditorContent, type Editor, type UseEditorOptions } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Link } from '@tiptap/extension-link'
 import classNames from 'classnames'
@@ -10,21 +10,19 @@ interface WysiwygProps {
 }
 
 export default function Wysiwyg({ content, onUpdate }: WysiwygProps): JSX.Element {
-  const editor = useEditor(
-    {
-      extensions: [StarterKit, Link.configure({ openOnClick: false })],
-      editorProps: {
-        attributes: {
-          class: 'prose prose-sm max-w-full my-2 mx-3 focus:outline-none',
-        },
+  const editor = useEditor({
+    extensions: [StarterKit, Link.configure({ openOnClick: false })],
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm max-w-full my-2 mx-3 focus:outline-none',
       },
-      content: sanitizeHtml(content),
-      onUpdate({ editor }: { editor: Editor }) {
-        onUpdate(editor)
-      },
-      immediatelyRender: false,
-    } as any
-  )
+    },
+    content: sanitizeHtml(content),
+    onUpdate({ editor }: { editor: Editor }) {
+      onUpdate(editor)
+    },
+    immediatelyRender: false,
+  } as unknown as UseEditorOptions)
 
   return (
     <div className="block w-full sm:text-sm border border-gray-300 rounded-md shadow-sm relative">
@@ -41,12 +39,28 @@ interface MenuBarProps {
   editor: Editor | null
 }
 
+type EditorChain = {
+  toggleBold: () => { run: () => void }
+  toggleItalic: () => { run: () => void }
+  toggleStrike: () => { run: () => void }
+  toggleHeading: (options: { level: number }) => { run: () => void }
+  setParagraph: () => { run: () => void }
+  toggleBulletList: () => { run: () => void }
+  toggleOrderedList: () => { run: () => void }
+  setHardBreak: () => { run: () => void }
+  extendMarkRange: (mark: string) => EditorChain
+  unsetLink: () => { run: () => void }
+  setLink: (options: { href: string }) => { run: () => void }
+  clearNodes: () => { run: () => void }
+  unsetAllMarks: () => { run: () => void }
+}
+
 function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
   if (!editor) {
     return null
   }
 
-  const chain = () => editor.chain().focus() as any
+  const chain = () => editor.chain().focus() as unknown as EditorChain
 
   return (
     <div className="flex flex-wrap sm:flex-nowrap sm:divide-x sm:divide-gray-300 border-b border-gray-300">

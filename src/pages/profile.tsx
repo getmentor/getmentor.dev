@@ -47,7 +47,9 @@ const _getServerSideProps: GetServerSideProps<ProfilePageProps> = async (context
     return { notFound: true }
   }
 
-  const tokenParam = Array.isArray(context.query.token) ? context.query.token[0] : context.query.token
+  const tokenParam = Array.isArray(context.query.token)
+    ? context.query.token[0]
+    : context.query.token
   if (!tokenParam || mentor.authToken !== tokenParam) {
     logger.warn('Unauthorized profile edit attempt', {
       mentorId: context.query.id,
@@ -74,10 +76,6 @@ export default function Profile({
   errorCode,
   mentor,
 }: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
-  if (!mentor) {
-    return <NextError statusCode={404} title="Mentor not found" />
-  }
-
   // SECURITY: Extract auth credentials from URL once on page load, use in headers
   const [authCredentials, setAuthCredentials] = useState<AuthCredentials>({ id: null, token: null })
 
@@ -98,14 +96,13 @@ export default function Profile({
   }, [])
 
   useEffect(() => {
-    if (mentor) {
-      analytics.event('Open Profile', {
-        'Mentor Id': mentor.id,
-        'Mentor Name': mentor.name,
-        'Mentor Experience': mentor.experience,
-        'Mentor Price': mentor.price,
-      })
-    }
+    if (!mentor) return
+    analytics.event('Open Profile', {
+      'Mentor Id': mentor.id,
+      'Mentor Name': mentor.name,
+      'Mentor Experience': mentor.experience,
+      'Mentor Price': mentor.price,
+    })
   }, [mentor])
 
   const [readyStatus, setReadyStatus] = useState<ReadyStatus>('')
@@ -130,7 +127,7 @@ export default function Profile({
   }, [readyStatus])
 
   const onSubmit = (data: SaveProfileRequest): void => {
-    if (readyStatus === 'loading') {
+    if (readyStatus === 'loading' || !mentor) {
       return
     }
 
@@ -170,11 +167,8 @@ export default function Profile({
       })
   }
 
-  const onImageUpload = (
-    imageData: UploadProfilePictureRequest,
-    onSuccess?: () => void
-  ): void => {
-    if (imageUploadStatus === 'loading') {
+  const onImageUpload = (imageData: UploadProfilePictureRequest, onSuccess?: () => void): void => {
+    if (imageUploadStatus === 'loading' || !mentor) {
       return
     }
 
@@ -232,6 +226,10 @@ export default function Profile({
 
   if (errorCode) {
     return <NextError statusCode={403} title="Access denied" />
+  }
+
+  if (!mentor) {
+    return <NextError statusCode={404} title="Mentor not found" />
   }
 
   return (
