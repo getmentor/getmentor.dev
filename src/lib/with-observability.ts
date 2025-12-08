@@ -10,10 +10,6 @@ import { logHttpRequest, logError } from './logger'
 
 type NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<void> | void
 
-interface ExtendedResponse extends NextApiResponse {
-  end: (cb?: () => void) => NextApiResponse
-}
-
 /**
  * Higher-order function that wraps API routes with observability instrumentation
  */
@@ -27,12 +23,9 @@ export function withObservability(handler: NextApiHandler): NextApiHandler {
     activeRequests.inc({ method, route })
 
     // Patch res.end to capture status code and duration
-    const originalEnd = (res as ExtendedResponse).end.bind(res)
+    const originalEnd = res.end.bind(res)
 
-    ;(res as ExtendedResponse).end = function (
-      this: NextApiResponse,
-      ...args: Parameters<typeof originalEnd>
-    ): NextApiResponse {
+    res.end = ((...args: Parameters<typeof originalEnd>) => {
       const statusCode = res.statusCode
       const duration = (Date.now() - start) / 1000 // Convert to seconds
 
@@ -45,7 +38,7 @@ export function withObservability(handler: NextApiHandler): NextApiHandler {
       logHttpRequest(req, res, duration * 1000) // Convert back to ms for logging
 
       return originalEnd(...args)
-    }
+    }) as NextApiResponse['end']
 
     try {
       // Call the actual handler

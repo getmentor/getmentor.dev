@@ -1,35 +1,54 @@
 import { useEffect, useState, Fragment } from 'react'
 import { Transition } from '@headlessui/react'
 import Head from 'next/head'
-import ProfileForm from '../components/ProfileForm'
-import NavHeader from '../components/NavHeader'
-import Section from '../components/Section'
-import Footer from '../components/Footer'
-import { getOneMentorById } from '../server/mentors-data'
-import seo from '../config/seo'
-import filters from '../config/filters'
-import Notification from '../components/Notification'
-import Error from 'next/error'
-import analytics from '../lib/analytics'
+import NextError from 'next/error'
 import Link from 'next/link'
-import { withSSRObservability } from '../lib/with-ssr-observability'
-import logger from '../lib/logger'
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
+import { Footer, NavHeader, Notification, ProfileForm, Section } from '@/components'
+import { getOneMentorById } from '@/server/mentors-data'
+import seo from '@/config/seo'
+import filters from '@/config/filters'
+import analytics from '@/lib/analytics'
+import { withSSRObservability } from '@/lib/with-ssr-observability'
+import logger from '@/lib/logger'
+import type {
+  MentorWithSecureFields,
+  SaveProfileRequest,
+  UploadProfilePictureRequest,
+} from '@/types'
+import { hasMentorSecureFields } from '@/types'
 
-async function _getServerSideProps(context) {
-  context.query.id = parseInt(context.query.id, 10)
-  if (isNaN(context.query.id)) {
+interface ProfilePageProps {
+  [key: string]: unknown
+  errorCode: number
+  mentor: MentorWithSecureFields | null
+}
+
+type ReadyStatus = '' | 'loading' | 'success' | 'error'
+type ImageUploadStatus = 'idle' | 'loading' | 'success' | 'error'
+
+interface AuthCredentials {
+  id: string | null
+  token: string | null
+}
+
+const _getServerSideProps: GetServerSideProps<ProfilePageProps> = async (context) => {
+  const idParam = Array.isArray(context.query.id) ? context.query.id[0] : context.query.id
+  const mentorId = parseInt(idParam || '', 10)
+  if (Number.isNaN(mentorId)) {
     logger.warn('Invalid mentor ID for profile edit', { id: context.query.id })
     return { notFound: true }
   }
 
-  const mentor = await getOneMentorById(context.query.id, { showHiddenFields: true })
+  const mentor = await getOneMentorById(mentorId, { showHiddenFields: true })
 
-  if (!mentor) {
+  if (!mentor || !hasMentorSecureFields(mentor)) {
     logger.warn('Mentor not found for profile edit', { id: context.query.id })
     return { notFound: true }
   }
 
-  if (!context.query.token || mentor.authToken !== context.query.token) {
+  const tokenParam = Array.isArray(context.query.token) ? context.query.token[0] : context.query.token
+  if (!tokenParam || mentor.authToken !== tokenParam) {
     logger.warn('Unauthorized profile edit attempt', {
       mentorId: context.query.id,
       hasToken: !!context.query.token,
@@ -51,9 +70,16 @@ async function _getServerSideProps(context) {
 
 export const getServerSideProps = withSSRObservability(_getServerSideProps, 'profile-edit')
 
-export default function Profile({ errorCode, mentor }) {
+export default function Profile({
+  errorCode,
+  mentor,
+}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
+  if (!mentor) {
+    return <NextError statusCode={404} title="Mentor not found" />
+  }
+
   // SECURITY: Extract auth credentials from URL once on page load, use in headers
-  const [authCredentials, setAuthCredentials] = useState({ id: null, token: null })
+  const [authCredentials, setAuthCredentials] = useState<AuthCredentials>({ id: null, token: null })
 
   useEffect(() => {
     // Get auth from URL query parameters (only on initial page load)
@@ -82,26 +108,28 @@ export default function Profile({ errorCode, mentor }) {
     }
   }, [mentor])
 
-  const [readyStatus, setReadyStatus] = useState('')
+  const [readyStatus, setReadyStatus] = useState<ReadyStatus>('')
   const [showSuccess, setShowSuccess] = useState(false)
-  const [imageUploadStatus, setImageUploadStatus] = useState('')
-  const [uploadedImageUrl, setUploadedImageUrl] = useState(null)
-  const [tempImagePreview, setTempImagePreview] = useState(null)
+  const [imageUploadStatus, setImageUploadStatus] = useState<ImageUploadStatus>('idle')
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null)
+  const [tempImagePreview, setTempImagePreview] = useState<string | null>(null)
 
   const title = 'Профиль | ' + seo.title
 
   useEffect(() => {
-    let timer
+    let timer: ReturnType<typeof setTimeout> | undefined
     if (readyStatus === 'success') {
       setShowSuccess(true)
       timer = setTimeout(() => setShowSuccess(false), 3000)
     }
     return () => {
-      clearTimeout(timer)
+      if (timer) {
+        clearTimeout(timer)
+      }
     }
   }, [readyStatus])
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: SaveProfileRequest): void => {
     if (readyStatus === 'loading') {
       return
     }
@@ -122,18 +150,18 @@ export default function Profile({ errorCode, mentor }) {
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',
-        'X-Mentor-ID': authCredentials.id,
-        'X-Auth-Token': authCredentials.token,
+        'X-Mentor-ID': authCredentials.id ?? '',
+        'X-Auth-Token': authCredentials.token ?? '',
       },
     })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
         }
-        return res.json()
+        return res.json() as Promise<{ success: boolean }>
       })
-      .then((data) => {
-        setReadyStatus(data.success ? 'success' : 'error')
+      .then((responseData) => {
+        setReadyStatus(responseData.success ? 'success' : 'error')
       })
       .catch((e) => {
         setReadyStatus('error')
@@ -142,7 +170,10 @@ export default function Profile({ errorCode, mentor }) {
       })
   }
 
-  const onImageUpload = (imageData, onSuccess) => {
+  const onImageUpload = (
+    imageData: UploadProfilePictureRequest,
+    onSuccess?: () => void
+  ): void => {
     if (imageUploadStatus === 'loading') {
       return
     }
@@ -163,15 +194,15 @@ export default function Profile({ errorCode, mentor }) {
       body: JSON.stringify(imageData),
       headers: {
         'Content-Type': 'application/json',
-        'X-Mentor-ID': authCredentials.id,
-        'X-Auth-Token': authCredentials.token,
+        'X-Mentor-ID': authCredentials.id ?? '',
+        'X-Auth-Token': authCredentials.token ?? '',
       },
     })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
         }
-        return res.json()
+        return res.json() as Promise<{ success: boolean; imageUrl?: string }>
       })
       .then((data) => {
         if (data.success) {
@@ -185,7 +216,7 @@ export default function Profile({ errorCode, mentor }) {
             onSuccess()
           }
           // Reset status after 5 seconds
-          setTimeout(() => setImageUploadStatus(''), 5000)
+          setTimeout(() => setImageUploadStatus('idle'), 5000)
         } else {
           setImageUploadStatus('error')
           setTempImagePreview(null)
@@ -200,7 +231,7 @@ export default function Profile({ errorCode, mentor }) {
   }
 
   if (errorCode) {
-    return <Error statusCode={403} title="Access denied" />
+    return <NextError statusCode={403} title="Access denied" />
   }
 
   return (

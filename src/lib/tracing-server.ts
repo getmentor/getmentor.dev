@@ -28,45 +28,47 @@ function registerServerTracing(): void {
   const traceExporter = new OTLPTraceExporter({
     url: exporterUrl,
     headers: {},
-  })
+  }) as any
 
   // Initialize Node.js SDK with automatic instrumentation
   // Let NodeSDK create the Resource from resourceAttributes to ensure compatibility
-  sdk = new NodeSDK({
-    // Service name and resource attributes
-    serviceName,
-    resourceAttributes: {
-      'service.version': serviceVersion,
-      'service.namespace': serviceNamespace,
-      'deployment.environment': environment,
-    },
-    // Pass the exporter instance
-    traceExporter,
-    instrumentations: [
-      getNodeAutoInstrumentations({
-        // Automatically instrument:
-        '@opentelemetry/instrumentation-http': {
-          // Enable trace context propagation
-          requireParentforOutgoingSpans: false,
-          requireParentforIncomingSpans: false,
-          headersToSpanAttributes: {
-            client: {
-              requestHeaders: ['x-internal-mentors-api-auth-token'],
+  sdk = new NodeSDK(
+    {
+      // Service name and resource attributes
+      serviceName,
+      resourceAttributes: {
+        'service.version': serviceVersion,
+        'service.namespace': serviceNamespace,
+        'deployment.environment': environment,
+      },
+      // Pass the exporter instance
+      traceExporter,
+      instrumentations: [
+        getNodeAutoInstrumentations({
+          // Automatically instrument:
+          '@opentelemetry/instrumentation-http': {
+            // Enable trace context propagation
+            requireParentforOutgoingSpans: false,
+            requireParentforIncomingSpans: false,
+            headersToSpanAttributes: {
+              client: {
+                requestHeaders: ['x-internal-mentors-api-auth-token'],
+              },
             },
           },
-        },
-        '@opentelemetry/instrumentation-express': {}, // Express (used by Next.js)
-        '@opentelemetry/instrumentation-fs': { enabled: false }, // Disable noisy FS operations
-        '@opentelemetry/instrumentation-dns': { enabled: false }, // Disable noisy DNS lookups
-        '@opentelemetry/instrumentation-net': { enabled: false }, // Disable noisy network operations
-        // Undici is used by Node.js fetch() - enable for trace propagation
-        '@opentelemetry/instrumentation-undici': {
-          requireParentforOutgoingSpans: false,
-          requireParentforIncomingSpans: false,
-        },
-      }),
-    ],
-  })
+          '@opentelemetry/instrumentation-express': {}, // Express (used by Next.js)
+          '@opentelemetry/instrumentation-fs': { enabled: false }, // Disable noisy FS operations
+          '@opentelemetry/instrumentation-dns': { enabled: false }, // Disable noisy DNS lookups
+          '@opentelemetry/instrumentation-net': { enabled: false }, // Disable noisy network operations
+          // Undici is used by Node.js fetch() - enable for trace propagation
+          '@opentelemetry/instrumentation-undici': {
+            // TypeScript types lag behind latest config; cast to suppress
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any,
+        }),
+      ],
+    } as any
+  )
 
   // Start the SDK
   sdk.start()

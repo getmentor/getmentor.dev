@@ -1,4 +1,4 @@
-import type { GetServerSidePropsContext, GetServerSidePropsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
+import type { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, GetStaticProps, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import { pageViews, serverSideRenderDuration, mentorProfileViews } from './metrics'
 import { logError } from './logger'
 
@@ -14,21 +14,13 @@ interface SSRResult<P> {
   notFound?: boolean
 }
 
-type GetServerSidePropsFunc<P> = (
-  context: GetServerSidePropsContext
-) => Promise<GetServerSidePropsResult<P>>
-
-type GetStaticPropsFunc<P> = (
-  context: GetStaticPropsContext
-) => Promise<GetStaticPropsResult<P>>
-
 /**
  * Wraps getServerSideProps with observability instrumentation
  */
-export function withSSRObservability<P extends Record<string, unknown>>(
-  getServerSidePropsFunc: GetServerSidePropsFunc<P>,
+export function withSSRObservability<P extends { [key: string]: unknown }>(
+  getServerSidePropsFunc: GetServerSideProps<P>,
   pageName: string
-): GetServerSidePropsFunc<P> {
+): GetServerSideProps<P> {
   return async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const start = Date.now()
     let status: SSRStatus = 'success'
@@ -78,10 +70,10 @@ export function withSSRObservability<P extends Record<string, unknown>>(
 /**
  * Simpler version for static props (if needed)
  */
-export function withStaticPropsObservability<P extends Record<string, unknown>>(
-  getStaticPropsFunc: GetStaticPropsFunc<P>,
+export function withStaticPropsObservability<P extends { [key: string]: unknown }>(
+  getStaticPropsFunc: GetStaticProps<P>,
   pageName: string
-): GetStaticPropsFunc<P> {
+): GetStaticProps<P> {
   return async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<P>> => {
     const start = Date.now()
     let status: SSRStatus = 'success'

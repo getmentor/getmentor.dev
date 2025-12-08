@@ -1,26 +1,27 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faIdBadge, faComments, faEdit } from '@fortawesome/free-solid-svg-icons'
-import { getAllMentors } from '../server/mentors-data'
-import NavHeader from '../components/NavHeader'
-import Footer from '../components/Footer'
-import MentorsFilters from '../components/MentorsFilters'
-import MentorsList from '../components/MentorsList'
-import MentorsSearch from '../components/MentorsSearch'
-import Section from '../components/Section'
-import useMentors from '../components/useMentors'
-import donates from '../config/donates'
 import { useEffect } from 'react'
-import analytics from '../lib/analytics'
-import MetaHeader from '../components/MetaHeader'
-import seo from '../config/seo'
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+import { faIdBadge, faComments, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { MentorsFilters, MentorsList, MentorsSearch, MetaHeader, NavHeader, Section, useMentors, Footer } from '@/components'
+import { getAllMentors } from '@/server/mentors-data'
+import donates from '@/config/donates'
+import analytics from '@/lib/analytics'
+import seo from '@/config/seo'
 import { useInView } from 'react-intersection-observer'
-import { withSSRObservability } from '../lib/with-ssr-observability'
-import logger from '../lib/logger'
+import { withSSRObservability } from '@/lib/with-ssr-observability'
+import logger from '@/lib/logger'
+import type { MentorListItem } from '@/types'
 
-async function _getServerSideProps(context) {
+interface HomePageProps {
+  [key: string]: unknown
+  pageMentors: MentorListItem[]
+}
+
+const _getServerSideProps: GetServerSideProps<HomePageProps> = async (context) => {
   const pageMentors = await getAllMentors({ onlyVisible: true, drop_long_fields: true })
 
   logger.info('Index page rendered', {
@@ -37,7 +38,14 @@ async function _getServerSideProps(context) {
 
 export const getServerSideProps = withSSRObservability(_getServerSideProps, 'index')
 
-function Feature(props) {
+interface FeatureProps {
+  icon: IconDefinition
+  title: string
+  text: string
+  subline: string
+}
+
+function Feature(props: FeatureProps) {
   return (
     <div className="flex sm:w-1/2 lg:w-1/3 p-4">
       <div className="pr-4">
@@ -54,7 +62,9 @@ function Feature(props) {
   )
 }
 
-export default function Home({ pageMentors }) {
+export default function Home({
+  pageMentors,
+}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
   const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
     useMentors(pageMentors)
 

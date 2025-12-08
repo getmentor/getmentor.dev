@@ -2,7 +2,7 @@ import { useEditor, EditorContent, type Editor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Link } from '@tiptap/extension-link'
 import classNames from 'classnames'
-import { sanitizeHtml } from '@/lib/html-content'
+import sanitizeHtml from 'sanitize-html'
 
 interface WysiwygProps {
   content: string
@@ -10,19 +10,21 @@ interface WysiwygProps {
 }
 
 export default function Wysiwyg({ content, onUpdate }: WysiwygProps): JSX.Element {
-  const editor = useEditor({
-    extensions: [StarterKit, Link.configure({ openOnClick: false })],
-    editorProps: {
-      attributes: {
-        class: 'prose prose-sm max-w-full my-2 mx-3 focus:outline-none',
+  const editor = useEditor(
+    {
+      extensions: [StarterKit, Link.configure({ openOnClick: false })],
+      editorProps: {
+        attributes: {
+          class: 'prose prose-sm max-w-full my-2 mx-3 focus:outline-none',
+        },
       },
-    },
-    content: sanitizeHtml(content),
-    onUpdate({ editor }) {
-      onUpdate(editor)
-    },
-    immediatelyRender: false,
-  })
+      content: sanitizeHtml(content),
+      onUpdate({ editor }: { editor: Editor }) {
+        onUpdate(editor)
+      },
+      immediatelyRender: false,
+    } as any
+  )
 
   return (
     <div className="block w-full sm:text-sm border border-gray-300 rounded-md shadow-sm relative">
@@ -44,6 +46,8 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
     return null
   }
 
+  const chain = () => editor.chain().focus() as any
+
   return (
     <div className="flex flex-wrap sm:flex-nowrap sm:divide-x sm:divide-gray-300 border-b border-gray-300">
       <div className="px-2 my-2 pl-1">
@@ -55,7 +59,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               'bg-gray-200': editor.isActive('bold'),
             })}
             onClick={() => {
-              editor.chain().focus().toggleBold().run()
+              chain().toggleBold().run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
@@ -71,7 +75,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               'bg-gray-200': editor.isActive('italic'),
             })}
             onClick={() => {
-              editor.chain().focus().toggleItalic().run()
+              chain().toggleItalic().run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
@@ -87,7 +91,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               'bg-gray-200': editor.isActive('strike'),
             })}
             onClick={() => {
-              editor.chain().focus().toggleStrike().run()
+              chain().toggleStrike().run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
@@ -123,9 +127,9 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               if (url === null) {
                 return // user canceled
               } else if (url === '') {
-                editor.chain().focus().extendMarkRange('link').unsetLink().run()
+                chain().extendMarkRange('link').unsetLink().run()
               } else {
-                editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+                chain().extendMarkRange('link').setLink({ href: url }).run()
               }
             }}
           >
@@ -146,7 +150,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               'bg-gray-200': editor.isActive('heading', { level: 2 }),
             })}
             onClick={() => {
-              editor.chain().focus().toggleHeading({ level: 2 }).run()
+              chain().toggleHeading({ level: 2 }).run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
@@ -162,7 +166,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               'bg-gray-200': editor.isActive('heading', { level: 3 }),
             })}
             onClick={() => {
-              editor.chain().focus().toggleHeading({ level: 3 }).run()
+              chain().toggleHeading({ level: 3 }).run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
@@ -178,7 +182,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               'bg-gray-200': editor.isActive('paragraph'),
             })}
             onClick={() => {
-              editor.chain().focus().setParagraph().run()
+              chain().setParagraph().run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
@@ -194,7 +198,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               'bg-gray-200': editor.isActive('bulletList'),
             })}
             onClick={() => {
-              editor.chain().focus().toggleBulletList().run()
+              chain().toggleBulletList().run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
@@ -210,7 +214,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
               'bg-gray-200': editor.isActive('orderedList'),
             })}
             onClick={() => {
-              editor.chain().focus().toggleOrderedList().run()
+              chain().toggleOrderedList().run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
@@ -228,7 +232,7 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
             title="Hard Break"
             className="rounded p-1 hover:bg-gray-200"
             onClick={() => {
-              editor.chain().focus().setHardBreak().run()
+              chain().setHardBreak().run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -242,8 +246,8 @@ function MenuBar({ editor }: MenuBarProps): JSX.Element | null {
             title="Clear Format"
             className="rounded p-1 hover:bg-gray-200"
             onClick={() => {
-              editor.chain().focus().clearNodes().run()
-              editor.chain().focus().unsetAllMarks().run()
+              chain().clearNodes().run()
+              chain().unsetAllMarks().run()
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">

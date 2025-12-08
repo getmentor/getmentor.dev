@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { pluralize } from '@/lib/pluralize'
+import pluralize from '@/lib/pluralize'
 import { imageLoader } from '@/lib/azure-image-loader'
 import type { MentorListItem } from '@/types'
 

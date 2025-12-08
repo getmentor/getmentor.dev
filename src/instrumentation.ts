@@ -3,7 +3,7 @@
 import { registerServerTracing } from './lib/tracing-server'
 import logger from './lib/logger'
 
-export async function register() {
+export async function register(): Promise<void> {
   // eslint-disable-next-line no-console
   console.log('[Instrumentation] Initializing observability stack...')
 
@@ -16,7 +16,7 @@ export async function register() {
       runtime: 'nodejs',
       env: process.env.NODE_ENV,
     })
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[Instrumentation] Failed to initialize observability:', error)
   }
 }

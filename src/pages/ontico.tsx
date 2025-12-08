@@ -1,23 +1,48 @@
 import Head from 'next/head'
-import Image from 'next/image'
+import Image, { type ImageLoader } from 'next/image'
 import classNames from 'classnames'
-import cloudinary from '../lib/cloudinary'
-import seo from '../config/seo'
-import NavHeader from '../components/NavHeader'
-import Section from '../components/Section'
-import { getAllMentors } from '../server/mentors-data'
-import MentorsFilters from '../components/MentorsFilters'
-import MentorsList from '../components/MentorsList'
-import useMentors from '../components/useMentors'
-import Footer from '../components/Footer'
-import MentorsSearch from '../components/MentorsSearch'
-import MetaHeader from '../components/MetaHeader'
-import analytics from '../lib/analytics'
 import { useEffect } from 'react'
-import { withSSRObservability } from '../lib/with-ssr-observability'
-import logger from '../lib/logger'
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
+import { Footer, MentorsFilters, MentorsList, MentorsSearch, MetaHeader, NavHeader, Section, useMentors } from '@/components'
+import seo from '@/config/seo'
+import { getAllMentors } from '@/server/mentors-data'
+import cloudinary from '@/lib/cloudinary'
+import analytics from '@/lib/analytics'
+import { withSSRObservability } from '@/lib/with-ssr-observability'
+import logger from '@/lib/logger'
+import type { MentorListItem } from '@/types'
 
-async function _getServerSideProps(context) {
+interface OnticoPageProps {
+  [key: string]: unknown
+  pageMentors: MentorListItem[]
+}
+
+const cloudinaryLoader: ImageLoader = ({ src, width }) => cloudinary.url(src, { width })
+
+const galleryPhotos: string[] = [
+  'ontico/19-04-09_13-30_0145_bqhq6l.jpg',
+  'ontico/21-04-30_10-41_0029_dnfuik.jpg',
+  'ontico/21-04-30_11-13_0044_gzigmv.jpg',
+  'ontico/2019-11-07_10-33_0076_VI_cxage5.jpg',
+  'ontico/19-11-07_10-29_0528_SK_lazjux.jpg',
+  'ontico/11-22_20-02-10_0139_nsdxbp.jpg',
+  'ontico/19-09-23_16-22_0677_avktxz.jpg',
+  'ontico/21-05-17_10-52_0403_A_rafyhx.jpg',
+  'ontico/21-05-17_10-03_0186_A_gldji4.jpg',
+  'ontico/21-05-17_11-15_0270_L_tlth2r.jpg',
+  'ontico/21-05-17_11-18_0272_L_r6xmvm.jpg',
+  'ontico/21-05-17_11-20_0277_A_xhzqhy.jpg',
+  'ontico/21-05-17_11-39_0286_L_ajcm7o.jpg',
+  'ontico/21-05-17_12-09_0326_A_u6yi9x.jpg',
+  'ontico/21-05-17_16-41_0513_L_wwcf7u.jpg',
+  'ontico/21-05-17_18-30_0599_L_k7ubvc.jpg',
+  'ontico/21-05-17_15-50_0469_L_le7xzl.jpg',
+  'ontico/21-05-17_17-57_0578_L_i6qi2u.jpg',
+  'ontico/21-05-17_17-39_0569_L_gnjule.jpg',
+  'ontico/21-06-01_10-13_0013_pd15th.jpg',
+]
+
+const _getServerSideProps: GetServerSideProps<OnticoPageProps> = async (_context) => {
   const allMentors = await getAllMentors({ onlyVisible: true, drop_long_fields: true })
 
   const pageMentors = allMentors.filter((mentor) => mentor.tags.includes('Сообщество Онтико'))
@@ -42,30 +67,12 @@ const ontico_landing_url =
 const pageDescription =
   'Создаем профессиональное пространство для встречи и обмена опыта представителей IT индустрии'
 
-const galleryPhotos = [
-  'ontico/19-04-09_13-30_0145_bqhq6l.jpg',
-  'ontico/21-04-30_10-41_0029_dnfuik.jpg',
-  'ontico/21-04-30_11-13_0044_gzigmv.jpg',
-  'ontico/2019-11-07_10-33_0076_VI_cxage5.jpg',
-  'ontico/19-11-07_10-29_0528_SK_lazjux.jpg',
-  'ontico/11-22_20-02-10_0139_nsdxbp.jpg',
-  'ontico/19-09-23_16-22_0677_avktxz.jpg',
-  'ontico/21-05-17_10-52_0403_A_rafyhx.jpg',
-  'ontico/21-05-17_10-03_0186_A_gldji4.jpg',
-  'ontico/21-05-17_11-15_0270_L_tlth2r.jpg',
-  'ontico/21-05-17_11-18_0272_L_r6xmvm.jpg',
-  'ontico/21-05-17_11-20_0277_A_xhzqhy.jpg',
-  'ontico/21-05-17_11-39_0286_L_ajcm7o.jpg',
-  'ontico/21-05-17_12-09_0326_A_u6yi9x.jpg',
-  'ontico/21-05-17_16-41_0513_L_wwcf7u.jpg',
-  'ontico/21-05-17_18-30_0599_L_k7ubvc.jpg',
-  'ontico/21-05-17_15-50_0469_L_le7xzl.jpg',
-  'ontico/21-05-17_17-57_0578_L_i6qi2u.jpg',
-  'ontico/21-05-17_17-39_0569_L_gnjule.jpg',
-  'ontico/21-06-01_10-13_0013_pd15th.jpg',
-]
+interface FeatureProps {
+  text: string
+  imageUrl: string
+}
 
-function Feature({ title, text, imageUrl }) {
+function Feature({ text, imageUrl }: FeatureProps) {
   return (
     <div className="text-center p-4">
       <Image className="inline" width={100} height={100} src={imageUrl} alt="icon" />
@@ -74,7 +81,9 @@ function Feature({ title, text, imageUrl }) {
   )
 }
 
-export default function Ontico({ pageMentors }) {
+export default function Ontico({
+  pageMentors,
+}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
   const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
     useMentors(pageMentors)
 
@@ -133,8 +142,8 @@ export default function Ontico({ pageMentors }) {
               src="ontico/19-09-23_16-19_0674_hcqqsy.jpg"
               width={550}
               height={(1333 / 2000) * 550}
-              loader={({ src, width, quality }) => {
-                return cloudinary.url(src, { width })
+              loader={({ src, width }) => {
+                return cloudinaryLoader({ src, width })
               }}
               placeholder="blur"
               blurDataURL={cloudinary.url('ontico/19-09-23_16-19_0674_hcqqsy.jpg', {
@@ -193,8 +202,8 @@ export default function Ontico({ pageMentors }) {
                 src={photoUrl}
                 width={300}
                 height={200}
-                loader={({ src, width, quality }) => {
-                  return cloudinary.url(src, { width })
+                loader={({ src, width }) => {
+                  return cloudinaryLoader({ src, width })
                 }}
                 placeholder="blur"
                 blurDataURL={cloudinary.url(photoUrl, { width: 100, blur: 200 })}
@@ -225,8 +234,8 @@ export default function Ontico({ pageMentors }) {
               src="ontico/21-05-17_17-03_0534_L_sj335b.jpg"
               width={550}
               height={(1333 / 2000) * 550}
-              loader={({ src, width, quality }) => {
-                return cloudinary.url(src, { width })
+              loader={({ src, width }) => {
+                return cloudinaryLoader({ src, width })
               }}
               placeholder="blur"
               blurDataURL={cloudinary.url('ontico/21-05-17_17-03_0534_L_sj335b.jpg', {

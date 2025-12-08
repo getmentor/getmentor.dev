@@ -3,14 +3,14 @@ import seo from '@/config/seo'
 interface MetaHeaderProps {
   customTitle?: string
   customDescription?: string
-  customImage?: string
+  customImage?: string | null
 }
 
 export default function MetaHeader({
   customTitle,
   customDescription,
   customImage,
-}: MetaHeaderProps): JSX.Element {
+}: MetaHeaderProps) {
   const page_title = customTitle ? customTitle + ' | ' + seo.title : seo.title
   const page_description = customDescription
     ? customDescription + ' | ' + seo.description

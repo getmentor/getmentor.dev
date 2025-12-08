@@ -1,11 +1,10 @@
-import { getAllMentors } from '../server/mentors-data'
-import constants from '../config/constants'
-
-const Sitemap = () => {}
+import type { GetServerSideProps } from 'next'
+import { getAllMentors } from '@/server/mentors-data'
+import constants from '@/config/constants'
 
 const baseUrl = constants.BASE_URL
 
-function sitemapItem(path) {
+function sitemapItem(path: string): string {
   return `
         <url>
         <loc>${baseUrl + path}</loc>
@@ -16,10 +15,10 @@ function sitemapItem(path) {
     `
 }
 
-export async function getServerSideProps({ res }) {
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const allMentors = await getAllMentors({ onlyVisible: true })
 
-  let staticPages = [{ page: '' }, { page: 'bementor' }, { page: 'donate' }]
+  const staticPages = [{ page: '' }, { page: 'bementor' }, { page: 'donate' }]
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -37,4 +36,6 @@ export async function getServerSideProps({ res }) {
   }
 }
 
-export default Sitemap
+export default function Sitemap(): null {
+  return null
+}

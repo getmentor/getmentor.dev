@@ -1,4 +1,4 @@
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react'
+import { Menu } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons'
 
@@ -81,7 +81,7 @@ export default function FilterGroupDropdown({
 
   return (
     <Menu as="div" className="relative inline-block text-left">
-      <MenuButton
+      <Menu.Button
         className={
           selectedValuesCount ? themes[theme].button.selected : themes[theme].button.not_selected
         }
@@ -105,26 +105,26 @@ export default function FilterGroupDropdown({
             selectedValuesCount ? themes[theme].arrow.selected : themes[theme].arrow.not_selected
           }
         />
-      </MenuButton>
+      </Menu.Button>
 
-      <MenuItems className={`absolute z-10 mt-1 origin-top-left ${themes[theme].ul}`}>
+      <Menu.Items className={`absolute z-10 mt-1 origin-top-left ${themes[theme].ul}`}>
         {values.map((tag) => {
           const isActive = multiSelect
             ? Array.isArray(allSelectedValues) && allSelectedValues.includes(tag)
             : allSelectedValues === tag
 
           return (
-            <MenuItem key={tag}>
+            <Menu.Item key={tag}>
               <div
                 className={isActive ? themes[theme].li.active : themes[theme].li.inactive}
                 onClick={() => onFilterSelect(tag)}
               >
                 {tag}
               </div>
-            </MenuItem>
+            </Menu.Item>
           )
         })}
-      </MenuItems>
+      </Menu.Items>
     </Menu>
   )
 }

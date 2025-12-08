@@ -3,30 +3,36 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
-import NavHeader from '../../../components/NavHeader'
-import Footer from '../../../components/Footer'
-import { getOneMentorBySlug } from '../../../server/mentors-data'
-import Section from '../../../components/Section'
-import { Markup } from 'interweave'
-import MetaHeader from '../../../components/MetaHeader'
-import seo from '../../../config/seo'
-import allFilters from '../../../config/filters'
-import analytics from '../../../lib/analytics'
-import { htmlContent } from '../../../lib/html-content'
-import { polyfill } from 'interweave-ssr'
-import pluralize from '../../../lib/pluralize'
-import { imageLoader } from '../../../lib/azure-image-loader'
-import { withSSRObservability } from '../../../lib/with-ssr-observability'
-import logger from '../../../lib/logger'
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
+import { Footer, HtmlContent, MetaHeader, NavHeader, Section } from '@/components'
+import { getOneMentorBySlug } from '@/server/mentors-data'
+import seo from '@/config/seo'
+import allFilters from '@/config/filters'
+import analytics from '@/lib/analytics'
+import pluralize from '@/lib/pluralize'
+import { imageLoader } from '@/lib/azure-image-loader'
+import { withSSRObservability } from '@/lib/with-ssr-observability'
+import logger from '@/lib/logger'
+import type { MentorBase } from '@/types'
 
-// This enables rendering profile HTML on server
-polyfill()
+interface MentorPageProps {
+  [key: string]: unknown
+  mentor: MentorBase
+}
 
-async function _getServerSideProps(context) {
-  const mentor = await getOneMentorBySlug(context.params.slug)
+const _getServerSideProps: GetServerSideProps<MentorPageProps> = async (context) => {
+  const slugParam = context.params?.slug
+  const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam
+
+  if (!slug) {
+    logger.warn('Mentor slug missing in request')
+    return { notFound: true }
+  }
+
+  const mentor = await getOneMentorBySlug(slug)
 
   if (!mentor) {
-    logger.warn('Mentor not found', { slug: context.params.slug })
+    logger.warn('Mentor not found', { slug })
     return {
       notFound: true,
     }
@@ -47,8 +53,9 @@ async function _getServerSideProps(context) {
 
 export const getServerSideProps = withSSRObservability(_getServerSideProps, 'mentor-detail')
 
-export default function Mentor(props) {
-  const mentor = props.mentor
+export default function Mentor({
+  mentor,
+}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
   const title = mentor.name + ' | ' + seo.title
 
   useEffect(() => {
@@ -150,22 +157,14 @@ export default function Mentor(props) {
             {mentor.about && (
               <div className="prose my-4">
                 <b>О себе</b>
-                <Markup
-                  content={htmlContent(mentor.about)}
-                  noWrap={true}
-                  disableLineBreaks={true}
-                />
+                <HtmlContent content={mentor.about} />
               </div>
             )}
 
             {mentor.description && (
               <div className="prose my-4">
                 <b>С чем помогу</b>
-                <Markup
-                  content={htmlContent(mentor.description)}
-                  noWrap={true}
-                  disableLineBreaks={true}
-                />
+                <HtmlContent content={mentor.description} />
               </div>
             )}
 

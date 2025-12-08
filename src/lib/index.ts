@@ -3,9 +3,9 @@
  */
 
 // Utilities
-export { pluralize, getPluralForm, type PluralForms } from './pluralize'
-export { decodeHtmlEntities } from './entities'
-export { sanitizeHtml, extractTextContent } from './html-content'
+export { default as pluralize } from './pluralize'
+export { AUTH_TOKEN, CALENDAR_URL } from './entities'
+export { htmlContent } from './html-content'
 export { default as analytics } from './analytics'
 export { default as cloudinary, type CloudinaryParams } from './cloudinary'
 

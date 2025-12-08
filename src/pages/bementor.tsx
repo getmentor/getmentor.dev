@@ -1,13 +1,10 @@
 import Head from 'next/head'
-import NavHeader from '../components/NavHeader'
-import Footer from '../components/Footer'
-import Section from '../components/Section'
 import { useEffect } from 'react'
-import analytics from '../lib/analytics'
-import MetaHeader from '../components/MetaHeader'
-import seo from '../config/seo'
+import { Footer, MetaHeader, NavHeader, Section } from '@/components'
+import analytics from '@/lib/analytics'
+import seo from '@/config/seo'
 
-export default function Bementor() {
+export default function Bementor(): JSX.Element {
   useEffect(() => {
     analytics.event('Visit Bementor Page')
   }, [])
@@ -35,11 +32,11 @@ export default function Bementor() {
               className="link"
               href="https://airtable.com/shraFoLi9aSqzU4U9"
               target="_blank"
-              rel="noreferrer"
-            >
-              форму ниже
-            </a>
-            , и мы обязательно рассмотрим вашу заявку как можно скорее.
+          rel="noreferrer"
+        >
+          форму ниже
+        </a>
+        , и мы обязательно рассмотрим вашу заявку как можно скорее.
           </p>
         </div>
       </Section>
@@ -54,7 +51,7 @@ export default function Bementor() {
             width: '100%',
             height: '600px',
           }}
-        ></iframe>
+        />
       </div>
 
       <Footer />

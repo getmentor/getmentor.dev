@@ -5,6 +5,7 @@
 // UI Components
 export { default as Section } from './Section'
 export { default as Notification } from './Notification'
+export { default as HtmlContent } from './HtmlContent'
 
 // Layout Components
 export { default as MetaHeader } from './MetaHeader'

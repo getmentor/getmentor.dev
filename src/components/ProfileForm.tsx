@@ -103,7 +103,7 @@ const tagsToOptions = (tags: string[]): TagOption[] =>
 // All available tags as options
 const tagOptions = tagsToOptions(filters.tags)
 
-function isValidUrl(value: string): boolean {
+function isValidUrl(value?: string): boolean {
   if (!value) return true
   try {
     const url = new URL(value)

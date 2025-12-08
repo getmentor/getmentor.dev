@@ -1,11 +1,8 @@
 import Head from 'next/head'
-import NavHeader from '../components/NavHeader'
-import Footer from '../components/Footer'
-import Section from '../components/Section'
-import MetaHeader from '../components/MetaHeader'
-import seo from '../config/seo'
+import { Footer, MetaHeader, NavHeader, Section } from '@/components'
+import seo from '@/config/seo'
 
-export default function Disclaimer() {
+export default function Disclaimer(): JSX.Element {
   const title = 'Отказ от ответственности | ' + seo.title
 
   return (
@@ -33,7 +30,7 @@ export default function Disclaimer() {
             width: '100%',
             height: '600px',
           }}
-        ></iframe>
+        />
       </div>
 
       <Footer />

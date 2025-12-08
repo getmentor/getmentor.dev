@@ -1,14 +1,17 @@
 import Head from 'next/head'
-import NavHeader from '../components/NavHeader'
-import Footer from '../components/Footer'
-import Section from '../components/Section'
-import donates from '../config/donates'
 import Image from 'next/image'
-import MetaHeader from '../components/MetaHeader'
-import seo from '../config/seo'
+import { Footer, MetaHeader, NavHeader, Section } from '@/components'
+import donates from '@/config/donates'
+import seo from '@/config/seo'
 
-export default function Donate() {
-  const supporters = [
+type Supporter = {
+  name: string
+  level: number
+  url?: string
+}
+
+export default function Donate(): JSX.Element {
+  const supporters: Supporter[] = [
     { name: '👑 Антон Алексеев', level: 4, url: 'https://getmentor.dev/mentor/anton-alekseev-4855' },
     { name: 'usukololgubu', level: 2 },
     { name: 'Александр Терехин', level: 2 },
@@ -65,6 +68,7 @@ export default function Donate() {
                   maxWidth: '100%',
                   height: 'auto',
                 }}
+                alt={donate.name}
               />
             </a>
           ))}
