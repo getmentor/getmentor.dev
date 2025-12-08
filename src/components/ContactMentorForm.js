@@ -74,12 +74,6 @@ export default function ContactMentorForm({ isLoading, isError, onSubmit }) {
           </div>
         )}
 
-        {errors.intro && errors.intro.type === 'maxLength' && (
-          <div className="text-sm text-red-700 mt-3 mb-2">
-            Превышен лимит символов (не более 4000).
-          </div>
-        )}
-
         {errors.intro && errors.intro.type === 'minLength' && (
           <div className="text-sm text-red-700 mt-3 mb-2">
             Минимальная длина сообщения - 10 символов.
