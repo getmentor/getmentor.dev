@@ -375,3 +375,17 @@ git branch -D feature/typescript-migration
 - **~15 type definition files** to create
 - **Estimated effort**: 3-4 days for complete migration
 - **Risk level**: Medium (big-bang approach, but well-planned)
+
+---
+
+## Progress log (Dec 9 session)
+
+- Added `HtmlContent` component and replaced interweave usage on mentor page.
+- Migrated remaining JS pages and instrumentation to TS/TSX (`_app`, `_document`, `index`, mentor detail/contact, profile, static pages, sitemap, mentors_aikb, ontico), updated imports to path aliases, and typed SSR handlers with observability wrapper.
+- Fixed observability/tracing typings (`with-ssr-observability`, `tracing-server`, `with-observability`) and JSX/global typings (JSX namespace via React imports); adjusted hook ordering in `profile.tsx`, react-select URL validation, headlessui dropdown.
+- Added Jest + Testing Library + node-mocks-http setup (`jest.config.mjs`, `jest.setup.ts`, `yarn test` script) and third-party type stubs.
+- Implemented tests:
+  - `src/lib/__tests__/html-content.test.ts` (sanitization/link hardening/paragraph wrapping)
+  - `src/components/__tests__/useMentors.test.tsx` (search/tags/experience/price filters, new/noSessions, pagination)
+  - `src/pages/api/__tests__/healthcheck.test.ts` (200 + cache headers; logging mocked)
+- `npx tsc --noEmit` passes. `yarn test` passes on Node 22.x (engine enforced; switch local env accordingly).
