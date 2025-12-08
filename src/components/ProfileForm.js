@@ -6,12 +6,11 @@ import filters from '../config/filters'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
-import ReactTooltip from 'react-tooltip'
+import { Tooltip } from 'react-tooltip'
 import Link from 'next/link'
 import { useState, useRef } from 'react'
 import { imageLoader } from '../lib/azure-image-loader'
-
-const Url = require('url')
+import Url from 'url'
 
 export default function ProfileForm({
   mentor,
@@ -31,23 +30,26 @@ export default function ProfileForm({
 
   const [selectedImage, setSelectedImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
+  const [imageError, setImageError] = useState('')
   const fileInputRef = useRef(null)
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
+    setImageError('') // Clear any previous errors
+
     if (!file) return
 
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
     if (!allowedTypes.includes(file.type)) {
-      alert('Пожалуйста, выберите изображение в формате JPEG, PNG или WebP.')
+      setImageError('Пожалуйста, выберите изображение в формате JPEG, PNG или WebP.')
       return
     }
 
     // Validate file size (max 10MB)
     const maxSize = 10 * 1024 * 1024 // 10MB
     if (file.size > maxSize) {
-      alert('Размер файла не должен превышать 10 МБ.')
+      setImageError('Размер файла не должен превышать 10 МБ.')
       return
     }
 
@@ -63,7 +65,7 @@ export default function ProfileForm({
 
   const handleImageUploadClick = async () => {
     if (!selectedImage) {
-      alert('Пожалуйста, выберите изображение для загрузки.')
+      setImageError('Пожалуйста, выберите изображение для загрузки.')
       return
     }
 
@@ -92,6 +94,7 @@ export default function ProfileForm({
   const handleCancelImage = () => {
     setSelectedImage(null)
     setImagePreview(null)
+    setImageError('')
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -121,22 +124,25 @@ export default function ProfileForm({
       <div>
         <label htmlFor="profilePicture" className="block mb-2 font-medium text-gray-700">
           Фотография профиля{' '}
-          <a data-tip data-for="photo-tip">
+          <a data-tooltip-id="photo-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <ReactTooltip id="photo-tip" place="right" type="dark" effect="solid">
+          <Tooltip id="photo-tip" place="right">
             <span>
               Загрузите своё фото для профиля. Поддерживаются форматы JPEG, PNG и WebP. Максимальный
-              размер файла - 10 МБ.<br/>
-              Это пока экспериментальная функция. Если что-то пойдёт не так, напишите в телеграм @glamcoder.
+              размер файла - 10 МБ.
+              <br />
+              Это пока экспериментальная функция. Если что-то пойдёт не так, напишите в телеграм
+              @glamcoder.
             </span>
-          </ReactTooltip>
+          </Tooltip>
         </label>
 
         <div className="mt-2 space-y-4">
           {(mentor.photo_url || tempImagePreview) && !imagePreview && (
             <div className="flex items-center space-x-4">
               {tempImagePreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={tempImagePreview}
                   alt="Current profile"
@@ -222,6 +228,12 @@ export default function ProfileForm({
               Ошибка при загрузке фотографии. Попробуйте еще раз.
             </div>
           )}
+
+          {imageError && (
+            <div className="text-sm text-red-700" role="alert">
+              {imageError}
+            </div>
+          )}
         </div>
       </div>
 
@@ -247,15 +259,15 @@ export default function ProfileForm({
       <div>
         <label htmlFor="workplace" className="block mb-2 font-medium text-gray-700">
           Компания{' '}
-          <a data-tip data-for="workplace-tip">
+          <a data-tooltip-id="workplace-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <ReactTooltip id="workplace-tip" place="right" type="dark" effect="solid">
+          <Tooltip id="workplace-tip" place="right">
             <span>
               Если вы заняты в нескольких местах, укажите основную компанию. А остальное перечислите
-              в описании “О себе”
+              в описании &quot;О себе&quot;
             </span>
-          </ReactTooltip>
+          </Tooltip>
         </label>
 
         {errors.workplace && (
@@ -315,10 +327,10 @@ export default function ProfileForm({
       <div>
         <label htmlFor="tags" className="block mb-2 font-medium text-gray-700">
           Специализация{' '}
-          <a data-tip data-for="tags-tip">
+          <a data-tooltip-id="tags-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <ReactTooltip id="tags-tip" place="right" type="dark" effect="solid">
+          <Tooltip id="tags-tip" place="right">
             <span>
               Здесь вам нужно указать основную вашу текущую специализацию и ту, в которой вы хорошо
               разбираетесь и готовы оказать помощь. По ним вас будут находить при использовании
@@ -326,7 +338,7 @@ export default function ProfileForm({
               <br />
               До 5 тегов.
             </span>
-          </ReactTooltip>
+          </Tooltip>
         </label>
 
         <Controller
@@ -382,15 +394,15 @@ export default function ProfileForm({
       <div>
         <label htmlFor="about" className="block mb-2 font-medium text-gray-700">
           Расскажите о себе{' '}
-          <a data-tip data-for="about-tip">
+          <a data-tooltip-id="about-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <ReactTooltip id="about-tip" place="right" type="dark" effect="solid">
+          <Tooltip id="about-tip" place="right">
             <span>
               Желательно два-три абзаца: где работали, что интересует в профессиональном поле, каких
               методик в менторстве придерживаетесь
             </span>
-          </ReactTooltip>
+          </Tooltip>
         </label>
 
         {errors.about && (
@@ -416,10 +428,10 @@ export default function ProfileForm({
       <div>
         <label htmlFor="description" className="block mb-2 font-medium text-gray-700">
           С чем вы можете помочь?{' '}
-          <a data-tip data-for="description-tip">
+          <a data-tooltip-id="description-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <ReactTooltip id="description-tip" place="right" type="dark" effect="solid">
+          <Tooltip id="description-tip" place="right">
             <span>
               Лучше, если вы разделите текст на пункты. Например,
               <br />
@@ -438,7 +450,7 @@ export default function ProfileForm({
               Junior-Middle-Senior, руководители команд, руководители C-level и так далее. Хватит
               одной строки, например: <em>Помогу Senior-разработчикам и лидерам команд.</em>
             </span>
-          </ReactTooltip>
+          </Tooltip>
         </label>
 
         {errors.description && (
@@ -464,15 +476,15 @@ export default function ProfileForm({
       <div>
         <label htmlFor="competencies" className="block mb-2 font-medium text-gray-700">
           Навыки и технологии (через запятую){' '}
-          <a data-tip data-for="competencies-tip">
+          <a data-tooltip-id="competencies-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <ReactTooltip id="competencies-tip" place="right" type="dark" effect="solid">
+          <Tooltip id="competencies-tip" place="right">
             <span>
               Перечислите через запятую навыки, по которым хотите консультировать. Например:
               JavaScript, React, Leadership, Code Review. По ним менти смогут вас найти.
             </span>
-          </ReactTooltip>
+          </Tooltip>
         </label>
 
         {errors.competencies && (
@@ -508,10 +520,10 @@ export default function ProfileForm({
             Calendly
           </Link>{' '}
           или что-то ещё){' '}
-          <a data-tip data-for="calendar-tip">
+          <a data-tooltip-id="calendar-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <ReactTooltip id="calendar-tip" place="right" type="dark" effect="solid">
+          <Tooltip id="calendar-tip" place="right">
             <span>
               Если вы пользуетесь системами управления календарём, то укажите ссылку на ваш
               календарь. Тогда менти смогут сами записываться к вам на встречу. Мы рекомендуем
@@ -519,7 +531,7 @@ export default function ProfileForm({
               платформой и форма записи будет отображаться сразу после того, как менти создаст
               заявку.
             </span>
-          </ReactTooltip>
+          </Tooltip>
         </label>
 
         {errors.calendarUrl && (
@@ -535,7 +547,7 @@ export default function ProfileForm({
                 try {
                   var url = Url.parse(v)
                   return url.protocol === 'http:' || url.protocol === 'https:'
-                } catch (e) {
+                } catch (_) {
                   return false
                 }
               },

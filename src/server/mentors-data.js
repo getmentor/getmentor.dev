@@ -1,65 +1,67 @@
-import fetch from 'node-fetch'
-import constants from '../config/constants'
-import { getMentors as api_getMentors } from '../pages/api/internal/mentors'
+/**
+ * Data access layer for mentor data
+ * Now uses Go API backend instead of direct Airtable access
+ */
 
-export async function getAllMentors(params) {
-  return fakeApiCall(params)
+import { getGoApiClient } from '../lib/go-api-client'
+
+const client = getGoApiClient()
+
+/**
+ * Get all mentors from the Go API
+ * @param {object} params - Query parameters
+ * @param {boolean} params.onlyVisible - Only return visible mentors
+ * @param {boolean} params.drop_long_fields - Drop long text fields
+ * @returns {Promise<Array>} Array of mentors
+ */
+export async function getAllMentors(params = {}) {
+  return client.getAllMentors(params)
 }
 
-export async function getOneMentorBySlug(slug, params) {
-  return fakeApiCall({
-    ...params,
-    slug: slug,
-  })
+/**
+ * Get a single mentor by slug
+ * @param {string} slug - Mentor slug
+ * @param {object} params - Query parameters
+ * @param {boolean} params.showHiddenFields - Include hidden fields (e.g., auth token, calendar URL)
+ * @returns {Promise<object>} Mentor object
+ */
+export async function getOneMentorBySlug(slug, params = {}) {
+  const result = await client.getOneMentorBySlug(slug, params)
+  // Go API returns single object, not array
+  return result
 }
 
-export async function getOneMentorById(id, params) {
-  return fakeApiCall({
-    ...params,
-    id: id,
-  })
+/**
+ * Get a single mentor by ID
+ * @param {number} id - Mentor ID
+ * @param {object} params - Query parameters
+ * @param {boolean} params.showHiddenFields - Include hidden fields
+ * @returns {Promise<object>} Mentor object
+ */
+export async function getOneMentorById(id, params = {}) {
+  const result = await client.getOneMentorById(id, params)
+  // Go API returns single object, not array
+  return result
 }
 
-export async function getOneMentorByRecordId(rec, params) {
-  return fakeApiCall({
-    ...params,
-    rec: rec,
-  })
+/**
+ * Get a single mentor by Airtable record ID
+ * @param {string} rec - Airtable record ID (e.g., "recXXXXXXXXXXXXXX")
+ * @param {object} params - Query parameters
+ * @param {boolean} params.showHiddenFields - Include hidden fields
+ * @returns {Promise<object>} Mentor object
+ */
+export async function getOneMentorByRecordId(rec, params = {}) {
+  const result = await client.getOneMentorByRecordId(rec, params)
+  // Go API returns single object, not array
+  return result
 }
 
+/**
+ * Force refresh the cache in Go API
+ * This triggers a cache reset on the Go API side
+ * @returns {Promise<object>} Response from Go API
+ */
 export async function forceRefreshCache() {
-  return makeApiCall('api/internal/force_reset_cache')
-}
-
-async function makeApiCall(path, params) {
-  return fetch(constants.BASE_URL + path, {
-    method: 'POST',
-    body: JSON.stringify({
-      show_hidden: params?.showHiddenFields,
-      only_visible: params?.onlyVisible,
-      force_refresh: params?.forceRefresh,
-    }),
-    headers: {
-      'X-INTERNAL-MENTORS-API-AUTH-TOKEN': process.env.INTERTNAL_MENTORS_API,
-      'Content-Type': 'application/json',
-    },
-  }).then((r) => r.json())
-}
-
-async function fakeApiCall(params) {
-  const res = await api_getMentors({
-    show_hidden: params?.showHiddenFields,
-    only_visible: params?.onlyVisible,
-    force_refresh: params?.forceRefresh,
-    id: params?.id,
-    slug: params?.slug,
-    rec: params?.rec,
-    drop_long_fields: params?.drop_long_fields,
-  })
-
-  if (res && (params.id || params.slug || params.rec)) {
-    return res[0]
-  } else {
-    return res
-  }
+  return client.forceRefreshCache()
 }

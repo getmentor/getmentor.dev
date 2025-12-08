@@ -40,3 +40,6 @@ docker-compose.override.yml
 # AI tools
 CLAUDE.md
 
+# logger
+/app
+/logs

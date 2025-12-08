@@ -52,6 +52,25 @@ async function _getServerSideProps(context) {
 export const getServerSideProps = withSSRObservability(_getServerSideProps, 'profile-edit')
 
 export default function Profile({ errorCode, mentor }) {
+  // SECURITY: Extract auth credentials from URL once on page load, use in headers
+  const [authCredentials, setAuthCredentials] = useState({ id: null, token: null })
+
+  useEffect(() => {
+    // Get auth from URL query parameters (only on initial page load)
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get('id')
+    const token = params.get('token')
+
+    if (id && token) {
+      setAuthCredentials({ id, token })
+
+      // SECURITY: Remove credentials from URL to prevent exposure
+      // Keep them only in component state
+      const newUrl = window.location.pathname
+      window.history.replaceState({}, '', newUrl)
+    }
+  }, [])
+
   useEffect(() => {
     if (mentor) {
       analytics.event('Open Profile', {
@@ -61,7 +80,7 @@ export default function Profile({ errorCode, mentor }) {
         'Mentor Price': mentor.price,
       })
     }
-  }, [])
+  }, [mentor])
 
   const [readyStatus, setReadyStatus] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
@@ -96,14 +115,21 @@ export default function Profile({ errorCode, mentor }) {
       'Mentor Price': mentor.price,
     })
 
-    fetch('/api/save-profile' + location.search, {
+    // SECURITY: Call Next.js API route (proxy), which calls Go API on localhost
+    // This keeps Go API private (localhost only), not exposed to public internet
+    fetch('/api/save-profile', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',
+        'X-Mentor-ID': authCredentials.id,
+        'X-Auth-Token': authCredentials.token,
       },
     })
       .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
         return res.json()
       })
       .then((data) => {
@@ -111,7 +137,8 @@ export default function Profile({ errorCode, mentor }) {
       })
       .catch((e) => {
         setReadyStatus('error')
-        console.error(e)
+        // Client-side error - console.error is appropriate here
+        console.error('Profile save error:', e)
       })
   }
 
@@ -129,14 +156,21 @@ export default function Profile({ errorCode, mentor }) {
       'Mentor Name': mentor.name,
     })
 
-    fetch('/api/upload-profile-picture' + location.search, {
+    // SECURITY: Call Next.js API route (proxy), which calls Go API on localhost
+    // This keeps Go API private (localhost only), not exposed to public internet
+    fetch('/api/upload-profile-picture', {
       method: 'POST',
       body: JSON.stringify(imageData),
       headers: {
         'Content-Type': 'application/json',
+        'X-Mentor-ID': authCredentials.id,
+        'X-Auth-Token': authCredentials.token,
       },
     })
       .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
         return res.json()
       })
       .then((data) => {
@@ -160,7 +194,8 @@ export default function Profile({ errorCode, mentor }) {
       .catch((e) => {
         setImageUploadStatus('error')
         setTempImagePreview(null)
-        console.error(e)
+        // Client-side error - console.error is appropriate here
+        console.error('Profile picture upload error:', e)
       })
   }
 

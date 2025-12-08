@@ -34,6 +34,7 @@ jobs:
             --build-arg AIRTABLE_BASE_ID="${{ secrets.AIRTABLE_BASE_ID }}" \
             --build-arg AZURE_STORAGE_DOMAIN="${{ secrets.AZURE_STORAGE_DOMAIN }}" \
             --build-arg NEXT_PUBLIC_AZURE_STORAGE_DOMAIN="${{ secrets.NEXT_PUBLIC_AZURE_STORAGE_DOMAIN }}" \
+            --build-arg NEXT_PUBLIC_YANDEX_STORAGE_ENDPOINT="${{ secrets.NEXT_PUBLIC_YANDEX_STORAGE_ENDPOINT }}" \
             --build-arg RECAPTCHA_V2_SITE_KEY="${{ secrets.RECAPTCHA_V2_SITE_KEY }}" \
             --build-arg NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY="${{ secrets.NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY }}" \
             -t ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
@@ -41,10 +42,10 @@ jobs:
             -f Dockerfile \
             .
 
-      - name: Push image to DigitalOcean Container Registry
-        run: |
-          docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:latest
+      # - name: Push image to DigitalOcean Container Registry
+      #   run: |
+      #     docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      #     docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:latest
 
       # - name: Update DigitalOcean App Platform deployment
       #   run: |

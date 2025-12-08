@@ -17,6 +17,12 @@ import { imageLoader } from '../../../lib/azure-image-loader'
 import { withSSRObservability } from '../../../lib/with-ssr-observability'
 import logger from '../../../lib/logger'
 
+// Rate limiting configuration
+const RATE_LIMIT_CONFIG = {
+  MAX_REQUESTS_PER_DAY: 5,
+  STORAGE_KEY: 'requests_per_day',
+}
+
 async function _getServerSideProps(context) {
   const mentor = await getOneMentorBySlug(context.params.slug)
 
@@ -46,56 +52,49 @@ export default function OrderMentor({ mentor }) {
   const [readyStatus, setReadyStatus] = useState('')
   const [formData, setFormData] = useState()
 
-  const REQUESTS_PER_DAY_KEY = 'requests_per_day'
   const today = new Date().toISOString().slice(0, 10)
-  const MAX_REQUESTS_PER_DAY = 5
-
   const title = 'Запись к ментору | ' + mentor.name + ' | ' + seo.title
 
-  var requestsToday = 0
-
-  useEffect(() => {
-    const storage = window.localStorage.getItem(REQUESTS_PER_DAY_KEY)
+  // Helper function to get current request count from localStorage
+  const getRequestsToday = () => {
+    const storage = window.localStorage.getItem(RATE_LIMIT_CONFIG.STORAGE_KEY)
     if (storage !== null) {
       const nr_requests = JSON.parse(storage)
-      if (nr_requests[today]) {
-        requestsToday = nr_requests[today]
-      }
+      return nr_requests[today] || 0
     }
+    return 0
+  }
 
+  const hasRequestPerDayLeft = () => {
+    const requestsToday = getRequestsToday()
+    return requestsToday < RATE_LIMIT_CONFIG.MAX_REQUESTS_PER_DAY
+  }
+
+  const incrementRequestsPerDay = () => {
+    const requestsToday = getRequestsToday()
+    const nr_requests = {}
+    nr_requests[today] = requestsToday + 1
+    window.localStorage.setItem(RATE_LIMIT_CONFIG.STORAGE_KEY, JSON.stringify(nr_requests))
+  }
+
+  useEffect(() => {
     analytics.event('Request a Mentor', {
       'Mentor Id': mentor.id,
       'Mentor Name': mentor.name,
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
       'Mentor Sponsors': mentor.sponsors,
-
-      // legacy props
-      id: mentor.airtableId,
-      name: mentor.name,
-      experience: mentor.experience,
-      price: mentor.price,
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - analytics tracking
 
   useEffect(() => {
     if (!hasRequestPerDayLeft()) {
       setReadyStatus('limit')
       return
     }
-  }, [])
-
-  const hasRequestPerDayLeft = () => {
-    return requestsToday && requestsToday >= MAX_REQUESTS_PER_DAY ? false : true
-  }
-
-  const incerementRequestsPerDay = () => {
-    const nr_requests = {}
-    requestsToday++
-    nr_requests[today] = requestsToday
-
-    window.localStorage.setItem('requests_per_day', JSON.stringify(nr_requests))
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - check rate limit
 
   const onSubmit = (data) => {
     if (readyStatus === 'loading') {
@@ -111,6 +110,8 @@ export default function OrderMentor({ mentor }) {
 
     setFormData({ ...data })
 
+    // SECURITY: Call Next.js API route (proxy), which calls Go API on localhost
+    // This keeps Go API private (localhost only), not exposed to public internet
     fetch('/api/contact-mentor', {
       method: 'POST',
       body: JSON.stringify({
@@ -122,20 +123,24 @@ export default function OrderMentor({ mentor }) {
       },
     })
       .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
         return res.json()
       })
       .then((data) => {
         if (data.success) {
           mentor.calendarUrl = data.calendar_url
           setReadyStatus('success')
-          incerementRequestsPerDay()
+          incrementRequestsPerDay()
         } else {
           setReadyStatus('error')
         }
       })
       .catch((e) => {
         setReadyStatus('error')
-        console.error(e)
+        // Client-side error - console.error is appropriate here
+        console.error('Contact mentor error:', e)
       })
   }
 
@@ -229,14 +234,9 @@ function SuccessMessage({ mentor, formData }) {
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
       'Mentor Sponsors': mentor.sponsors,
-
-      // legacy props
-      id: mentor.airtableId,
-      name: mentor.name,
-      experience: mentor.experience,
-      price: mentor.price,
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - analytics tracking
 
   return (
     <div className="text-center">
@@ -290,14 +290,9 @@ function LimitMessage({ mentor }) {
       'Mentor Experience': mentor.experience,
       'Mentor Price': mentor.price,
       'Mentor Sponsors': mentor.sponsors,
-
-      // legacy props
-      id: mentor.airtableId,
-      name: mentor.name,
-      experience: mentor.experience,
-      price: mentor.price,
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally run once on mount - analytics tracking
 
   return (
     <div className="text-center">

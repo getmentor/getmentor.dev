@@ -1,8 +1,9 @@
-import {
-  httpRequestDuration,
-  httpRequestTotal,
-  activeRequests,
-} from './metrics'
+/**
+ * Simplified observability instrumentation for frontend Next.js application
+ * Tracks HTTP requests, duration, and errors for remaining API routes
+ */
+
+import { httpRequestDuration, httpRequestTotal, activeRequests } from './metrics'
 import { logHttpRequest, logError } from './logger'
 
 /**

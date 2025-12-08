@@ -1,8 +1,20 @@
+/**
+ * Next.js frontend logger with file-based logging
+ * Logs are sent to console (for local debugging) and written to file
+ * Grafana Alloy tails log files directly for collection
+ */
+
 import winston from 'winston'
-import path from 'path'
-import fs from 'fs'
+import DailyRotateFile from 'winston-daily-rotate-file'
 
 const { combine, timestamp, json, errors, printf } = winston.format
+
+// Logger configuration
+const LOGGER_CONFIG = {
+  MAX_FILE_SIZE: '100m', // 100MB per file
+  MAX_FILES: '7d', // Keep 7 days of logs
+  DATE_PATTERN: 'YYYY-MM-DD',
+}
 
 // Custom format for console output in development
 const consoleFormat = printf(({ level, message, timestamp, service, ...metadata }) => {
@@ -13,6 +25,55 @@ const consoleFormat = printf(({ level, message, timestamp, service, ...metadata 
   return msg
 })
 
+// Build transports array
+const transports = [
+  // Always output to console (stdout/stderr) for immediate debugging
+  new winston.transports.Console({
+    format:
+      process.env.NODE_ENV !== 'production'
+        ? combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), consoleFormat)
+        : undefined, // JSON format in production
+  }),
+]
+
+// Add file transport only in server-side context (not in browser)
+if (typeof window === 'undefined') {
+  // Use ./logs for local dev, /app/logs for production
+  const logDir =
+    process.env.LOG_DIR || (process.env.NODE_ENV === 'production' ? '/app/logs' : './logs')
+
+  try {
+    // Add daily rotating file transport for all logs
+    transports.push(
+      new DailyRotateFile({
+        filename: `${logDir}/app-%DATE%.log`,
+        datePattern: LOGGER_CONFIG.DATE_PATTERN,
+        level: process.env.LOG_LEVEL || 'info',
+        maxSize: LOGGER_CONFIG.MAX_FILE_SIZE,
+        maxFiles: LOGGER_CONFIG.MAX_FILES,
+        zippedArchive: true, // Compress old logs
+        format: combine(timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), json()),
+      })
+    )
+
+    // Add separate rotating file for errors
+    transports.push(
+      new DailyRotateFile({
+        filename: `${logDir}/error-%DATE%.log`,
+        datePattern: LOGGER_CONFIG.DATE_PATTERN,
+        level: 'error',
+        maxSize: LOGGER_CONFIG.MAX_FILE_SIZE,
+        maxFiles: LOGGER_CONFIG.MAX_FILES,
+        zippedArchive: true, // Compress old logs
+        format: combine(timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), json()),
+      })
+    )
+  } catch (error) {
+    // If file transport fails (e.g., permission issues), just log to console
+    console.warn('Failed to initialize file logging, using console only:', error.message)
+  }
+}
+
 // Create the logger
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -22,63 +83,12 @@ const logger = winston.createLogger({
     json() // JSON format for structured logging
   ),
   defaultMeta: {
-    service: 'getmentor-nextjs',
+    service: process.env.O11Y_SERVICE_NAME || 'getmentor-frontend',
     environment: process.env.NODE_ENV || 'development',
     hostname: process.env.HOSTNAME || 'localhost',
   },
-  transports: [],
+  transports,
 })
-
-// Add console transport for development
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(
-    new winston.transports.Console({
-      format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), consoleFormat),
-    })
-  )
-}
-
-// Add file transport for production (will be picked up by Grafana Agent)
-// Only add file transports if we're in a runtime environment (not during build)
-if (process.env.NODE_ENV === 'production' && typeof window === 'undefined' && process.env.NEXT_PHASE !== 'phase-production-build') {
-  const logDir = process.env.LOG_DIR || '/app/logs'
-
-  // Ensure log directory exists
-  try {
-    if (!fs.existsSync(logDir)) {
-      fs.mkdirSync(logDir, { recursive: true })
-    }
-
-    // Main application logs
-    logger.add(
-      new winston.transports.File({
-        filename: path.join(logDir, 'app.log'),
-        maxsize: 10485760, // 10MB
-        maxFiles: 5,
-      })
-    )
-
-    // Error logs
-    logger.add(
-      new winston.transports.File({
-        filename: path.join(logDir, 'error.log'),
-        level: 'error',
-        maxsize: 10485760, // 10MB
-        maxFiles: 5,
-      })
-    )
-  } catch (error) {
-    // If we can't create log files, just log to console
-    console.warn('Could not initialize file logging:', error.message)
-  }
-
-  // Also output to console for Docker logs
-  logger.add(
-    new winston.transports.Console({
-      format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), consoleFormat),
-    })
-  )
-}
 
 // Helper methods for adding context to logs
 export const createContextLogger = (context) => {
@@ -99,17 +109,6 @@ export const logHttpRequest = (req, res, duration) => {
     duration_ms: duration,
     user_agent: req.headers['user-agent'],
     ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-  })
-}
-
-// Helper for logging API calls
-export const logApiCall = (service, operation, status, duration, metadata = {}) => {
-  logger.info('API call', {
-    service,
-    operation,
-    status,
-    duration_ms: duration,
-    ...metadata,
   })
 }
 

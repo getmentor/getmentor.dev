@@ -1,0 +1,22 @@
+// instrumentation.js - Next.js server-side OpenTelemetry instrumentation
+
+import { registerServerTracing } from './lib/tracing-server'
+import logger from './lib/logger'
+
+export async function register() {
+  // eslint-disable-next-line no-console
+  console.log('[Instrumentation] Initializing observability stack...')
+
+  try {
+    // Initialize OpenTelemetry server-side tracing
+    registerServerTracing()
+
+    // Initialize logger
+    logger.info('Observability instrumentation initialized', {
+      runtime: 'nodejs',
+      env: process.env.NODE_ENV,
+    })
+  } catch (error) {
+    console.error('[Instrumentation] Failed to initialize observability:', error)
+  }
+}

@@ -1,9 +1,8 @@
-# Multi-stage Dockerfile for Next.js production deployment
-# This version creates a smaller final image by separating build and runtime stages
+# Multi-stage Dockerfile for Next.js frontend-only deployment
+# Simplified without Grafana Alloy (hosted elsewhere)
 
 # Stage 1: Install dependencies
-# Using specific version to avoid vulnerabilities in latest 'node:20-alpine'
-FROM node:20.19.5-alpine3.22 AS deps
+FROM node:22.21.1-alpine3.22 AS deps
 WORKDIR /app
 
 # Copy package files and install dependencies
@@ -11,7 +10,7 @@ COPY package.json yarn.lock* ./
 RUN yarn install --frozen-lockfile
 
 # Stage 2: Build the application
-FROM node:20.19.5-alpine3.22 AS builder
+FROM node:22.21.1-alpine3.22 AS builder
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -19,62 +18,60 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Set build-time environment variables
-# These are needed for the build process but won't be in the final image
-ARG AIRTABLE_API_KEY
-ARG AIRTABLE_BASE_ID
-ARG AZURE_STORAGE_DOMAIN
+# These are needed for the build process (client-side env vars)
+ARG NEXT_PUBLIC_GO_API_URL
 ARG NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
-ARG RECAPTCHA_V2_SITE_KEY
+ARG NEXT_PUBLIC_YANDEX_STORAGE_ENDPOINT
+ARG NEXT_PUBLIC_YANDEX_STORAGE_BUCKET
 ARG NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY
+ARG NEXT_PUBLIC_O11Y_EXPORTER_ENDPOINT
+ARG NEXT_PUBLIC_O11Y_SERVICE_NAME
+ARG NEXT_PUBLIC_O11Y_SERVICE_NAMESPACE
+ARG NEXT_PUBLIC_SERVICE_VERSION
+ARG NEXT_PUBLIC_APP_ENV
+ARG NEXT_PUBLIC_CDN_ENDPOINT
 
-ENV AIRTABLE_API_KEY=$AIRTABLE_API_KEY
-ENV AIRTABLE_BASE_ID=$AIRTABLE_BASE_ID
-ENV AZURE_STORAGE_DOMAIN=$AZURE_STORAGE_DOMAIN
+ENV NEXT_PUBLIC_GO_API_URL=$NEXT_PUBLIC_GO_API_URL
 ENV NEXT_PUBLIC_AZURE_STORAGE_DOMAIN=$NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
-ENV RECAPTCHA_V2_SITE_KEY=$RECAPTCHA_V2_SITE_KEY
+ENV NEXT_PUBLIC_YANDEX_STORAGE_ENDPOINT=$NEXT_PUBLIC_YANDEX_STORAGE_ENDPOINT
+ENV NEXT_PUBLIC_YANDEX_STORAGE_BUCKET=$NEXT_PUBLIC_YANDEX_STORAGE_BUCKET
 ENV NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY=$NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY
+ENV NEXT_PUBLIC_O11Y_EXPORTER_ENDPOINT=$NEXT_PUBLIC_O11Y_EXPORTER_ENDPOINT
+ENV NEXT_PUBLIC_O11Y_SERVICE_NAME=$NEXT_PUBLIC_O11Y_SERVICE_NAME
+ENV NEXT_PUBLIC_O11Y_SERVICE_NAMESPACE=$NEXT_PUBLIC_O11Y_SERVICE_NAMESPACE
+ENV NEXT_PUBLIC_SERVICE_VERSION=$NEXT_PUBLIC_SERVICE_VERSION
+ENV NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV
+ENV NEXT_PUBLIC_CDN_ENDPOINT=$NEXT_PUBLIC_CDN_ENDPOINT
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the Next.js application
 RUN yarn build
 
-# Stage 3: Get Grafana Alloy binary from official image
-FROM grafana/alloy:latest AS alloy
-
-# Stage 4: Production image (using Debian-based image for glibc compatibility)
-FROM node:20.19.5-bookworm-slim AS runner
+# Stage 3: Production image (using Alpine for smaller size)
+FROM node:22.21.1-alpine3.22 AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install curl for healthchecks and ca-certificates for HTTPS
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy Grafana Alloy binary from official image
-COPY --from=alloy /bin/alloy /usr/local/bin/alloy
-RUN chmod +x /usr/local/bin/alloy
+# Install dependencies for healthchecks and proper process handling
+RUN apk add --no-cache curl dumb-init
 
 # Create a non-root user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# Create logs directory and data directory for Grafana Alloy
-RUN mkdir -p /app/logs /var/lib/alloy/data && \
-    chown -R nextjs:nodejs /app/logs /var/lib/alloy/data
+# Create logs directory for application logs
+RUN mkdir -p /app/logs && chown nextjs:nodejs /app/logs
 
 # Copy only necessary files for production
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Copy Grafana Alloy configuration and startup script
-COPY config.alloy ./config.alloy
-COPY start-with-alloy.sh ./start-with-alloy.sh
-RUN chmod +x ./start-with-alloy.sh
+# Copy observability files
+# COPY --from=builder /app/instrumentation.js ./instrumentation.js
+# COPY --from=builder /app/start-server.js ./start-server.js
 
 # Set proper permissions
 RUN chown -R nextjs:nodejs /app
@@ -86,5 +83,11 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Use the startup script that launches both Grafana Alloy and Next.js
-CMD ["/app/start-with-alloy.sh"]
+# Health check to ensure the application is responding
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:3000/api/healthcheck || exit 1
+
+# Start Next.js with observability wrapper for proper signal handling and memory limit
+# Use start-server.js instead of server.js to initialize tracing before Next.js starts
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["node", "--max-old-space-size=512", "server.js"]

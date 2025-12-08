@@ -16,7 +16,7 @@ import { useEffect } from 'react'
 import analytics from '../lib/analytics'
 import MetaHeader from '../components/MetaHeader'
 import seo from '../config/seo'
-import VisibilitySensor from 'react-visibility-sensor'
+import { useInView } from 'react-intersection-observer'
 import { withSSRObservability } from '../lib/with-ssr-observability'
 import logger from '../lib/logger'
 
@@ -54,17 +54,24 @@ function Feature(props) {
   )
 }
 
-function onSponsorsShown(isVisible) {
-  if (isVisible) analytics.event('Sponsors Banner Shown')
-}
-
 export default function Home({ pageMentors }) {
   const [mentors, searchInput, hasMoreMentors, setSearchInput, showMoreMentors, appliedFilters] =
     useMentors(pageMentors)
 
+  const { ref: sponsorsRef, inView: sponsorsInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  })
+
   useEffect(() => {
     analytics.event('Visit Index Page')
   }, [])
+
+  useEffect(() => {
+    if (sponsorsInView) {
+      analytics.event('Sponsors Banner Shown')
+    }
+  }, [sponsorsInView])
 
   return (
     <>
@@ -176,9 +183,7 @@ export default function Home({ pageMentors }) {
       </Section>
 
       <Section className="bg-gray-100" id="sponsors">
-        <VisibilitySensor onChange={onSponsorsShown}>
-          <Section.Title>Нас поддерживают</Section.Title>
-        </VisibilitySensor>
+        <Section.Title ref={sponsorsRef}>Нас поддерживают</Section.Title>
 
         <div className="flex justify-center items-center">
           <a

@@ -1,7 +1,6 @@
 export default {
   event(name, params) {
-    if (process.browser) {
-      window?.amplitude?.getInstance().logEvent(name, params)
+    if (typeof window !== 'undefined') {
       window?.mixpanel?.track(name, params)
     }
   },
