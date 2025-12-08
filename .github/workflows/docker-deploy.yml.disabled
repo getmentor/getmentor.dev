@@ -42,10 +42,10 @@ jobs:
             -f Dockerfile \
             .
 
-      - name: Push image to DigitalOcean Container Registry
-        run: |
-          docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:latest
+      # - name: Push image to DigitalOcean Container Registry
+      #   run: |
+      #     docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      #     docker push ${{ env.REGISTRY }}/${{ env.REGISTRY_NAME }}/${{ env.IMAGE_NAME }}:latest
 
       # - name: Update DigitalOcean App Platform deployment
       #   run: |
