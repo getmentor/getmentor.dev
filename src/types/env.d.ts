@@ -48,9 +48,14 @@ declare namespace NodeJS {
     NEXT_PUBLIC_O11Y_EXPORTER_ENDPOINT?: string
     NEXT_PUBLIC_O11Y_SERVICE_NAME?: string
     NEXT_PUBLIC_O11Y_SERVICE_NAMESPACE?: string
-    NEXT_PUBLIC_SERVICE_VERSION?: string
+    NEXT_PUBLIC_O11Y_SERVICE_VERSION?: string
     NEXT_PUBLIC_APP_ENV?: string
     HOSTNAME?: string
+
+    // Grafana Faro
+    NEXT_PUBLIC_FARO_COLLECTOR_URL?: string
+    NEXT_PUBLIC_FARO_APP_NAME?: string
+    FARO_COLLECTOR_URL?: string
 
     // Domain
     DOMAIN?: string

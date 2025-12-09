@@ -91,11 +91,11 @@ module.exports = {
             key: 'Content-Security-Policy',
             value:
               "default-src 'self'; " +
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://getmentor.dev https://ru.getmentor.dev https://cdn.mxpnl.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://mc.yandex.ru https://mc.yandex.com https://decide.mixpanel.com ; " +
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://getmentor.dev https://ru.getmentor.dev https://cdn.mxpnl.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://mc.yandex.ru https://mc.yandex.com https://decide.mixpanel.com https://faro-collector-prod-eu-west-3.grafana.net; " +
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
               "img-src 'self' https: data:; " +
               "font-src 'self' data: https://fonts.gstatic.com https://at.alicdn.com; " +
-              "connect-src 'self' https://api.mixpanel.com https://decide.mixpanel.com https://getmentor.dev https://xn--c1aea1aggold.xn--p1ai https://ru.getmentor.dev https://mc.yandex.ru https://mc.yandex.com https://www.google-analytics.com https://region1.analytics.google.com https://stats.g.doubleclick.net https://google.com https://www.google.com; " +
+              "connect-src 'self' https://api.mixpanel.com https://decide.mixpanel.com https://getmentor.dev https://xn--c1aea1aggold.xn--p1ai https://ru.getmentor.dev https://mc.yandex.ru https://mc.yandex.com https://www.google-analytics.com https://region1.analytics.google.com https://stats.g.doubleclick.net https://google.com https://www.google.com https://faro-collector-prod-eu-west-3.grafana.net; " +
               'frame-src https://www.google.com https://calendly.com https://koalendar.com https://calendlab.ru https://airtable.com; ' +
               "object-src 'none'; " +
               "base-uri 'self'; " +
@@ -151,4 +151,22 @@ module.exports = {
     // number of pages that should be kept simultaneously without being disposed
     pagesBufferLength: 20,
   },
+
+  async rewrites() {
+    const rewrites = []
+
+    // Proxy Faro telemetry to Grafana Cloud to bypass CORS
+    // Browser sends to /faro-collect -> Next.js rewrites to Grafana Cloud
+    if (process.env.FARO_COLLECTOR_URL) {
+      rewrites.push({
+        source: '/faro-collect',
+        destination: process.env.FARO_COLLECTOR_URL,
+      })
+    }
+
+    return rewrites
+  },
+
+  // Enable source maps in production for Faro error tracking
+  productionBrowserSourceMaps: true,
 }
