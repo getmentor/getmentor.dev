@@ -15,6 +15,9 @@
 # production
 /build
 
+# typescript
+*.tsbuildinfo
+
 # misc
 .DS_Store
 *.pem
@@ -36,9 +39,6 @@ yarn-error.log*
 
 # docker test files (may contain sensitive env vars)
 docker-compose.override.yml
-
-# AI tools
-CLAUDE.md
 
 # logger
 /app
