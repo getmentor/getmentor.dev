@@ -389,3 +389,89 @@ git branch -D feature/typescript-migration
   - `src/components/__tests__/useMentors.test.tsx` (search/tags/experience/price filters, new/noSessions, pagination)
   - `src/pages/api/__tests__/healthcheck.test.ts` (200 + cache headers; logging mocked)
 - `npx tsc --noEmit` passes. `yarn test` passes on Node 22.x (engine enforced; switch local env accordingly).
+
+### Dec 9 (final review session)
+
+- Moved API tests from `src/pages/api/__tests__/` to `src/__tests__/pages/api/` to fix Next.js build treating them as API routes
+- All validation passes:
+
+### Dec 9 (code reorganization)
+
+- Reorganized components into subdirectories:
+  - `ui/` - Section, Notification, HtmlContent
+  - `forms/` - ProfileForm, ContactMentorForm, Wysiwyg
+  - `layout/` - NavHeader, Footer, MetaHeader + NavHeader.module.css
+  - `mentors/` - MentorsList, MentorsFilters, MentorsSearch, FilterGroupDropdown
+  - `calendar/` - Koalendar, CalendlabWidget
+  - `hooks/` - useMentors + __tests__/
+- Updated barrel export in `components/index.ts` to re-export from subdirectories
+- All existing imports via `@/components` continue to work (no changes needed in pages)
+- All validation passes:
+  - `npx tsc --noEmit` ✓
+  - `yarn lint` ✓
+  - `yarn test` ✓ (3 test suites, 7 tests)
+  - `yarn build` ✓
+  - Docker build ✓
+
+---
+
+## Migration Status: COMPLETE ✓
+
+### Final Statistics
+- **71 TypeScript files** (43 `.ts` + 28 `.tsx`)
+- **0 JavaScript files** remaining in `src/`
+- **6,733 total lines** of TypeScript code
+- **9 type definition files** in `src/types/`
+- **3 test files** with 7 tests
+
+### What Was Accomplished
+
+1. **Full TypeScript Migration**
+   - All 54+ source files converted from `.js`/`.jsx` to `.ts`/`.tsx`
+   - Strict mode enabled with all strict flags
+   - Path aliases configured (`@/types`, `@/components`, `@/lib`, `@/config`, `@/server`)
+
+2. **Library Replacements**
+   - `multiselect-react-dropdown` → `react-select` (ProfileForm)
+   - `interweave` + `interweave-ssr` → custom `HtmlContent` component using `sanitize-html`
+   - `rc-dropdown` → `@headlessui/react` Menu (FilterGroupDropdown)
+
+3. **Type System**
+   - `src/types/mentor.ts` - Mentor domain types with proper union types
+   - `src/types/api.ts` - API request/response types, HttpError class
+   - `src/types/filters.ts` - Filter configuration and state types
+   - `src/types/components.ts` - Component prop interfaces
+   - `src/types/config.ts` - Configuration object types
+   - `src/types/env.d.ts` - ProcessEnv augmentation
+   - `src/types/global.d.ts` - Global type augmentations
+   - `src/types/third-party.d.ts` - Third-party module stubs
+
+4. **Testing Infrastructure**
+   - Jest configured with Next.js integration
+   - Testing Library for React components
+   - node-mocks-http for API route testing
+   - Tests for: html-content sanitization, useMentors hook, healthcheck API
+
+5. **Build Validation**
+   - TypeScript strict compilation passes
+   - ESLint with typescript-eslint passes
+   - Next.js production build succeeds
+   - Docker multi-stage build succeeds
+
+### Remaining Items (Nice to Have)
+
+1. **Code Reorganization** ✓ COMPLETED
+   - Components organized into subfolders: `ui/`, `forms/`, `layout/`, `mentors/`, `calendar/`, `hooks/`
+   - Barrel export updated to re-export from subdirectories
+   - All imports updated and validated
+
+2. **Additional Tests**
+   - API routes: contact-mentor, save-profile, upload-profile-picture
+   - Components: ProfileForm, ContactMentorForm, MentorsList
+   - Server: mentors-data functions
+   - Integration tests with MSW
+
+3. **Documentation Updates**
+   - Update CLAUDE.md with TypeScript conventions
+   - Add JSDoc comments to exported functions
+   - Generate API documentation from types

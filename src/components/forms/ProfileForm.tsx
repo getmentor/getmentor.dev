@@ -492,7 +492,10 @@ export default function ProfileForm({
             defaultValue={mentor.about || ''}
             rules={{ required: true }}
             render={({ field }) => (
-              <Wysiwyg content={field.value} onUpdate={(editor) => field.onChange(editor.getHTML())} />
+              <Wysiwyg
+                content={field.value}
+                onUpdate={(editor) => field.onChange(editor.getHTML())}
+              />
             )}
           />
         </div>
@@ -537,7 +540,10 @@ export default function ProfileForm({
             defaultValue={mentor.description || ''}
             rules={{ required: true }}
             render={({ field }) => (
-              <Wysiwyg content={field.value} onUpdate={(editor) => field.onChange(editor.getHTML())} />
+              <Wysiwyg
+                content={field.value}
+                onUpdate={(editor) => field.onChange(editor.getHTML())}
+              />
             )}
           />
         </div>

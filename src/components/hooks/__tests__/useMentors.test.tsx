@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react'
-import useMentors from '@/components/useMentors'
+import useMentors from '@/components/hooks/useMentors'
 import filters from '@/config/filters'
 import type { MentorListItem } from '@/types'
 
