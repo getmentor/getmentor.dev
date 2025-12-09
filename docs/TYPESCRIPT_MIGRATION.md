@@ -430,6 +430,15 @@ git branch -D feature/typescript-migration
   - `yarn build` ✓
   - Docker build ✓
 
+### Dec 9 (CI/CD integration)
+
+- Updated `.github/workflows/main.yml` with:
+  - **test** job: ESLint, TypeScript type check, Jest tests
+  - **build** job: Production build (runs after test passes)
+  - Triggers on push to main and pull requests
+  - Node.js 22.x with Yarn caching
+  - Ready for GitHub branch protection rules
+
 ---
 
 ## Migration Status: COMPLETE ✓
@@ -489,7 +498,10 @@ git branch -D feature/typescript-migration
    - Total: 52 tests across 9 test suites
    - Remaining: Integration tests with MSW, ProfileForm tests
 
-3. **Documentation Updates**
-   - Update CLAUDE.md with TypeScript conventions
-   - Add JSDoc comments to exported functions
-   - Generate API documentation from types
+3. **Documentation Updates** ✓ COMPLETED
+   - Updated CLAUDE.md with TypeScript conventions and new project structure
+   - Updated docs/TYPESCRIPT_MIGRATION.md with complete progress log
+
+4. **CI/CD Integration** ✓ COMPLETED
+   - GitHub Actions workflow updated with test, type check, and lint jobs
+   - Ready for branch protection rules on `main` branch
