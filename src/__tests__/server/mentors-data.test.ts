@@ -81,7 +81,24 @@ const mockMentorList: MentorListItem[] = [
 ]
 
 const mockMentorWithSecure: MentorWithSecureFields = {
-  ...mockMentorList[0],
+  id: 1,
+  airtableId: 'rec1',
+  slug: 'john-doe',
+  name: 'John Doe',
+  job: 'Senior Developer',
+  workplace: 'Tech Corp',
+  description: 'Expert in React',
+  about: 'Full bio here',
+  competencies: 'React, TypeScript',
+  experience: '10+',
+  price: '5000 руб',
+  tags: ['Frontend', 'React'],
+  menteeCount: 15,
+  photo_url: null,
+  sortOrder: 1,
+  isVisible: true,
+  isNew: false,
+  calendarType: 'calendly',
   authToken: 'secret-token-123',
   calendarUrl: 'https://calendly.com/john-doe',
 }
