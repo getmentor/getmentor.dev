@@ -52,6 +52,10 @@ export function initializeFaro(): Faro | null {
         version: appVersion,
         environment: appEnvironment,
       },
+      sessionTracking: {
+        samplingRate: Number.parseFloat(process.env.NEXT_PUBLIC_FARO_SAMPLE_RATE || '1'),
+        persistent: false,
+      },
       instrumentations: [
         // Default web instrumentations: errors, console, web vitals, session
         ...getWebInstrumentations(),

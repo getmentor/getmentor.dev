@@ -55,6 +55,7 @@ declare namespace NodeJS {
     // Grafana Faro
     NEXT_PUBLIC_FARO_COLLECTOR_URL?: string
     NEXT_PUBLIC_FARO_APP_NAME?: string
+    NEXT_PUBLIC_FARO_SAMPLE_RATE?: string
     FARO_COLLECTOR_URL?: string
 
     // Domain
