@@ -49,4 +49,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
   }
 }
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+}
+
 export default withObservability(handler)
