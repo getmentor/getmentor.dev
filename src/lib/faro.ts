@@ -25,11 +25,12 @@ export function initializeFaro(): Faro | null {
     return null
   }
 
-  const appName =
-    process.env.NEXT_PUBLIC_FARO_APP_NAME ||
-    process.env.NEXT_PUBLIC_O11Y_SERVICE_NAME ||
-    'getmentor-frontend'
+  const appName = process.env.NEXT_PUBLIC_FARO_APP_NAME || 'getmentor-frontend'
+
+  const appNamespace = process.env.NEXT_PUBLIC_O11Y_SERVICE_NAMESPACE || 'getmentor-dev'
+
   const appVersion = process.env.NEXT_PUBLIC_O11Y_SERVICE_VERSION || '1.0.0'
+
   const appEnvironment = process.env.NEXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'production'
 
   try {
@@ -49,6 +50,7 @@ export function initializeFaro(): Faro | null {
       url: proxyUrl,
       app: {
         name: appName,
+        namespace: appNamespace,
         version: appVersion,
         environment: appEnvironment,
       },

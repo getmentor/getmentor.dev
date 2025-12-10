@@ -157,10 +157,10 @@ module.exports = {
 
     // Proxy Faro telemetry to Grafana Cloud to bypass CORS
     // Browser sends to /faro-collect -> Next.js rewrites to Grafana Cloud
-    if (process.env.FARO_COLLECTOR_URL) {
+    if (process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL) {
       rewrites.push({
         source: '/faro-collect',
-        destination: process.env.FARO_COLLECTOR_URL,
+        destination: process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL,
       })
     }
 
