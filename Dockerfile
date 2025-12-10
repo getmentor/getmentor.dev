@@ -66,7 +66,7 @@ RUN if [ -n "$FARO_API_KEY" ] && [ -n "$FARO_APP_ID" ] && [ -n "$FARO_STACK_ID" 
         -a "$FARO_APP_ID" \
         -s "$FARO_STACK_ID" \
         -k "$FARO_API_KEY" \
-        -b "${NEXT_PUBLIC_O11Y_SERVICE_VERSION:-1.0.0}"; \
+        -b "${NEXT_PUBLIC_O11Y_FE_SERVICE_VERSION:-1.0.0}"; \
     else \
       echo "Skipping source map upload (FARO_API_KEY, FARO_APP_ID, or FARO_STACK_ID not set)"; \
     fi
