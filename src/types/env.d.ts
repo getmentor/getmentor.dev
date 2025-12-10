@@ -44,13 +44,18 @@ declare namespace NodeJS {
     LOG_DIR?: string
 
     // Observability
-    O11Y_SERVICE_NAME?: string
+    O11Y_FE_SERVICE_NAME?: string
     NEXT_PUBLIC_O11Y_EXPORTER_ENDPOINT?: string
-    NEXT_PUBLIC_O11Y_SERVICE_NAME?: string
+    NEXT_PUBLIC_O11Y_FE_SERVICE_NAME?: string
     NEXT_PUBLIC_O11Y_SERVICE_NAMESPACE?: string
-    NEXT_PUBLIC_SERVICE_VERSION?: string
+    NEXT_PUBLIC_O11Y_FE_SERVICE_VERSION?: string
     NEXT_PUBLIC_APP_ENV?: string
     HOSTNAME?: string
+
+    // Grafana Faro
+    NEXT_PUBLIC_FARO_COLLECTOR_URL?: string
+    NEXT_PUBLIC_FARO_APP_NAME?: string
+    NEXT_PUBLIC_FARO_SAMPLE_RATE?: string
 
     // Domain
     DOMAIN?: string

@@ -19,7 +19,13 @@ export { getGoApiClient, HttpError, default as GoApiClient } from './go-api-clie
 export { default as initMiddleware } from './init-middleware'
 
 // Observability
-export { default as logger, createContextLogger, logHttpRequest, logError, type ContextLogger } from './logger'
+export {
+  default as logger,
+  createContextLogger,
+  logHttpRequest,
+  logError,
+  type ContextLogger,
+} from './logger'
 export {
   default as metricsRegister,
   httpRequestDuration,
@@ -37,3 +43,6 @@ export { default as HttpLogTransport } from './http-log-transport'
 // Tracing
 export { registerClientTracing, getTracer } from './tracing-client'
 export { registerServerTracing } from './tracing-server'
+
+// Grafana Faro (client-side observability)
+export { initializeFaro, getFaro, pushEvent, pushError, setUser } from './faro'

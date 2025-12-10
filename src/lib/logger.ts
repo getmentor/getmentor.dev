@@ -91,7 +91,7 @@ const logger = winston.createLogger({
     json() // JSON format for structured logging
   ),
   defaultMeta: {
-    service: process.env.O11Y_SERVICE_NAME || 'getmentor-frontend',
+    service: process.env.O11Y_FE_SERVICE_NAME || 'getmentor-frontend',
     environment: process.env.NODE_ENV || 'development',
     hostname: process.env.HOSTNAME || 'localhost',
   },
@@ -108,10 +108,14 @@ export interface ContextLogger {
 // Helper methods for adding context to logs
 export const createContextLogger = (context: LogMetadata): ContextLogger => {
   return {
-    debug: (message: string, meta: LogMetadata = {}) => logger.debug(message, { ...context, ...meta }),
-    info: (message: string, meta: LogMetadata = {}) => logger.info(message, { ...context, ...meta }),
-    warn: (message: string, meta: LogMetadata = {}) => logger.warn(message, { ...context, ...meta }),
-    error: (message: string, meta: LogMetadata = {}) => logger.error(message, { ...context, ...meta }),
+    debug: (message: string, meta: LogMetadata = {}) =>
+      logger.debug(message, { ...context, ...meta }),
+    info: (message: string, meta: LogMetadata = {}) =>
+      logger.info(message, { ...context, ...meta }),
+    warn: (message: string, meta: LogMetadata = {}) =>
+      logger.warn(message, { ...context, ...meta }),
+    error: (message: string, meta: LogMetadata = {}) =>
+      logger.error(message, { ...context, ...meta }),
   }
 }
 

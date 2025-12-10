@@ -14,9 +14,9 @@ function registerServerTracing(): void {
   }
 
   const alloyEndpoint = process.env.O11Y_EXPORTER_ENDPOINT || 'http://alloy:4318'
-  const serviceName = process.env.O11Y_SERVICE_NAME || 'getmentor-frontend'
+  const serviceName = process.env.O11Y_FE_SERVICE_NAME || 'getmentor-frontend'
   const serviceNamespace = process.env.O11Y_SERVICE_NAMESPACE || 'getmentor-dev'
-  const serviceVersion = process.env.O11Y_SERVICE_VERSION || '1.0.0'
+  const serviceVersion = process.env.O11Y_FE_SERVICE_VERSION || '1.0.0'
   const environment = process.env.APP_ENV || process.env.NODE_ENV || 'production'
 
   // Ensure endpoint has protocol (JavaScript OTLP exporter needs full URL)
