@@ -10,7 +10,8 @@
     "dev2": "next dev",
     "lint": "eslint src/",
     "test": "jest",
-    "faro:sourcemaps": "faro-cli upload -o .next/static -r -g -v",
+    "faro:filter-sourcemaps": "node scripts/filter-sourcemaps.js",
+    "faro:sourcemaps": "yarn faro:filter-sourcemaps && faro-cli upload -o .next/static -r -g -v",
     "inspect": "NODE_ENV=production node --inspect node_modules/next/dist/bin/next start"
   },
   "engines": {
