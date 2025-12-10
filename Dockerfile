@@ -57,6 +57,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Build the Next.js application
 RUN yarn build
 
+# Add curl for source map upload
+RUN apk add --update curl
+
 # Upload source maps to Grafana Faro (if credentials provided)
 # Uses git commit SHA or package version as bundle ID
 RUN if [ -n "$FARO_API_KEY" ] && [ -n "$FARO_APP_ID" ] && [ -n "$FARO_STACK_ID" ]; then \
