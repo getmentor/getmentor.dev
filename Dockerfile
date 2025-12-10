@@ -33,6 +33,10 @@ ARG NEXT_PUBLIC_CDN_ENDPOINT
 ARG NEXT_PUBLIC_FARO_APP_NAME
 ARG NEXT_PUBLIC_FARO_COLLECTOR_URL
 ARG NEXT_PUBLIC_FARO_SAMPLE_RATE
+ARG FARO_API_ENDPOINT
+ARG FARO_APP_ID
+ARG FARO_STACK_ID
+ARG FARO_API_KEY
 
 ENV NEXT_PUBLIC_GO_API_URL=$NEXT_PUBLIC_GO_API_URL
 ENV NEXT_PUBLIC_AZURE_STORAGE_DOMAIN=$NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
@@ -52,6 +56,20 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the Next.js application
 RUN yarn build
+
+# Upload source maps to Grafana Faro (if credentials provided)
+# Uses git commit SHA or package version as bundle ID
+RUN if [ -n "$FARO_API_KEY" ] && [ -n "$FARO_APP_ID" ] && [ -n "$FARO_STACK_ID" ]; then \
+      echo "Uploading source maps to Grafana Faro..." && \
+      yarn faro:sourcemaps \
+        -e "${FARO_API_ENDPOINT:-https://faro-api-prod-eu-west-3.grafana.net/faro/api/v1}" \
+        -a "$FARO_APP_ID" \
+        -s "$FARO_STACK_ID" \
+        -k "$FARO_API_KEY" \
+        -b "${NEXT_PUBLIC_O11Y_SERVICE_VERSION:-1.0.0}"; \
+    else \
+      echo "Skipping source map upload (FARO_API_KEY, FARO_APP_ID, or FARO_STACK_ID not set)"; \
+    fi
 
 # Stage 3: Production image (using Alpine for smaller size)
 FROM node:22.21.1-alpine3.22 AS runner

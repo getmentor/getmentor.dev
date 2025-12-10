@@ -10,6 +10,7 @@
     "dev2": "next dev",
     "lint": "eslint src/",
     "test": "jest",
+    "faro:sourcemaps": "faro-cli upload -o .next/static -r -g -v",
     "inspect": "NODE_ENV=production node --inspect node_modules/next/dist/bin/next start"
   },
   "engines": {
@@ -75,6 +76,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
+    "@grafana/faro-cli": "^0.7.0",
     "@next/eslint-plugin-next": "16.0.5",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
