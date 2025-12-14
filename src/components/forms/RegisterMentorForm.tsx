@@ -198,12 +198,14 @@ export default function RegisterMentorForm({
 
   const requiredText = 'Это поле обязательно для заполнения.'
 
+  const requiredMark = <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
+
   return (
     <form className="space-y-8" onSubmit={handleSubmit(handleFormSubmit)}>
       <div>
         <label htmlFor="name" className="block mb-2 font-medium text-gray-700">
           Ваше имя и фамилия
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
+          {requiredMark}
         </label>
 
         {errors.name && <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>}
@@ -220,7 +222,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="email" className="block mb-2 font-medium text-gray-700">
           Ваша почта
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
+          {requiredMark}
         </label>
 
         {errors.email && errors.email.type === 'required' && (
@@ -245,7 +247,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="telegram" className="block mb-2 font-medium text-gray-700">
           Telegram @username
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
+          {requiredMark}
         </label>
 
         {errors.telegram && <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>}
@@ -266,7 +268,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="profilePicture" className="block mb-2 font-medium text-gray-700">
           Фотография профиля
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>{' '}
+          {requiredMark}{' '}
           <a data-tooltip-id="photo-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
@@ -328,7 +330,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="job" className="block mb-2 font-medium text-gray-700">
           Должность
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
+          {requiredMark}
         </label>
 
         {errors.job && <div className="text-sm text-red-700 mt-3 mb-2">{requiredText}</div>}
@@ -345,7 +347,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="workplace" className="block mb-2 font-medium text-gray-700">
           Компания
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>{' '}
+          {requiredMark}{' '}
           <a data-tooltip-id="workplace-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
@@ -372,7 +374,7 @@ export default function RegisterMentorForm({
         <div>
           <label htmlFor="experience" className="block mb-2 font-medium text-gray-700">
             Опыт
-            <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
+            {requiredMark}
           </label>
 
           <select
@@ -395,7 +397,7 @@ export default function RegisterMentorForm({
         <div>
           <label htmlFor="price" className="block mb-2 font-medium text-gray-700">
             Цена за часовую встречу
-            <span className="text-sm text-red-700 mt-3 mb-2"> *</span>
+            {requiredMark}
           </label>
 
           <select
@@ -416,7 +418,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="tags" className="block mb-2 font-medium text-gray-700">
           Специализация
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>{' '}
+          {requiredMark}{' '}
           <a data-tooltip-id="tags-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
@@ -469,7 +471,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="about" className="block mb-2 font-medium text-gray-700">
           Расскажите о себе
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>{' '}
+          {requiredMark}{' '}
           <a data-tooltip-id="about-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
@@ -502,7 +504,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="description" className="block mb-2 font-medium text-gray-700">
           С чем вы можете помочь?
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>{' '}
+          {requiredMark}{' '}
           <a data-tooltip-id="description-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
@@ -549,7 +551,7 @@ export default function RegisterMentorForm({
       <div>
         <label htmlFor="competencies" className="block mb-2 font-medium text-gray-700">
           Навыки и технологии (через запятую)
-          <span className="text-sm text-red-700 mt-3 mb-2"> *</span>{' '}
+          {requiredMark}{' '}
           <a data-tooltip-id="competencies-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
