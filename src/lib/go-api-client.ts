@@ -15,6 +15,8 @@ import type {
   SaveProfileResponse,
   UploadProfilePictureRequest,
   UploadProfilePictureResponse,
+  RegisterMentorRequest,
+  RegisterMentorResponse,
 } from '@/types'
 
 // HTTP client configuration
@@ -219,6 +221,15 @@ class GoApiClient {
   async contactMentor(contactData: ContactMentorRequest): Promise<ContactMentorResponse> {
     return this.request<ContactMentorResponse>('POST', '/api/v1/contact-mentor', {
       body: contactData as unknown as Record<string, unknown>,
+    })
+  }
+
+  /**
+   * Register a new mentor
+   */
+  async registerMentor(registrationData: RegisterMentorRequest): Promise<RegisterMentorResponse> {
+    return this.request<RegisterMentorResponse>('POST', '/api/v1/register-mentor', {
+      body: registrationData as unknown as Record<string, unknown>,
     })
   }
 

@@ -26,6 +26,9 @@ export type {
   SaveProfileResponse,
   UploadProfilePictureRequest,
   UploadProfilePictureResponse,
+  ProfilePictureData,
+  RegisterMentorRequest,
+  RegisterMentorResponse,
   ApiHandler,
   ApiErrorResponse,
   GoApiInternalRequest,
@@ -70,10 +73,4 @@ export type {
 } from './components'
 
 // Config types
-export type {
-  SEOConfig,
-  DonateItem,
-  LoggerConfig,
-  HttpConfig,
-  ConstantsConfig,
-} from './config'
+export type { SEOConfig, DonateItem, LoggerConfig, HttpConfig, ConstantsConfig } from './config'
