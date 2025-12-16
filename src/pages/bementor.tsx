@@ -76,13 +76,28 @@ export default function Bementor(): JSX.Element {
       <NavHeader className="bg-primary-100" />
 
       <Section className="bg-primary-100" id="header">
-        <div className="text-center py-14 lg:w-3/4 mx-auto">
+        <div className="text-center py-4 lg:w-3/4 mx-auto">
           <h1>Стань частью нашей команды</h1>
 
           <p>
             Помогать другим – почётно и круто. Спасибо, что хотите этим заниматься.
             <br />
             Заполните форму ниже, и мы обязательно рассмотрим вашу заявку как можно скорее.
+            <br />
+            <br />
+            <em>
+              Если форма ниже по какой-то причине не работает, используйте эту{' '}
+              <u>
+                <a
+                  href="https://airtable.com/shraFoLi9aSqzU4U9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  ссылку
+                </a>
+              </u>
+              .
+            </em>
           </p>
         </div>
       </Section>
@@ -94,16 +109,16 @@ export default function Bementor(): JSX.Element {
               <p className="font-bold text-green-800 mb-2">Спасибо за вашу заявку!</p>
               <p className="text-green-700">
                 Спасибо! Ваша заявка принята. Вам на почту придёт подтверждение в ближайшее время.
+                Если его не будет, то пожалуйста проверьте спам, и напишите нам на{' '}
+                <a href="mailto:hello@getmentor.dev">hello@getmentor.dev</a>.
                 <br />
                 <br />
                 ВАЖНО! Мы рассмотрим вашу заявку в течение нескольких дней. Потом вам на почту
                 придет письмо с дальнейшими инструкциями. Не пропустите его, оно полезное и
-                расскажет, как завершить регистрацию. Иногда такие письма могут попасть в спам,
-                поэтому добавьте адрес hello@getmentor.dev в надежный список.
+                расскажет, как завершить регистрацию. Мы стараемся рассматривать новые заявки как
+                можно скорее. Однако этот процесс может занять до 2х недель. Если вдруг от нас не
+                будет новостей, то <a href="mailto:hello@getmentor.dev">пишите нам</a>, разберемся.
                 <br />
-                <br />
-                Если в течение пары дней вы не получите письма, то пожалуйста проверьте спам, и
-                напишите нам на <a href="mailto:hello@getmentor.dev">hello@getmentor.dev</a>.<br />
                 <br />
                 Удачи!
               </p>
