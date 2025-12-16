@@ -272,7 +272,7 @@ export default function RegisterMentorForm({
           <a data-tooltip-id="photo-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <Tooltip id="photo-tip" place="right">
+          <Tooltip id="photo-tip" place="right" className="z-50">
             <span>
               Загрузите своё фото для профиля. Поддерживаются форматы JPEG, PNG и WebP. Максимальный
               размер файла - 10 МБ.
@@ -351,7 +351,7 @@ export default function RegisterMentorForm({
           <a data-tooltip-id="workplace-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <Tooltip id="workplace-tip" place="right">
+          <Tooltip id="workplace-tip" place="right" className="z-50">
             <span>
               Если вы заняты в нескольких местах, укажите основную компанию. А остальное перечислите
               в описании &quot;О себе&quot;
@@ -422,11 +422,14 @@ export default function RegisterMentorForm({
           <a data-tooltip-id="tags-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <Tooltip id="tags-tip" place="right">
+          <Tooltip id="tags-tip" place="right" className="z-50">
             <span>
               Здесь вам нужно указать основную вашу текущую специализацию и ту, в которой вы хорошо
-              разбираетесь и готовы оказать помощь. По ним вас будут находить при использовании
-              тегов в поисковом блоке. Они также будут видны в вашем профиле.
+              разбираетесь и готовы оказать помощь.
+              <br />
+              По ним вас будут находить при использовании тегов в поисковом блоке.
+              <br />
+              Они также будут видны в вашем профиле.
               <br />
               Минимум 1, максимум 5 тегов.
             </span>
@@ -475,10 +478,11 @@ export default function RegisterMentorForm({
           <a data-tooltip-id="about-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <Tooltip id="about-tip" place="right">
+          <Tooltip id="about-tip" place="right" className="z-50">
             <span>
-              Желательно два-три абзаца: где работали, что интересует в профессиональном поле, каких
-              методик в менторстве придерживаетесь
+              Желательно два-три абзаца: где работали, что интересует в профессиональном поле,
+              <br />
+              каких методик в менторстве придерживаетесь.
             </span>
           </Tooltip>
         </label>
@@ -508,7 +512,7 @@ export default function RegisterMentorForm({
           <a data-tooltip-id="description-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <Tooltip id="description-tip" place="right">
+          <Tooltip id="description-tip" place="right" className="z-50">
             <span>
               Лучше, если вы разделите текст на пункты. Например,
               <br />
@@ -555,7 +559,7 @@ export default function RegisterMentorForm({
           <a data-tooltip-id="competencies-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <Tooltip id="competencies-tip" place="right">
+          <Tooltip id="competencies-tip" place="right" className="z-50">
             <span>
               Перечислите через запятую навыки, по которым хотите консультировать. Например:
               JavaScript, React, Leadership, Code Review. По ним менти смогут вас найти.
@@ -598,7 +602,7 @@ export default function RegisterMentorForm({
           <a data-tooltip-id="calendar-tip">
             <FontAwesomeIcon icon={faQuestionCircle} />
           </a>
-          <Tooltip id="calendar-tip" place="right">
+          <Tooltip id="calendar-tip" place="right" className="z-50">
             <span>
               Если вы пользуетесь системами управления календарём, то укажите ссылку на ваш
               календарь. Тогда менти смогут сами записываться к вам на встречу. Мы рекомендуем
