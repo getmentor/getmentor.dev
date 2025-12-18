@@ -1,10 +1,26 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
+import type { GetServerSideProps } from 'next'
 import { Footer, MetaHeader, NavHeader, Section } from '@/components'
 import RegisterMentorForm from '@/components/forms/RegisterMentorForm'
 import analytics from '@/lib/analytics'
 import seo from '@/config/seo'
+import { withSSRObservability } from '@/lib/with-ssr-observability'
+import logger from '@/lib/logger'
 import type { RegisterMentorRequest, RegisterMentorResponse } from '@/types/api'
+
+// Add SSR observability for metrics, logs, and traces
+const _getServerSideProps: GetServerSideProps = async (context) => {
+  logger.info('Bementor page rendered', {
+    userAgent: context.req.headers['user-agent'],
+  })
+
+  return {
+    props: {},
+  }
+}
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'bementor')
 
 export default function Bementor(): JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false)
