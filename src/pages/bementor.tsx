@@ -20,7 +20,7 @@ const _getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-export const getServerSideProps = withSSRObservability(_getServerSideProps, 'bementor')
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'register-mentor')
 
 export default function Bementor(): JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false)
