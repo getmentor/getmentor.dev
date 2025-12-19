@@ -82,6 +82,45 @@ export interface UploadProfilePictureResponse {
 }
 
 /**
+ * Profile picture data for registration
+ */
+export interface ProfilePictureData {
+  image: string // base64 encoded
+  fileName: string
+  contentType: string // 'image/jpeg' | 'image/png' | 'image/webp'
+}
+
+/**
+ * Register mentor request
+ */
+export interface RegisterMentorRequest {
+  name: string
+  email: string
+  telegram: string
+  job: string
+  workplace: string
+  experience: string // '2-5' | '5-10' | '10+'
+  price: string
+  tags: string[]
+  about: string
+  description: string
+  competencies: string
+  calendarUrl?: string
+  profilePicture: ProfilePictureData
+  recaptchaToken: string
+}
+
+/**
+ * Register mentor response
+ */
+export interface RegisterMentorResponse {
+  success: boolean
+  message?: string
+  mentorId?: number
+  error?: string
+}
+
+/**
  * HTTP Error class with status code
  */
 export class HttpError extends Error {

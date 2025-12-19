@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import type { GetServerSideProps } from 'next'
 import { Footer, MetaHeader, NavHeader, Section } from '@/components'
 import donates from '@/config/donates'
 import seo from '@/config/seo'
+import { withSSRObservability } from '@/lib/with-ssr-observability'
+import logger from '@/lib/logger'
 
 type Supporter = {
   name: string
@@ -10,9 +13,26 @@ type Supporter = {
   url?: string
 }
 
+// Add SSR observability for metrics, logs, and traces
+const _getServerSideProps: GetServerSideProps = async (context) => {
+  logger.info('Donate page rendered', {
+    userAgent: context.req.headers['user-agent'],
+  })
+
+  return {
+    props: {},
+  }
+}
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'donate')
+
 export default function Donate(): JSX.Element {
   const supporters: Supporter[] = [
-    { name: '👑 Антон Алексеев', level: 4, url: 'https://getmentor.dev/mentor/anton-alekseev-4855' },
+    {
+      name: '👑 Антон Алексеев',
+      level: 4,
+      url: 'https://getmentor.dev/mentor/anton-alekseev-4855',
+    },
     { name: 'usukololgubu', level: 2 },
     { name: 'Александр Терехин', level: 2 },
     { name: 'Kirill Krasnoshchekov', level: 2 },

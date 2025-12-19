@@ -1,6 +1,22 @@
 import Head from 'next/head'
+import type { GetServerSideProps } from 'next'
 import { Footer, MetaHeader, NavHeader, Section } from '@/components'
 import seo from '@/config/seo'
+import { withSSRObservability } from '@/lib/with-ssr-observability'
+import logger from '@/lib/logger'
+
+// Add SSR observability for metrics, logs, and traces
+const _getServerSideProps: GetServerSideProps = async (context) => {
+  logger.info('Disclaimer page rendered', {
+    userAgent: context.req.headers['user-agent'],
+  })
+
+  return {
+    props: {},
+  }
+}
+
+export const getServerSideProps = withSSRObservability(_getServerSideProps, 'disclaimer')
 
 export default function Disclaimer(): JSX.Element {
   const title = 'Отказ от ответственности | ' + seo.title

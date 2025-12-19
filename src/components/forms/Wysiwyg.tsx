@@ -22,11 +22,11 @@ export default function Wysiwyg({ content, onUpdate }: WysiwygProps): JSX.Elemen
       onUpdate(editor)
     },
     immediatelyRender: false,
-  } as unknown as UseEditorOptions)
+  } as UseEditorOptions)
 
   return (
     <div className="block w-full sm:text-sm border border-gray-300 rounded-md shadow-sm relative">
-      <div className="bg-white sticky top-0 z-10 rounded-t-md">
+      <div className="bg-white sticky top-0 z-1 rounded-t-md">
         <MenuBar editor={editor} />
       </div>
 
