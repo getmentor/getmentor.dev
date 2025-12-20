@@ -6,6 +6,8 @@
 
 import winston from 'winston'
 import DailyRotateFile from 'winston-daily-rotate-file'
+import { trace } from '@opentelemetry/api'
+import os from 'os'
 
 const { combine, timestamp, json, errors, printf } = winston.format
 
@@ -18,7 +20,32 @@ const LOGGER_CONFIG = {
 
 interface LogMetadata {
   service?: string
+  trace_id?: string
+  span_id?: string
+  trace_flags?: string
   [key: string]: unknown
+}
+
+/**
+ * Extract trace context from OpenTelemetry active span
+ * Returns trace_id, span_id, and trace_flags if available
+ */
+export const getTraceContext = (): Pick<LogMetadata, 'trace_id' | 'span_id' | 'trace_flags'> => {
+  const span = trace.getActiveSpan()
+  if (!span) {
+    return {}
+  }
+
+  const spanContext = span.spanContext()
+  if (!spanContext || !spanContext.traceId) {
+    return {}
+  }
+
+  return {
+    trace_id: spanContext.traceId,
+    span_id: spanContext.spanId,
+    trace_flags: spanContext.traceFlags?.toString(16) || '00',
+  }
 }
 
 // Custom format for console output in development
@@ -93,7 +120,8 @@ const logger = winston.createLogger({
   defaultMeta: {
     service: process.env.O11Y_FE_SERVICE_NAME || 'getmentor-frontend',
     environment: process.env.NODE_ENV || 'development',
-    hostname: process.env.HOSTNAME || 'localhost',
+    'host.name':
+      process.env.HOSTNAME || (typeof window === 'undefined' ? os.hostname() : 'browser'),
   },
   transports,
 })
@@ -109,13 +137,13 @@ export interface ContextLogger {
 export const createContextLogger = (context: LogMetadata): ContextLogger => {
   return {
     debug: (message: string, meta: LogMetadata = {}) =>
-      logger.debug(message, { ...context, ...meta }),
+      logger.debug(message, { ...context, ...meta, ...getTraceContext() }),
     info: (message: string, meta: LogMetadata = {}) =>
-      logger.info(message, { ...context, ...meta }),
+      logger.info(message, { ...context, ...meta, ...getTraceContext() }),
     warn: (message: string, meta: LogMetadata = {}) =>
-      logger.warn(message, { ...context, ...meta }),
+      logger.warn(message, { ...context, ...meta, ...getTraceContext() }),
     error: (message: string, meta: LogMetadata = {}) =>
-      logger.error(message, { ...context, ...meta }),
+      logger.error(message, { ...context, ...meta, ...getTraceContext() }),
   }
 }
 
@@ -144,6 +172,7 @@ export const logHttpRequest = (req: HttpRequest, res: HttpResponse, duration: nu
     duration_ms: duration,
     user_agent: req.headers['user-agent'],
     ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress,
+    ...getTraceContext(),
   })
 }
 
@@ -153,6 +182,7 @@ export const logError = (error: Error, context: LogMetadata = {}): void => {
     error: error.name,
     stack: error.stack,
     ...context,
+    ...getTraceContext(),
   })
 }
 
