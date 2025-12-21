@@ -11,14 +11,16 @@ import promClient, { Counter, Gauge, Histogram, Registry } from 'prom-client'
 const register: Registry = promClient.register
 
 // Only initialize default metrics if not already done
-const hasDefaultMetrics =
-  register.getSingleMetric('process_nodejs_cpu_user_seconds_total') !== undefined
+// Use standard metric names without prefix - service differentiation via labels (added by Alloy)
+const hasDefaultMetrics = register.getSingleMetric('process_cpu_user_seconds_total') !== undefined
 
 if (!hasDefaultMetrics) {
   // Add default metrics (CPU, memory, event loop lag, etc.)
+  // No prefix - uses standard Node.js/process metric names
+  // Labels added for service differentiation (runtime helps distinguish from Go backend)
   promClient.collectDefaultMetrics({
     register,
-    prefix: 'process_nodejs_',
+    labels: { runtime: 'nodejs' },
     gcDurationBuckets: [0.001, 0.01, 0.1, 1, 2, 5],
   })
 }
