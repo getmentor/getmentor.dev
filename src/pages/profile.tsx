@@ -7,7 +7,6 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { Footer, NavHeader, Notification, ProfileForm, Section } from '@/components'
 import { getOneMentorById } from '@/server/mentors-data'
 import seo from '@/config/seo'
-import filters from '@/config/filters'
 import analytics from '@/lib/analytics'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
 import logger, { getTraceContext } from '@/lib/logger'
@@ -259,7 +258,6 @@ export default function Profile({
           <ProfileForm
             mentor={{
               ...mentor,
-              tags: mentor.tags.filter((tag) => !filters.sponsors.includes(tag)),
               // Use the newly uploaded image URL if available
               photo_url: uploadedImageUrl || mentor.photo_url,
             }}

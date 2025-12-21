@@ -134,6 +134,10 @@ export default function ProfileForm({
   const [imageError, setImageError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Separate sponsor tags from regular tags
+  const sponsorTags = mentor.tags.filter((tag) => filters.sponsors.includes(tag))
+  const regularTags = mentor.tags.filter((tag) => !filters.sponsors.includes(tag))
+
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0]
     setImageError('') // Clear any previous errors
@@ -201,8 +205,15 @@ export default function ProfileForm({
     }
   }
 
+  // Wrapper to merge sponsor tags with user-selected tags on submit
+  const handleFormSubmit = (data: ProfileFormData): void => {
+    // Merge sponsor tags with the selected tags
+    const allTags = [...data.tags, ...sponsorTags]
+    onSubmit({ ...data, tags: allTags })
+  }
+
   return (
-    <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-8" onSubmit={handleSubmit(handleFormSubmit)}>
       <div>
         <label htmlFor="name" className="block mb-2 font-medium text-gray-700">
           Ваше имя и фамилия
@@ -445,10 +456,26 @@ export default function ProfileForm({
           </Tooltip>
         </label>
 
+        {sponsorTags.length > 0 && (
+          <div className="mb-3">
+            <div className="text-sm text-gray-600 mb-2">Специальные теги (не редактируются):</div>
+            <div className="flex flex-wrap gap-2">
+              {sponsorTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800 border border-amber-300"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         <Controller
           name="tags"
           control={control}
-          defaultValue={mentor.tags}
+          defaultValue={regularTags}
           render={({ field }) => (
             <Select<TagOption, true>
               isMulti
