@@ -18,7 +18,7 @@ import { getOneMentorBySlug } from '@/server/mentors-data'
 import analytics from '@/lib/analytics'
 import { imageLoader } from '@/lib/azure-image-loader'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 import type { MentorBase } from '@/types'
 
 // Rate limiting configuration
@@ -44,14 +44,14 @@ const _getServerSideProps: GetServerSideProps<{ mentor: MentorContact }> = async
   const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam
 
   if (!slug) {
-    logger.warn('Mentor slug missing on contact page')
+    logger.warn('Mentor slug missing on contact page', { ...getTraceContext() })
     return { notFound: true }
   }
 
   const mentor = await getOneMentorBySlug(slug)
 
   if (!mentor) {
-    logger.warn('Mentor not found for contact page', { slug })
+    logger.warn('Mentor not found for contact page', { slug, ...getTraceContext() })
     return {
       notFound: true,
     }
@@ -61,6 +61,7 @@ const _getServerSideProps: GetServerSideProps<{ mentor: MentorContact }> = async
     mentorId: mentor.id,
     mentorSlug: mentor.slug,
     calendarType: mentor.calendarType,
+    ...getTraceContext(),
   })
 
   return {
@@ -300,7 +301,12 @@ function SuccessMessage({ mentor, formData }: SuccessMessageProps) {
             ) : mentor.calendarType === 'calendlab' ? (
               <CalendlabWidget url={mentor.calendarUrl ?? ''} />
             ) : (
-              <a className="button" href={mentor.calendarUrl ?? ''} target="_blank" rel="noreferrer">
+              <a
+                className="button"
+                href={mentor.calendarUrl ?? ''}
+                target="_blank"
+                rel="noreferrer"
+              >
                 Записаться на встречу
               </a>
             )}

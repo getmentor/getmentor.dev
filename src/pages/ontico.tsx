@@ -3,13 +3,22 @@ import Image, { type ImageLoader } from 'next/image'
 import classNames from 'classnames'
 import { useEffect } from 'react'
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import { Footer, MentorsFilters, MentorsList, MentorsSearch, MetaHeader, NavHeader, Section, useMentors } from '@/components'
+import {
+  Footer,
+  MentorsFilters,
+  MentorsList,
+  MentorsSearch,
+  MetaHeader,
+  NavHeader,
+  Section,
+  useMentors,
+} from '@/components'
 import seo from '@/config/seo'
 import { getAllMentors } from '@/server/mentors-data'
 import cloudinary from '@/lib/cloudinary'
 import analytics from '@/lib/analytics'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 import type { MentorListItem } from '@/types'
 
 interface OnticoPageProps {
@@ -50,6 +59,7 @@ const _getServerSideProps: GetServerSideProps<OnticoPageProps> = async (_context
   logger.info('Ontico page rendered', {
     totalMentors: allMentors.length,
     onticoMentors: pageMentors.length,
+    ...getTraceContext(),
   })
 
   return {

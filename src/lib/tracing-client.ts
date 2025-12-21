@@ -7,6 +7,14 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation'
 import { W3CTraceContextPropagator } from '@opentelemetry/core'
 import { trace, Tracer } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+  ATTR_SERVICE_NAMESPACE,
+  ATTR_SERVICE_INSTANCE_ID,
+  ATTR_DEPLOYMENT_ENVIRONMENT,
+} from './semver'
+import { v4 as uuidv4 } from 'uuid'
 
 let isInitialized = false
 
@@ -37,12 +45,16 @@ export function registerClientTracing(): void {
       headers: {},
     })
 
+    // Get or generate service instance ID
+    const instanceId = process.env.SERVICE_INSTANCE_ID || uuidv4()
+
     // Create resource with service information (matches backend namespace)
     const resource = new Resource({
-      'service.name': serviceName,
-      'service.version': serviceVersion,
-      'service.namespace': serviceNamespace,
-      'deployment.environment': environment,
+      [ATTR_SERVICE_NAME]: serviceName,
+      [ATTR_SERVICE_VERSION]: serviceVersion,
+      [ATTR_SERVICE_NAMESPACE]: serviceNamespace,
+      [ATTR_SERVICE_INSTANCE_ID]: instanceId,
+      [ATTR_DEPLOYMENT_ENVIRONMENT]: environment,
     })
 
     // Create tracer provider with resource

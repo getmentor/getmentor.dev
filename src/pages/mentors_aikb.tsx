@@ -4,7 +4,7 @@ import { getAllMentors } from '@/server/mentors-data'
 import seo from '@/config/seo'
 import { imageLoader } from '@/lib/azure-image-loader'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 import type { MentorListItem } from '@/types'
 
 interface MentorsAIKBProps {
@@ -21,6 +21,7 @@ const _getServerSideProps: GetServerSideProps<MentorsAIKBProps> = async (_contex
 
   logger.info('AIKB mentors page rendered', {
     mentorCount: pageMentors.length,
+    ...getTraceContext(),
   })
 
   return {

@@ -12,7 +12,7 @@ import analytics from '@/lib/analytics'
 import pluralize from '@/lib/pluralize'
 import { imageLoader } from '@/lib/azure-image-loader'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 import type { MentorBase } from '@/types'
 
 interface MentorPageProps {
@@ -25,14 +25,14 @@ const _getServerSideProps: GetServerSideProps<MentorPageProps> = async (context)
   const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam
 
   if (!slug) {
-    logger.warn('Mentor slug missing in request')
+    logger.warn('Mentor slug missing in request', { ...getTraceContext() })
     return { notFound: true }
   }
 
   const mentor = await getOneMentorBySlug(slug)
 
   if (!mentor) {
-    logger.warn('Mentor not found', { slug })
+    logger.warn('Mentor not found', { slug, ...getTraceContext() })
     return {
       notFound: true,
     }
@@ -42,6 +42,7 @@ const _getServerSideProps: GetServerSideProps<MentorPageProps> = async (context)
     mentorId: mentor.id,
     mentorSlug: mentor.slug,
     mentorName: mentor.name,
+    ...getTraceContext(),
   })
 
   return {

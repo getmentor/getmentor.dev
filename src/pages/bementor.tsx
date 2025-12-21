@@ -6,13 +6,14 @@ import RegisterMentorForm from '@/components/forms/RegisterMentorForm'
 import analytics from '@/lib/analytics'
 import seo from '@/config/seo'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 import type { RegisterMentorRequest, RegisterMentorResponse } from '@/types/api'
 
 // Add SSR observability for metrics, logs, and traces
 const _getServerSideProps: GetServerSideProps = async (context) => {
   logger.info('Bementor page rendered', {
     userAgent: context.req.headers['user-agent'],
+    ...getTraceContext(),
   })
 
   return {

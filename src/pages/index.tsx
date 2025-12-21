@@ -6,14 +6,23 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { faIdBadge, faComments, faEdit } from '@fortawesome/free-solid-svg-icons'
-import { MentorsFilters, MentorsList, MentorsSearch, MetaHeader, NavHeader, Section, useMentors, Footer } from '@/components'
+import {
+  MentorsFilters,
+  MentorsList,
+  MentorsSearch,
+  MetaHeader,
+  NavHeader,
+  Section,
+  useMentors,
+  Footer,
+} from '@/components'
 import { getAllMentors } from '@/server/mentors-data'
 import donates from '@/config/donates'
 import analytics from '@/lib/analytics'
 import seo from '@/config/seo'
 import { useInView } from 'react-intersection-observer'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 import type { MentorListItem } from '@/types'
 
 interface HomePageProps {
@@ -27,6 +36,7 @@ const _getServerSideProps: GetServerSideProps<HomePageProps> = async (context) =
   logger.info('Index page rendered', {
     mentorCount: pageMentors.length,
     userAgent: context.req.headers['user-agent'],
+    ...getTraceContext(),
   })
 
   return {

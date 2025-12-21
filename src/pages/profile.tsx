@@ -10,7 +10,7 @@ import seo from '@/config/seo'
 import filters from '@/config/filters'
 import analytics from '@/lib/analytics'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 import type {
   MentorWithSecureFields,
   SaveProfileRequest,
@@ -36,14 +36,17 @@ const _getServerSideProps: GetServerSideProps<ProfilePageProps> = async (context
   const idParam = Array.isArray(context.query.id) ? context.query.id[0] : context.query.id
   const mentorId = parseInt(idParam || '', 10)
   if (Number.isNaN(mentorId)) {
-    logger.warn('Invalid mentor ID for profile edit', { id: context.query.id })
+    logger.warn('Invalid mentor ID for profile edit', {
+      id: context.query.id,
+      ...getTraceContext(),
+    })
     return { notFound: true }
   }
 
   const mentor = await getOneMentorById(mentorId, { showHiddenFields: true })
 
   if (!mentor || !hasMentorSecureFields(mentor)) {
-    logger.warn('Mentor not found for profile edit', { id: context.query.id })
+    logger.warn('Mentor not found for profile edit', { id: context.query.id, ...getTraceContext() })
     return { notFound: true }
   }
 
@@ -54,6 +57,7 @@ const _getServerSideProps: GetServerSideProps<ProfilePageProps> = async (context
     logger.warn('Unauthorized profile edit attempt', {
       mentorId: context.query.id,
       hasToken: !!context.query.token,
+      ...getTraceContext(),
     })
     return {
       props: { errorCode: 403, mentor: null },
@@ -63,6 +67,7 @@ const _getServerSideProps: GetServerSideProps<ProfilePageProps> = async (context
   logger.info('Profile edit page rendered', {
     mentorId: mentor.id,
     mentorSlug: mentor.slug,
+    ...getTraceContext(),
   })
 
   return {
