@@ -5,15 +5,14 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 import { Resource } from '@opentelemetry/resources'
 import {
-  SEMRESATTRS_SERVICE_NAME,
-  SEMRESATTRS_SERVICE_VERSION,
-  SEMRESATTRS_SERVICE_NAMESPACE,
-  SEMRESATTRS_SERVICE_INSTANCE_ID,
-  SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
-} from '@opentelemetry/semantic-conventions'
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+  ATTR_SERVICE_NAMESPACE,
+  ATTR_SERVICE_INSTANCE_ID,
+  ATTR_DEPLOYMENT_ENVIRONMENT,
+} from '@opentelemetry/semantic-conventions/incubating'
 import type { SpanExporter } from '@opentelemetry/sdk-trace-base'
 import { v4 as uuidv4 } from 'uuid'
-import os from 'os'
 
 let sdk: NodeSDK | undefined
 
@@ -42,15 +41,15 @@ function registerServerTracing(): void {
   }) as unknown as SpanExporter
 
   // Get or generate service instance ID
-  const instanceId = process.env.SERVICE_INSTANCE_ID || os.hostname() || uuidv4()
+  const instanceId = process.env.SERVICE_INSTANCE_ID || uuidv4()
 
   // Create resource with service information
   const resource = new Resource({
-    [SEMRESATTRS_SERVICE_NAME]: serviceName,
-    [SEMRESATTRS_SERVICE_VERSION]: serviceVersion,
-    [SEMRESATTRS_SERVICE_NAMESPACE]: serviceNamespace,
-    [SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
-    [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: environment,
+    [ATTR_SERVICE_NAME]: serviceName,
+    [ATTR_SERVICE_VERSION]: serviceVersion,
+    [ATTR_SERVICE_NAMESPACE]: serviceNamespace,
+    [ATTR_SERVICE_INSTANCE_ID]: instanceId,
+    [ATTR_DEPLOYMENT_ENVIRONMENT]: environment,
   })
 
   // Initialize Node.js SDK with automatic instrumentation
