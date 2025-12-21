@@ -13,7 +13,7 @@ import {
   ATTR_SERVICE_NAMESPACE,
   ATTR_SERVICE_INSTANCE_ID,
   ATTR_DEPLOYMENT_ENVIRONMENT,
-} from '@opentelemetry/semantic-conventions/incubating'
+} from './semver'
 import { v4 as uuidv4 } from 'uuid'
 
 let isInitialized = false

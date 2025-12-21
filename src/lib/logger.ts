@@ -7,7 +7,6 @@
 import winston from 'winston'
 import DailyRotateFile from 'winston-daily-rotate-file'
 import { trace } from '@opentelemetry/api'
-import os from 'os'
 
 const { combine, timestamp, json, errors, printf } = winston.format
 
@@ -120,8 +119,7 @@ const logger = winston.createLogger({
   defaultMeta: {
     service: process.env.O11Y_FE_SERVICE_NAME || 'getmentor-frontend',
     environment: process.env.NODE_ENV || 'development',
-    'host.name':
-      process.env.HOSTNAME || (typeof window === 'undefined' ? os.hostname() : 'browser'),
+    'host.name': process.env.HOSTNAME || (typeof window === 'undefined' ? 'unknown' : 'browser'),
   },
   transports,
 })
