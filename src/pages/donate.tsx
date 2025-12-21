@@ -5,7 +5,7 @@ import { Footer, MetaHeader, NavHeader, Section } from '@/components'
 import donates from '@/config/donates'
 import seo from '@/config/seo'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 
 type Supporter = {
   name: string
@@ -17,6 +17,7 @@ type Supporter = {
 const _getServerSideProps: GetServerSideProps = async (context) => {
   logger.info('Donate page rendered', {
     userAgent: context.req.headers['user-agent'],
+    ...getTraceContext(),
   })
 
   return {

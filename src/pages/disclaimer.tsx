@@ -3,12 +3,13 @@ import type { GetServerSideProps } from 'next'
 import { Footer, MetaHeader, NavHeader, Section } from '@/components'
 import seo from '@/config/seo'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
-import logger from '@/lib/logger'
+import logger, { getTraceContext } from '@/lib/logger'
 
 // Add SSR observability for metrics, logs, and traces
 const _getServerSideProps: GetServerSideProps = async (context) => {
   logger.info('Disclaimer page rendered', {
     userAgent: context.req.headers['user-agent'],
+    ...getTraceContext(),
   })
 
   return {
