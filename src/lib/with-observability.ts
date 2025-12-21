@@ -20,7 +20,7 @@ export function withObservability(handler: NextApiHandler): NextApiHandler {
     const method = req.method || 'UNKNOWN'
 
     // Track active requests
-    activeRequests.inc({ method, route })
+    activeRequests.inc({ http_request_method: method, http_route: route })
 
     // Patch res.end to capture status code and duration
     const originalEnd = res.end.bind(res)
@@ -30,9 +30,16 @@ export function withObservability(handler: NextApiHandler): NextApiHandler {
       const duration = (Date.now() - start) / 1000 // Convert to seconds
 
       // Record metrics
-      httpRequestDuration.observe({ method, route, status_code: statusCode }, duration)
-      httpRequestTotal.inc({ method, route, status_code: statusCode })
-      activeRequests.dec({ method, route })
+      httpRequestDuration.observe(
+        { http_request_method: method, http_route: route, http_response_status_code: statusCode },
+        duration
+      )
+      httpRequestTotal.inc({
+        http_request_method: method,
+        http_route: route,
+        http_response_status_code: statusCode,
+      })
+      activeRequests.dec({ http_request_method: method, http_route: route })
 
       // Log the request
       logHttpRequest(req, res, duration * 1000) // Convert back to ms for logging
