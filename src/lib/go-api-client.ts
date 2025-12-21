@@ -3,6 +3,7 @@
  * Handles authentication, retries, error handling for calls to the Go API
  */
 
+import { context, propagation } from '@opentelemetry/api'
 import type {
   MentorBase,
   MentorWithSecureFields,
@@ -69,6 +70,9 @@ class GoApiClient {
       'x-internal-mentors-api-auth-token': this.internalToken,
       ...options.headers,
     }
+
+    // Inject W3C Trace Context headers for distributed tracing
+    propagation.inject(context.active(), headers)
 
     try {
       const controller = new AbortController()
