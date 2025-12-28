@@ -92,6 +92,7 @@ const tagsToOptions = (tags: string[]): TagOption[] =>
 
 // All available tags as options
 const tagOptions = tagsToOptions(filters.tags)
+const MAX_TAGS = 5
 
 function isValidUrl(value?: string): boolean {
   if (!value) return true
@@ -452,7 +453,7 @@ export default function RegisterMentorForm({
               isMulti
               value={tagsToOptions(field.value || [])}
               onChange={(newValue: MultiValue<TagOption>) => {
-                if (newValue.length <= 5) {
+                if (newValue.length <= MAX_TAGS) {
                   field.onChange(newValue.map((opt) => opt.value))
                 }
               }}

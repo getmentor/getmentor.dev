@@ -137,6 +137,7 @@ export default function ProfileForm({
   // Separate sponsor tags from regular tags
   const sponsorTags = mentor.tags.filter((tag) => filters.sponsors.includes(tag))
   const regularTags = mentor.tags.filter((tag) => !filters.sponsors.includes(tag))
+  const MAX_TAGS = 5
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0]
@@ -448,10 +449,13 @@ export default function ProfileForm({
           <Tooltip id="tags-tip" place="right">
             <span>
               Здесь вам нужно указать основную вашу текущую специализацию и ту, в которой вы хорошо
-              разбираетесь и готовы оказать помощь. По ним вас будут находить при использовании
-              тегов в поисковом блоке. Они также будут видны в вашем профиле.
+              разбираетесь и готовы оказать помощь.
               <br />
-              До 5 тегов.
+              По ним вас будут находить при использовании тегов в поисковом блоке.
+              <br />
+              Они также будут видны в вашем профиле.
+              <br />
+              Минимум 1, максимум 5 тегов.
             </span>
           </Tooltip>
         </label>
@@ -481,7 +485,9 @@ export default function ProfileForm({
               isMulti
               value={tagsToOptions(field.value || [])}
               onChange={(newValue: MultiValue<TagOption>) => {
-                field.onChange(newValue.map((opt) => opt.value))
+                if (newValue.length < field.value.length || newValue.length <= MAX_TAGS) {
+                  field.onChange(newValue.map((opt) => opt.value))
+                }
               }}
               options={tagOptions}
               closeMenuOnSelect={false}
