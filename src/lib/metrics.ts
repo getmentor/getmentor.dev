@@ -10,14 +10,21 @@ import promClient, { Counter, Gauge, Histogram, Registry } from 'prom-client'
 // This ensures all metrics across all API routes use the same registry instance
 const register: Registry = promClient.register
 
+// Set default labels for ALL metrics in this registry
+// These constant labels are added to every metric automatically
+// Aligns with Grafana Cloud expectations and enables proper service filtering in SLOs
+register.setDefaultLabels({
+  service_name: 'getmentor-frontend',
+})
+
 // Only initialize default metrics if not already done
-// Use standard metric names without prefix - service differentiation via labels (added by Alloy)
+// Use standard metric names without prefix - service differentiation via labels
 const hasDefaultMetrics = register.getSingleMetric('process_cpu_user_seconds_total') !== undefined
 
 if (!hasDefaultMetrics) {
   // Add default metrics (CPU, memory, event loop lag, etc.)
   // No prefix - uses standard Node.js/process metric names
-  // Labels added for service differentiation (runtime helps distinguish from Go backend)
+  // Additional label 'runtime' helps distinguish from Go backend
   promClient.collectDefaultMetrics({
     register,
     labels: { runtime: 'nodejs' },
