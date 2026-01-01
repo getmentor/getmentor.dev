@@ -14,7 +14,7 @@ const register: Registry = promClient.register
 // These constant labels are added to every metric automatically
 // Aligns with Grafana Cloud expectations and enables proper service filtering in SLOs
 register.setDefaultLabels({
-  service_name: 'getmentor-frontend',
+  service_name: process.env.O11Y_FE_SERVICE_NAME || 'getmentor-frontend',
 })
 
 // Only initialize default metrics if not already done
