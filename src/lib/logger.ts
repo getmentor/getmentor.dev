@@ -18,7 +18,7 @@ const LOGGER_CONFIG = {
 } as const
 
 interface LogMetadata {
-  service?: string
+  service_name?: string
   trace_id?: string
   span_id?: string
   trace_flags?: string
@@ -49,8 +49,14 @@ export const getTraceContext = (): Pick<LogMetadata, 'trace_id' | 'span_id' | 't
 
 // Custom format for console output in development
 const consoleFormat = printf(
-  ({ level, message, timestamp: ts, service, ...metadata }: winston.Logform.TransformableInfo) => {
-    let msg = `${ts} [${level}] [${service}]: ${message}`
+  ({
+    level,
+    message,
+    timestamp: ts,
+    service_name,
+    ...metadata
+  }: winston.Logform.TransformableInfo) => {
+    let msg = `${ts} [${level}] [${service_name}]: ${message}`
     if (Object.keys(metadata).length > 0) {
       msg += ` ${JSON.stringify(metadata)}`
     }
@@ -117,7 +123,7 @@ const logger = winston.createLogger({
     json() // JSON format for structured logging
   ),
   defaultMeta: {
-    service: process.env.O11Y_FE_SERVICE_NAME || 'getmentor-frontend',
+    service_name: process.env.O11Y_FE_SERVICE_NAME || 'getmentor-frontend',
     environment: process.env.NODE_ENV || 'development',
     'host.name': process.env.HOSTNAME || (typeof window === 'undefined' ? 'unknown' : 'browser'),
   },
