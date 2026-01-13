@@ -92,6 +92,8 @@ export interface MentorClientRequest {
   status: RequestStatus
   mentorId: string
   reviewUrl: string | null
+  declineReason: string | null
+  declineComment: string | null
 }
 
 /**
@@ -119,12 +121,15 @@ export interface RequestsListResponse {
 
 /**
  * Mentor session data (from auth)
+ * Matches JWT payload from backend
  */
 export interface MentorSession {
-  mentorId: string
+  mentor_id: number
+  airtable_id: string
   email: string
   name: string
-  expiresAt: string // ISO date string
+  exp: number // Unix timestamp
+  iat: number // Unix timestamp
 }
 
 /**
@@ -149,3 +154,8 @@ export interface AuthResponse {
   message?: string
   session?: MentorSession
 }
+
+/**
+ * Sort order for requests list
+ */
+export type SortOrder = 'newest' | 'oldest'

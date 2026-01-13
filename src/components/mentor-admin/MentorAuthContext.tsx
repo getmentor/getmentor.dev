@@ -2,6 +2,7 @@
  * Mentor Authentication Context
  *
  * Provides authentication state and methods for the mentor admin area.
+ * Session is managed via HttpOnly cookies set by the backend.
  */
 
 import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
@@ -22,7 +23,7 @@ interface MentorAuthContextValue {
   requestLogin: (email: string) => Promise<{ success: boolean; message?: string }>
   verifyLogin: (token: string) => Promise<{ success: boolean; message?: string }>
   logout: () => Promise<void>
-  refreshSession: () => void
+  refreshSession: () => Promise<void>
 }
 
 const MentorAuthContext = createContext<MentorAuthContextValue | null>(null)
@@ -35,16 +36,42 @@ export function MentorAuthProvider({ children }: MentorAuthProviderProps): JSX.E
   const [session, setSession] = useState<MentorSession | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Load session on mount
+  // Load session on mount by checking with backend
   useEffect(() => {
-    const storedSession = getMentorSession()
-    setSession(storedSession)
-    setIsLoading(false)
+    let mounted = true
+
+    const loadSession = async (): Promise<void> => {
+      try {
+        const currentSession = await getMentorSession()
+        if (mounted) {
+          setSession(currentSession)
+        }
+      } catch {
+        // Failed to fetch session, likely not authenticated
+        if (mounted) {
+          setSession(null)
+        }
+      } finally {
+        if (mounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadSession()
+
+    return () => {
+      mounted = false
+    }
   }, [])
 
-  const refreshSession = useCallback(() => {
-    const storedSession = getMentorSession()
-    setSession(storedSession)
+  const refreshSession = useCallback(async () => {
+    try {
+      const currentSession = await getMentorSession()
+      setSession(currentSession)
+    } catch {
+      setSession(null)
+    }
   }, [])
 
   const requestLogin = useCallback(async (email: string) => {
@@ -61,9 +88,12 @@ export function MentorAuthProvider({ children }: MentorAuthProviderProps): JSX.E
   }, [])
 
   const logout = useCallback(async () => {
-    await apiLogout()
-    clearMentorSession()
-    setSession(null)
+    try {
+      await apiLogout()
+    } finally {
+      clearMentorSession()
+      setSession(null)
+    }
   }, [])
 
   const value = useMemo(

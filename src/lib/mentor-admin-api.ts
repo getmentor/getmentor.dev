@@ -1,8 +1,8 @@
 /**
- * Mock API service for Mentor Admin
+ * API service for Mentor Admin (Client-side)
  *
- * This file contains mock implementations of the mentor admin API.
- * Will be replaced with actual API calls when backend is ready.
+ * Calls Next.js API routes which proxy to the Go backend.
+ * Uses HttpOnly cookies for session management.
  */
 
 import type {
@@ -11,173 +11,112 @@ import type {
   DeclineRequestPayload,
   MentorSession,
   AuthResponse,
+  RequestsListResponse,
 } from '@/types'
 
-// Simulated network delay
-const MOCK_DELAY = 500
-
-const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
-
 /**
- * Mock data for development
+ * API error class for typed error handling
  */
-const MOCK_REQUESTS: MentorClientRequest[] = [
-  {
-    id: 'req_001',
-    email: 'ivan.petrov@example.com',
-    name: 'Иван Петров',
-    telegram: '@ivan_petrov',
-    details:
-      'Хочу разобраться в архитектуре микросервисов. Работаю бэкенд-разработчиком 2 года, но опыта с микросервисами нет. Интересует как правильно декомпозировать монолит и какие паттерны использовать.',
-    level: 'Middle',
-    createdAt: '2024-01-15T10:30:00Z',
-    modifiedAt: '2024-01-15T10:30:00Z',
-    statusChangedAt: '2024-01-15T10:30:00Z',
-    scheduledAt: null,
-    review: null,
-    status: 'pending',
-    mentorId: 'mentor_001',
-    reviewUrl: null,
-  },
-  {
-    id: 'req_002',
-    email: 'anna.sidorova@example.com',
-    name: 'Анна Сидорова',
-    telegram: '@anna_s',
-    details:
-      'Ищу ментора для подготовки к собеседованиям в FAANG. Хочу системно подготовиться к system design интервью. Есть 5 лет опыта, но никогда не проходила такие собеседования.',
-    level: 'Senior',
-    createdAt: '2024-01-14T15:45:00Z',
-    modifiedAt: '2024-01-16T09:00:00Z',
-    statusChangedAt: '2024-01-16T09:00:00Z',
-    scheduledAt: '2024-01-20T14:00:00Z',
-    review: null,
-    status: 'contacted',
-    mentorId: 'mentor_001',
-    reviewUrl: null,
-  },
-  {
-    id: 'req_003',
-    email: 'sergey.kozlov@example.com',
-    name: 'Сергей Козлов',
-    telegram: '@sergey_k',
-    details:
-      'Хочу перейти из QA в разработку. Изучаю Python последние полгода, написал несколько pet-проектов. Нужна помощь с составлением плана развития и код-ревью.',
-    level: 'Junior',
-    createdAt: '2024-01-10T08:00:00Z',
-    modifiedAt: '2024-01-17T11:30:00Z',
-    statusChangedAt: '2024-01-17T11:30:00Z',
-    scheduledAt: '2024-01-18T16:00:00Z',
-    review: null,
-    status: 'working',
-    mentorId: 'mentor_001',
-    reviewUrl: null,
-  },
-  {
-    id: 'req_004',
-    email: 'maria.volkova@example.com',
-    name: 'Мария Волкова',
-    telegram: '@masha_v',
-    details: 'Интересует карьерный рост до тимлида. Работаю разработчиком 4 года.',
-    level: 'Senior',
-    createdAt: '2024-01-05T12:00:00Z',
-    modifiedAt: '2024-01-12T18:00:00Z',
-    statusChangedAt: '2024-01-12T18:00:00Z',
-    scheduledAt: '2024-01-08T10:00:00Z',
-    review:
-      'Отличный ментор! Помог составить план развития и дал много полезных советов по soft skills.',
-    status: 'done',
-    mentorId: 'mentor_001',
-    reviewUrl: 'https://forms.google.com/review/123',
-  },
-  {
-    id: 'req_005',
-    email: 'dmitry.novikov@example.com',
-    name: 'Дмитрий Новиков',
-    telegram: '@dima_n',
-    details: 'Хочу научиться писать чистый код и изучить паттерны проектирования.',
-    level: 'Junior',
-    createdAt: '2024-01-03T09:30:00Z',
-    modifiedAt: '2024-01-04T14:00:00Z',
-    statusChangedAt: '2024-01-04T14:00:00Z',
-    scheduledAt: null,
-    review: null,
-    status: 'declined',
-    mentorId: 'mentor_001',
-    reviewUrl: null,
-  },
-  {
-    id: 'req_006',
-    email: 'olga.kuznetsova@example.com',
-    name: 'Ольга Кузнецова',
-    telegram: '@olga_k',
-    details: 'Нужна помощь с выбором технологического стека для стартапа.',
-    level: 'Middle',
-    createdAt: '2023-12-28T16:00:00Z',
-    modifiedAt: '2023-12-30T10:00:00Z',
-    statusChangedAt: '2023-12-30T10:00:00Z',
-    scheduledAt: null,
-    review: null,
-    status: 'unavailable',
-    mentorId: 'mentor_001',
-    reviewUrl: null,
-  },
-]
-
-// In-memory store (simulating backend state)
-let requestsStore = [...MOCK_REQUESTS]
-
-/**
- * Mock session storage key
- */
-const SESSION_KEY = 'mentor_session'
-
-/**
- * Get session from localStorage (client-side only)
- */
-export function getMentorSession(): MentorSession | null {
-  if (typeof window === 'undefined') return null
-
-  try {
-    const stored = localStorage.getItem(SESSION_KEY)
-    if (!stored) return null
-
-    const session: MentorSession = JSON.parse(stored)
-
-    // Check if session expired
-    if (new Date(session.expiresAt) < new Date()) {
-      localStorage.removeItem(SESSION_KEY)
-      return null
-    }
-
-    return session
-  } catch {
-    return null
+export class ApiError extends Error {
+  constructor(message: string, public status: number, public details?: unknown) {
+    super(message)
+    this.name = 'ApiError'
   }
 }
 
 /**
- * Set session in localStorage
+ * Make an API request to Next.js API routes
+ * Includes credentials for cookie-based auth
  */
-function setMentorSession(session: MentorSession): void {
-  if (typeof window === 'undefined') return
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session))
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const response = await fetch(endpoint, {
+    ...options,
+    credentials: 'include', // Required for HttpOnly cookies
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+
+  // Handle non-OK responses
+  if (!response.ok) {
+    let errorMessage = 'Произошла ошибка'
+    let errorDetails: unknown
+
+    try {
+      const errorData = await response.json()
+      errorMessage = errorData.error || errorData.message || errorMessage
+      errorDetails = errorData.details
+    } catch {
+      // Response is not JSON
+    }
+
+    throw new ApiError(errorMessage, response.status, errorDetails)
+  }
+
+  // Handle empty responses
+  const contentType = response.headers.get('content-type')
+  if (!contentType || !contentType.includes('application/json')) {
+    return {} as T
+  }
+
+  return response.json()
+}
+
+// ============================================
+// Session Management
+// ============================================
+
+/**
+ * Session cache to avoid repeated API calls
+ * Session is validated via cookies, this is just for UI state
+ */
+let cachedSession: MentorSession | null = null
+
+/**
+ * Get current session from backend
+ * Returns null if not authenticated
+ */
+export async function getMentorSession(): Promise<MentorSession | null> {
+  // Return cached session if available and not expired
+  if (cachedSession && cachedSession.exp * 1000 > Date.now()) {
+    return cachedSession
+  }
+
+  try {
+    const response = await apiRequest<{ success: boolean; session?: MentorSession }>(
+      '/api/mentor/auth/session'
+    )
+
+    if (response.success && response.session) {
+      cachedSession = response.session
+      return response.session
+    }
+
+    return null
+  } catch (error) {
+    // 401 means not authenticated
+    if (error instanceof ApiError && error.status === 401) {
+      cachedSession = null
+      return null
+    }
+    throw error
+  }
 }
 
 /**
- * Clear session from localStorage
+ * Clear cached session
  */
 export function clearMentorSession(): void {
-  if (typeof window === 'undefined') return
-  localStorage.removeItem(SESSION_KEY)
+  cachedSession = null
 }
 
 /**
- * Check if user is authenticated (for SSR)
- * In production, this would verify a cookie with the backend
+ * Check if session is likely valid (client-side check)
+ * Actual validation happens on backend with cookies
  */
-export function isAuthenticated(): boolean {
-  return getMentorSession() !== null
+export function isSessionValid(): boolean {
+  return cachedSession !== null && cachedSession.exp * 1000 > Date.now()
 }
 
 // ============================================
@@ -185,54 +124,100 @@ export function isAuthenticated(): boolean {
 // ============================================
 
 /**
- * Request login (send magic link/token)
+ * Request login token to be sent via email
+ *
+ * For security/privacy reasons, always returns success with a generic message.
+ * This prevents email enumeration attacks.
  */
 export async function requestLogin(email: string): Promise<AuthResponse> {
-  await delay(MOCK_DELAY)
+  const genericSuccessMessage =
+    'Если ваш email зарегистрирован в системе, вы получите ссылку для входа'
 
-  // Mock: accept any email containing 'mentor'
-  if (!email.includes('@')) {
-    return { success: false, message: 'Некорректный email' }
+  try {
+    await apiRequest<{ success: boolean; message?: string }>('/api/mentor/auth/request-login', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    })
+
+    return {
+      success: true,
+      message: genericSuccessMessage,
+    }
+  } catch (error) {
+    // Log for debugging but don't expose details to user
+    console.error('[MentorAdmin] requestLogin error:', error)
+
+    // Only show error for actual network failures
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      return {
+        success: false,
+        message: 'Не удалось подключиться к серверу. Проверьте соединение.',
+      }
+    }
+
+    // For all other errors (including 403, 404, etc.), return generic success
+    // This prevents revealing whether an email exists in the system
+    return {
+      success: true,
+      message: genericSuccessMessage,
+    }
   }
-
-  // In mock mode, we'll auto-generate a token and log it
-  const mockToken = `mock_token_${Date.now()}`
-  console.info(`[MOCK] Login token for ${email}: ${mockToken}`)
-  console.info(`[MOCK] Use callback URL: /mentor/auth/callback?token=${mockToken}`)
-
-  return { success: true, message: 'Ссылка для входа отправлена на вашу почту' }
 }
 
 /**
  * Verify login token and create session
+ * Backend sets HttpOnly cookie on success
  */
 export async function verifyLogin(token: string): Promise<AuthResponse> {
-  await delay(MOCK_DELAY)
+  try {
+    const response = await apiRequest<{
+      success: boolean
+      session?: MentorSession
+      error?: string
+    }>('/api/mentor/auth/verify', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+    })
 
-  // Mock: accept any token starting with 'mock_token_'
-  if (!token.startsWith('mock_token_')) {
-    return { success: false, message: 'Недействительный или просроченный токен' }
+    if (response.success && response.session) {
+      // Cache the session for UI state
+      cachedSession = response.session
+      return {
+        success: true,
+        session: response.session,
+      }
+    }
+
+    return {
+      success: false,
+      message: response.error || 'Не удалось выполнить вход',
+    }
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        message: error.message,
+      }
+    }
+    return {
+      success: false,
+      message: 'Недействительный или просроченный токен',
+    }
   }
-
-  // Create mock session (24 hours)
-  const session: MentorSession = {
-    mentorId: 'mentor_001',
-    email: 'mentor@example.com',
-    name: 'Тестовый Ментор',
-    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-  }
-
-  setMentorSession(session)
-
-  return { success: true, session }
 }
 
 /**
- * Logout - clear session
+ * Logout - clears session cookie
  */
 export async function logout(): Promise<void> {
-  await delay(MOCK_DELAY / 2)
-  clearMentorSession()
+  try {
+    await apiRequest<{ success: boolean }>('/api/mentor/auth/logout', {
+      method: 'POST',
+    })
+  } finally {
+    // Clear cached session regardless of API result
+    cachedSession = null
+  }
 }
 
 // ============================================
@@ -243,47 +228,33 @@ export async function logout(): Promise<void> {
  * Get active requests (pending, contacted, working)
  */
 export async function getActiveRequests(): Promise<MentorClientRequest[]> {
-  await delay(MOCK_DELAY)
-
-  const session = getMentorSession()
-  if (!session) throw new Error('Не авторизован')
-
-  return requestsStore
-    .filter(
-      (r) =>
-        r.mentorId === session.mentorId && ['pending', 'contacted', 'working'].includes(r.status)
-    )
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+  const response = await apiRequest<RequestsListResponse>('/api/mentor/requests?group=active')
+  return response.requests
 }
 
 /**
  * Get past requests (done, declined, unavailable)
  */
 export async function getPastRequests(): Promise<MentorClientRequest[]> {
-  await delay(MOCK_DELAY)
-
-  const session = getMentorSession()
-  if (!session) throw new Error('Не авторизован')
-
-  return requestsStore
-    .filter(
-      (r) =>
-        r.mentorId === session.mentorId && ['done', 'declined', 'unavailable'].includes(r.status)
-    )
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+  const response = await apiRequest<RequestsListResponse>('/api/mentor/requests?group=past')
+  return response.requests
 }
 
 /**
  * Get single request by ID
  */
 export async function getRequestById(id: string): Promise<MentorClientRequest | null> {
-  await delay(MOCK_DELAY)
-
-  const session = getMentorSession()
-  if (!session) throw new Error('Не авторизован')
-
-  const request = requestsStore.find((r) => r.id === id && r.mentorId === session.mentorId)
-  return request || null
+  try {
+    const response = await apiRequest<MentorClientRequest>(
+      `/api/mentor/requests/${encodeURIComponent(id)}`
+    )
+    return response
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null
+    }
+    throw error
+  }
 }
 
 /**
@@ -293,27 +264,14 @@ export async function updateRequestStatus(
   id: string,
   newStatus: RequestStatus
 ): Promise<MentorClientRequest> {
-  await delay(MOCK_DELAY)
-
-  const session = getMentorSession()
-  if (!session) throw new Error('Не авторизован')
-
-  const index = requestsStore.findIndex((r) => r.id === id && r.mentorId === session.mentorId)
-  if (index === -1) throw new Error('Заявка не найдена')
-
-  const request = requestsStore[index]
-
-  // Update the request
-  const updatedRequest: MentorClientRequest = {
-    ...request,
-    status: newStatus,
-    modifiedAt: new Date().toISOString(),
-    statusChangedAt: new Date().toISOString(),
-  }
-
-  requestsStore[index] = updatedRequest
-
-  return updatedRequest
+  const response = await apiRequest<MentorClientRequest>(
+    `/api/mentor/requests/${encodeURIComponent(id)}/status`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ status: newStatus }),
+    }
+  )
+  return response
 }
 
 /**
@@ -323,42 +281,12 @@ export async function declineRequest(
   id: string,
   payload: DeclineRequestPayload
 ): Promise<MentorClientRequest> {
-  await delay(MOCK_DELAY)
-
-  const session = getMentorSession()
-  if (!session) throw new Error('Не авторизован')
-
-  const index = requestsStore.findIndex((r) => r.id === id && r.mentorId === session.mentorId)
-  if (index === -1) throw new Error('Заявка не найдена')
-
-  const request = requestsStore[index]
-
-  // Cannot decline if already done
-  if (request.status === 'done') {
-    throw new Error('Нельзя отклонить завершённую заявку')
-  }
-
-  console.info(
-    `[MOCK] Declining request ${id} with reason: ${payload.reason}, comment: ${
-      payload.comment || 'none'
-    }`
+  const response = await apiRequest<MentorClientRequest>(
+    `/api/mentor/requests/${encodeURIComponent(id)}/decline`,
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }
   )
-
-  const updatedRequest: MentorClientRequest = {
-    ...request,
-    status: 'declined',
-    modifiedAt: new Date().toISOString(),
-    statusChangedAt: new Date().toISOString(),
-  }
-
-  requestsStore[index] = updatedRequest
-
-  return updatedRequest
-}
-
-/**
- * Reset mock data (for testing)
- */
-export function resetMockData(): void {
-  requestsStore = [...MOCK_REQUESTS]
+  return response
 }

@@ -9,13 +9,14 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faInbox } from '@fortawesome/free-solid-svg-icons'
-import type { MentorClientRequest } from '@/types'
+import type { MentorClientRequest, SortOrder } from '@/types'
 import {
   MentorAuthProvider,
   useMentorAuth,
   MentorAdminLayout,
   RequestCard,
   SearchInput,
+  SortToggle,
 } from '@/components/mentor-admin'
 import { getActiveRequests } from '@/lib/mentor-admin-api'
 
@@ -36,6 +37,17 @@ function filterRequests(requests: MentorClientRequest[], query: string): MentorC
   )
 }
 
+/**
+ * Sort requests by creation date
+ */
+function sortRequests(requests: MentorClientRequest[], order: SortOrder): MentorClientRequest[] {
+  return [...requests].sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime()
+    const dateB = new Date(b.createdAt).getTime()
+    return order === 'newest' ? dateB - dateA : dateA - dateB
+  })
+}
+
 function ActiveRequestsContent(): JSX.Element {
   const router = useRouter()
   const { isAuthenticated, isLoading: authLoading } = useMentorAuth()
@@ -43,6 +55,7 @@ function ActiveRequestsContent(): JSX.Element {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('newest')
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -71,10 +84,10 @@ function ActiveRequestsContent(): JSX.Element {
     loadRequests()
   }, [isAuthenticated])
 
-  // Filter requests by search
+  // Filter and sort requests
   const filteredRequests = useMemo(
-    () => filterRequests(requests, searchQuery),
-    [requests, searchQuery]
+    () => sortRequests(filterRequests(requests, searchQuery), sortOrder),
+    [requests, searchQuery, sortOrder]
   )
 
   // Show loading while checking auth
@@ -93,15 +106,16 @@ function ActiveRequestsContent(): JSX.Element {
       </Head>
 
       <MentorAdminLayout title="Активные заявки">
-        {/* Search */}
-        <div className="mb-6">
-          <div className="max-w-md">
+        {/* Search and Sort */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1 max-w-md">
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
               placeholder="Поиск по имени, email, telegram..."
             />
           </div>
+          <SortToggle value={sortOrder} onChange={setSortOrder} />
         </div>
 
         {/* Loading state */}

@@ -87,6 +87,7 @@ export type {
   RequestLoginPayload,
   VerifyLoginPayload,
   AuthResponse,
+  SortOrder,
 } from './mentor-requests'
 export {
   ACTIVE_STATUSES,

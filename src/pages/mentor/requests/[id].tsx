@@ -216,7 +216,6 @@ function RequestDetailsContent(): JSX.Element {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                   <div>
                     <h1 className="text-xl font-semibold text-gray-900">{request.name}</h1>
-                    <p className="text-sm text-gray-500 mt-1">ID: {request.id}</p>
                   </div>
                   <StatusBadge status={request.status} className="self-start" />
                 </div>
@@ -241,17 +240,6 @@ function RequestDetailsContent(): JSX.Element {
                     <h2 className="text-lg font-medium text-gray-900">Отзыв</h2>
                   </div>
                   <p className="text-gray-700 whitespace-pre-wrap mb-4">{request.review}</p>
-                  {request.reviewUrl && (
-                    <a
-                      href={request.reviewUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-indigo-600 hover:text-indigo-500"
-                    >
-                      Открыть форму отзыва
-                      <FontAwesomeIcon icon={faExternalLinkAlt} className="ml-1" />
-                    </a>
-                  )}
                 </div>
               )}
             </div>

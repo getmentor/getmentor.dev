@@ -9,13 +9,14 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faArchive } from '@fortawesome/free-solid-svg-icons'
-import type { MentorClientRequest } from '@/types'
+import type { MentorClientRequest, SortOrder } from '@/types'
 import {
   MentorAuthProvider,
   useMentorAuth,
   MentorAdminLayout,
   RequestCard,
   SearchInput,
+  SortToggle,
 } from '@/components/mentor-admin'
 import { getPastRequests } from '@/lib/mentor-admin-api'
 
@@ -38,6 +39,17 @@ function filterRequests(requests: MentorClientRequest[], query: string): MentorC
   )
 }
 
+/**
+ * Sort requests by creation date
+ */
+function sortRequests(requests: MentorClientRequest[], order: SortOrder): MentorClientRequest[] {
+  return [...requests].sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime()
+    const dateB = new Date(b.createdAt).getTime()
+    return order === 'newest' ? dateB - dateA : dateA - dateB
+  })
+}
+
 function PastRequestsContent(): JSX.Element {
   const router = useRouter()
   const { isAuthenticated, isLoading: authLoading } = useMentorAuth()
@@ -45,6 +57,8 @@ function PastRequestsContent(): JSX.Element {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('newest')
+  const [showOnlyWithReview, setShowOnlyWithReview] = useState(false)
   const [displayCount, setDisplayCount] = useState(PAGE_SIZE)
 
   // Redirect to login if not authenticated
@@ -74,11 +88,14 @@ function PastRequestsContent(): JSX.Element {
     loadRequests()
   }, [isAuthenticated])
 
-  // Filter requests by search
-  const filteredRequests = useMemo(
-    () => filterRequests(requests, searchQuery),
-    [requests, searchQuery]
-  )
+  // Filter and sort requests
+  const filteredRequests = useMemo(() => {
+    let result = filterRequests(requests, searchQuery)
+    if (showOnlyWithReview) {
+      result = result.filter((r) => r.review && r.review.trim() !== '')
+    }
+    return sortRequests(result, sortOrder)
+  }, [requests, searchQuery, sortOrder, showOnlyWithReview])
 
   // Paginated requests
   const displayedRequests = useMemo(
@@ -92,10 +109,10 @@ function PastRequestsContent(): JSX.Element {
     setDisplayCount((prev) => Math.min(prev + PAGE_SIZE, filteredRequests.length))
   }
 
-  // Reset pagination when search changes
+  // Reset pagination when search, sort, or filter changes
   useEffect(() => {
     setDisplayCount(PAGE_SIZE)
-  }, [searchQuery])
+  }, [searchQuery, sortOrder, showOnlyWithReview])
 
   // Show loading while checking auth
   if (authLoading || !isAuthenticated) {
@@ -113,15 +130,26 @@ function PastRequestsContent(): JSX.Element {
       </Head>
 
       <MentorAdminLayout title="Архив заявок">
-        {/* Search */}
-        <div className="mb-6">
-          <div className="max-w-md">
+        {/* Search, Sort, and Filter */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1 max-w-md">
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
               placeholder="Поиск по имени, email, telegram..."
             />
           </div>
+          <SortToggle value={sortOrder} onChange={setSortOrder} />
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showOnlyWithReview}
+              onChange={(e) => setShowOnlyWithReview(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            <span className="ms-3 text-sm font-medium text-gray-700">С отзывом</span>
+          </label>
         </div>
 
         {/* Loading state */}
