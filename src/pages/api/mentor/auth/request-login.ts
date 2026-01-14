@@ -20,20 +20,35 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
     return
   }
 
+  // Generic success response to prevent email enumeration attacks
+  const genericSuccessResponse = {
+    success: true,
+    message: 'Если ваш email зарегистрирован в системе, вы получите ссылку для входа',
+  }
+
   try {
     const client = getGoApiClient()
-    const data = await client.mentorRequestLogin(email)
-    res.status(200).json(data)
+    await client.mentorRequestLogin(email)
+    // Always return generic success message
+    res.status(200).json(genericSuccessResponse)
   } catch (error) {
     if (error instanceof HttpError) {
-      // Forward error status from Go API
-      const status = error.statusCode >= 400 && error.statusCode < 600 ? error.statusCode : 500
-      try {
-        const errorData = JSON.parse(error.body)
-        res.status(status).json(errorData)
-      } catch {
-        res.status(status).json({ success: false, message: error.message })
+      // Log the actual error for debugging
+      logError(new Error(`Request login failed: ${error.statusCode} ${error.body}`), {
+        context: 'mentor-request-login',
+        email,
+        statusCode: error.statusCode,
+      })
+
+      // For 4xx errors (not found, forbidden, etc.), return 200 with generic message
+      // to prevent email enumeration attacks
+      if (error.statusCode >= 400 && error.statusCode < 500) {
+        res.status(200).json(genericSuccessResponse)
+        return
       }
+
+      // Only expose 5xx as actual errors
+      res.status(500).json({ success: false, message: 'Internal server error' })
       return
     }
 
