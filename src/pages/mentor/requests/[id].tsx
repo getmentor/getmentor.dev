@@ -32,6 +32,12 @@ import {
 import { getRequestById, updateRequestStatus, declineRequest } from '@/lib/mentor-admin-api'
 
 /**
+ * Statuses that are temporarily disabled (should use Telegram bot)
+ */
+const DISABLED_STATUSES: RequestStatus[] = ['done', 'declined']
+const DISABLED_STATUS_HINT = 'Извините, эти команды пока недоступны. Воспользуйтесь телеграм ботом.'
+
+/**
  * Get the next status in the workflow
  */
 function getNextStatus(currentStatus: RequestStatus): RequestStatus | null {
@@ -45,6 +51,13 @@ function getNextStatus(currentStatus: RequestStatus): RequestStatus | null {
  */
 function canDecline(status: RequestStatus): boolean {
   return STATUS_TRANSITIONS[status].includes('declined')
+}
+
+/**
+ * Check if a status transition is disabled
+ */
+function isStatusDisabled(status: RequestStatus): boolean {
+  return DISABLED_STATUSES.includes(status)
 }
 
 interface InfoRowProps {
@@ -306,33 +319,50 @@ function RequestDetailsContent(): JSX.Element {
                   {(() => {
                     const nextStatus = getNextStatus(request.status)
                     if (!nextStatus) return null
+                    const isDisabled = isStatusDisabled(nextStatus)
                     return (
-                      <button
-                        onClick={() => handleStatusChange(nextStatus)}
-                        disabled={isUpdatingStatus}
-                        className="w-full px-4 py-2 text-sm font-medium text-white bg-[#1A2238] rounded-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
-                      >
-                        {isUpdatingStatus ? (
-                          <>
-                            <FontAwesomeIcon icon={faCircleNotch} className="animate-spin mr-2" />
-                            Обновление...
-                          </>
-                        ) : (
-                          `Перевести в "${STATUS_LABELS[nextStatus]}"`
+                      <div className="relative group">
+                        <button
+                          onClick={() => !isDisabled && handleStatusChange(nextStatus)}
+                          disabled={isUpdatingStatus || isDisabled}
+                          className="w-full px-4 py-2 text-sm font-medium text-white bg-[#1A2238] rounded-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+                        >
+                          {isUpdatingStatus ? (
+                            <>
+                              <FontAwesomeIcon icon={faCircleNotch} className="animate-spin mr-2" />
+                              Обновление...
+                            </>
+                          ) : (
+                            `Перевести в "${STATUS_LABELS[nextStatus]}"`
+                          )}
+                        </button>
+                        {isDisabled && (
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                            {DISABLED_STATUS_HINT}
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                          </div>
                         )}
-                      </button>
+                      </div>
                     )
                   })()}
 
                   {/* Decline button */}
                   {canDecline(request.status) && (
-                    <button
-                      onClick={() => setShowDeclineModal(true)}
-                      disabled={isUpdatingStatus}
-                      className="w-full px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      Отклонить заявку
-                    </button>
+                    <div className="relative group">
+                      <button
+                        onClick={() => !isStatusDisabled('declined') && setShowDeclineModal(true)}
+                        disabled={isUpdatingStatus || isStatusDisabled('declined')}
+                        className="w-full px-4 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Отклонить заявку
+                      </button>
+                      {isStatusDisabled('declined') && (
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                          {DISABLED_STATUS_HINT}
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                      )}
+                    </div>
                   )}
 
                   {/* No actions available */}
