@@ -144,9 +144,6 @@ export async function requestLogin(email: string): Promise<AuthResponse> {
       message: genericSuccessMessage,
     }
   } catch (error) {
-    // Log for debugging but don't expose details to user
-    console.error('[MentorAdmin] requestLogin error:', error)
-
     // Only show error for actual network failures
     if (error instanceof TypeError && error.message.includes('fetch')) {
       return {
