@@ -91,7 +91,14 @@ export default function MentorAdminLayout({
                 isActive={isActive('/mentor/past')}
               />
               <div className="h-6 w-px bg-gray-200 mx-2" />
-              {session && <span className="text-sm text-gray-500 mr-2">{session.name}</span>}
+              {session && (
+                <Link
+                  href="/mentor/profile/edit"
+                  className="text-sm text-gray-500 hover:text-gray-700 mr-2"
+                >
+                  {session.name}
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 disabled={isLoggingOut}
@@ -143,7 +150,14 @@ export default function MentorAdminLayout({
                 isActive={isActive('/mentor/past')}
               />
               <div className="border-t border-gray-200 my-2" />
-              {session && <p className="px-4 py-2 text-sm text-gray-500">{session.name}</p>}
+              {session && (
+                <Link
+                  href="/mentor/profile/edit"
+                  className="block px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-md"
+                >
+                  {session.name}
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 disabled={isLoggingOut}

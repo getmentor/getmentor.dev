@@ -325,9 +325,7 @@ class GoApiClient {
    * Verify mentor login token
    * Returns response with Set-Cookie header for session
    */
-  async mentorVerifyLogin(
-    token: string
-  ): Promise<{
+  async mentorVerifyLogin(token: string): Promise<{
     data: { success: boolean; session?: MentorSession; error?: string }
     headers: Headers
   }> {
@@ -422,6 +420,48 @@ class GoApiClient {
       'POST',
       `/api/v1/mentor/requests/${encodeURIComponent(id)}/decline`,
       { cookies, body: payload as unknown as Record<string, unknown> }
+    )
+    return data
+  }
+
+  /**
+   * Get mentor's own profile (using session auth)
+   */
+  async mentorGetProfile(cookies: string): Promise<{ mentor: MentorWithSecureFields }> {
+    const { data } = await this.requestWithCookies<{ mentor: MentorWithSecureFields }>(
+      'GET',
+      '/api/v1/mentor/profile',
+      { cookies }
+    )
+    return data
+  }
+
+  /**
+   * Save mentor's own profile (using session auth)
+   */
+  async mentorSaveProfile(
+    cookies: string,
+    profileData: SaveProfileRequest
+  ): Promise<SaveProfileResponse> {
+    const { data } = await this.requestWithCookies<SaveProfileResponse>(
+      'POST',
+      '/api/v1/mentor/profile',
+      { cookies, body: profileData as unknown as Record<string, unknown> }
+    )
+    return data
+  }
+
+  /**
+   * Upload mentor's profile picture (using session auth)
+   */
+  async mentorUploadProfilePicture(
+    cookies: string,
+    imageData: UploadProfilePictureRequest
+  ): Promise<UploadProfilePictureResponse> {
+    const { data } = await this.requestWithCookies<UploadProfilePictureResponse>(
+      'POST',
+      '/api/v1/mentor/profile/picture',
+      { cookies, body: imageData as unknown as Record<string, unknown> }
     )
     return data
   }
