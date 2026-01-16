@@ -1,4 +1,11 @@
-import type { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, GetStaticProps, GetStaticPropsContext, GetStaticPropsResult } from 'next'
+import type {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+  GetStaticProps,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from 'next'
 import { pageViews, serverSideRenderDuration, mentorProfileViews } from './metrics'
 import { logError } from './logger'
 
@@ -30,7 +37,7 @@ export function withSSRObservability<P extends { [key: string]: unknown }>(
 
     try {
       // Call the original function
-      const result = await getServerSidePropsFunc(context) as SSRResult<P>
+      const result = (await getServerSidePropsFunc(context)) as SSRResult<P>
 
       // Check if it's a redirect or notFound
       if (result.redirect) {
@@ -41,8 +48,7 @@ export function withSSRObservability<P extends { [key: string]: unknown }>(
 
       // Track mentor profile views if this is a mentor page
       if (pageName === 'mentor-detail' && context.params?.slug && status === 'success') {
-        const slug = Array.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug
-        mentorProfileViews.inc({ mentor_slug: slug })
+        mentorProfileViews.inc()
       }
 
       const duration = (Date.now() - start) / 1000
@@ -79,7 +85,7 @@ export function withStaticPropsObservability<P extends { [key: string]: unknown 
     let status: SSRStatus = 'success'
 
     try {
-      const result = await getStaticPropsFunc(context) as SSRResult<P>
+      const result = (await getStaticPropsFunc(context)) as SSRResult<P>
 
       if (result.redirect) {
         status = 'redirect'
