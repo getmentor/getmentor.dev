@@ -11,12 +11,32 @@ import { logHttpRequest, logError } from './logger'
 type NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<void> | void
 
 /**
+ * Normalize dynamic route segments to prevent cardinality explosion in metrics.
+ * Converts actual IDs to route templates (e.g., /api/mentor/requests/rec123 -> /api/mentor/requests/:id)
+ */
+function normalizeRoute(url: string): string {
+  const path = url.split('?')[0]
+
+  // Pattern for Airtable record IDs (rec followed by alphanumeric chars)
+  // Used in: /api/mentor/requests/[id], /api/mentor/requests/[id]/status, etc.
+  const normalized = path
+    // Normalize /api/mentor/requests/rec... paths
+    .replace(/\/api\/mentor\/requests\/rec[A-Za-z0-9]+/, '/api/mentor/requests/:id')
+    // Normalize /mentor/[slug] patterns (mentor slugs are lowercase with hyphens)
+    .replace(/\/mentor\/[a-z0-9-]+(?:\/|$)/, '/mentor/:slug/')
+    // Remove trailing slash for consistency
+    .replace(/\/$/, '')
+
+  return normalized || 'unknown'
+}
+
+/**
  * Higher-order function that wraps API routes with observability instrumentation
  */
 export function withObservability(handler: NextApiHandler): NextApiHandler {
   return async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     const start = Date.now()
-    const route = req.url?.split('?')[0] || 'unknown'
+    const route = normalizeRoute(req.url || '')
     const method = req.method || 'UNKNOWN'
 
     // Track active requests
