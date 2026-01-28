@@ -127,7 +127,7 @@ export const pageViews: Counter<string> = getOrCreateCounter({
 export const mentorProfileViews: Counter<string> = getOrCreateCounter({
   name: 'getmentor_mentor_profile_views_total',
   help: 'Total number of mentor profile views',
-  labelNames: ['mentor_slug'],
+  labelNames: [],
   registers: [register],
 })
 
