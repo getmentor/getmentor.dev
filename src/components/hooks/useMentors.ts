@@ -72,12 +72,12 @@ export default function useMentors(
 
   // filter by experience
   if (selectedExperience.length) {
-    const selectedAirtableExperience = selectedExperience.map(
+    const experienceValues = selectedExperience.map(
       (e) => filters.experience[e as keyof typeof filters.experience]
     )
 
     filteredMentors = filteredMentors.filter((mentor) =>
-      selectedAirtableExperience.includes(mentor.experience)
+      experienceValues.includes(mentor.experience)
     )
   }
 
