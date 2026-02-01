@@ -1,6 +1,6 @@
 /**
  * Data access layer for mentor data
- * Now uses Go API backend instead of direct Airtable access
+ * Now uses Go API backend with PostgreSQL instead of direct Airtable access
  */
 
 import type {
@@ -46,7 +46,7 @@ export async function getOneMentorById(
 }
 
 /**
- * Get a single mentor by Airtable record ID
+ * Get a single mentor by UUID
  */
 export async function getOneMentorByRecordId(
   rec: string,
