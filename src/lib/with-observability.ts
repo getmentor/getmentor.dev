@@ -17,11 +17,14 @@ type NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<voi
 function normalizeRoute(url: string): string {
   const path = url.split('?')[0]
 
-  // Pattern for Airtable record IDs (rec followed by alphanumeric chars)
+  // Pattern for PostgreSQL UUIDs (8-4-4-4-12 hex format)
   // Used in: /api/mentor/requests/[id], /api/mentor/requests/[id]/status, etc.
   const normalized = path
-    // Normalize /api/mentor/requests/rec... paths
-    .replace(/\/api\/mentor\/requests\/rec[A-Za-z0-9]+/, '/api/mentor/requests/:id')
+    // Normalize /api/mentor/requests/uuid... paths
+    .replace(
+      /\/api\/mentor\/requests\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+      '/api/mentor/requests/:id'
+    )
     // Normalize /mentor/[slug] patterns (mentor slugs are lowercase with hyphens)
     .replace(/\/mentor\/[a-z0-9-]+(?:\/|$)/, '/mentor/:slug/')
     // Remove trailing slash for consistency
