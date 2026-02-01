@@ -6,7 +6,7 @@ import type { MentorListItem } from '@/types'
 const baseMentors: MentorListItem[] = [
   {
     id: 1,
-    airtableId: 'rec1',
+    mentorId: 'rec1',
     slug: 'frontend-mentor',
     name: 'Frontend Mentor',
     job: 'FE',
@@ -26,7 +26,7 @@ const baseMentors: MentorListItem[] = [
   },
   {
     id: 2,
-    airtableId: 'rec2',
+    mentorId: 'rec2',
     slug: 'backend-mentor',
     name: 'Backend Mentor',
     job: 'BE',

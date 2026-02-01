@@ -78,7 +78,7 @@ export type Tag = MentorTag | SponsorTag
  */
 export interface MentorBase {
   id: number
-  airtableId: string
+  mentorId: string
   slug: string
   name: string
   job: string

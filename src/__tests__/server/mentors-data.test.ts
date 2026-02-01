@@ -40,7 +40,7 @@ const mockClient = mockGoApiModule.__mockClient
 const mockMentorList: MentorListItem[] = [
   {
     id: 1,
-    airtableId: 'rec1',
+    mentorId: 'rec1',
     slug: 'john-doe',
     name: 'John Doe',
     job: 'Senior Developer',
@@ -60,7 +60,7 @@ const mockMentorList: MentorListItem[] = [
   },
   {
     id: 2,
-    airtableId: 'rec2',
+    mentorId: 'rec2',
     slug: 'jane-smith',
     name: 'Jane Smith',
     job: 'Tech Lead',
@@ -82,7 +82,7 @@ const mockMentorList: MentorListItem[] = [
 
 const mockMentorWithSecure: MentorWithSecureFields = {
   id: 1,
-  airtableId: 'rec1',
+  mentorId: 'rec1',
   slug: 'john-doe',
   name: 'John Doe',
   job: 'Senior Developer',
