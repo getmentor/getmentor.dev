@@ -40,7 +40,7 @@ const mockClient = mockGoApiModule.__mockClient
 const mockMentorList: MentorListItem[] = [
   {
     id: 1,
-    mentorId: 'rec1',
+    mentorId: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
     slug: 'john-doe',
     name: 'John Doe',
     job: 'Senior Developer',
@@ -60,7 +60,7 @@ const mockMentorList: MentorListItem[] = [
   },
   {
     id: 2,
-    mentorId: 'rec2',
+    mentorId: 'b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e',
     slug: 'jane-smith',
     name: 'Jane Smith',
     job: 'Tech Lead',
@@ -192,12 +192,15 @@ describe('mentors-data', () => {
   })
 
   describe('getOneMentorByRecordId', () => {
-    it('returns mentor by Airtable record ID', async () => {
+    it('returns mentor by UUID', async () => {
       mockClient.getOneMentorByRecordId.mockResolvedValue(mockMentorList[0])
 
-      const result = await getOneMentorByRecordId('rec1')
+      const result = await getOneMentorByRecordId('a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d')
 
-      expect(mockClient.getOneMentorByRecordId).toHaveBeenCalledWith('rec1', {})
+      expect(mockClient.getOneMentorByRecordId).toHaveBeenCalledWith(
+        'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
+        {}
+      )
       expect(result).toEqual(mockMentorList[0])
     })
   })
