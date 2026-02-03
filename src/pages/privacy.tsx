@@ -195,7 +195,7 @@ export default function Privacy(): JSX.Element {
           </p>
 
           <ul>
-            <li>Airtable — хранение и управление данными;</li>
+            <li>PostgreSQL (Managed Database Service) — хранение и управление данными;</li>
             <li>SendGrid (Twilio) — отправка транзакционных email-уведомлений;</li>
             <li>Grafana Cloud — логирование и мониторинг;</li>
             <li>Яндекс.Метрика — веб-аналитика;</li>
