@@ -34,9 +34,9 @@ export default function Donate(): JSX.Element {
       level: 4,
       url: 'https://getmentor.dev/mentor/anton-alekseev-4855',
     },
+    { name: 'Roman Podymov', level: 2 },
+    { name: 'Katsiaryna Kukso', level: 2 },
     { name: 'usukololgubu', level: 2 },
-    { name: 'Александр Терехин', level: 2 },
-    { name: 'Kirill Krasnoshchekov', level: 2 },
 
     // { name: 'Стример', level: 2 },
     // { name: 'Меценат', level: 3 },
