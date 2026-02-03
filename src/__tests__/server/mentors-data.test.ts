@@ -99,7 +99,6 @@ const mockMentorWithSecure: MentorWithSecureFields = {
   isVisible: true,
   isNew: false,
   calendarType: 'calendly',
-  authToken: 'secret-token-123',
   calendarUrl: 'https://calendly.com/john-doe',
 }
 
@@ -167,7 +166,6 @@ describe('mentors-data', () => {
       expect(mockClient.getOneMentorBySlug).toHaveBeenCalledWith('john-doe', {
         showHiddenFields: true,
       })
-      expect(result).toHaveProperty('authToken')
       expect(result).toHaveProperty('calendarUrl')
     })
   })

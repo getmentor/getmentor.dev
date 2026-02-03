@@ -102,7 +102,6 @@ export interface MentorBase {
  * Mentor with hidden/secure fields (for authenticated access)
  */
 export interface MentorWithSecureFields extends MentorBase {
-  authToken: string
   calendarUrl: string | null
 }
 
@@ -120,5 +119,5 @@ export interface MentorListItem extends Omit<MentorBase, 'description' | 'about'
 export function hasMentorSecureFields(
   mentor: MentorBase | MentorWithSecureFields
 ): mentor is MentorWithSecureFields {
-  return 'authToken' in mentor
+  return 'calendarUrl' in mentor
 }

@@ -191,40 +191,6 @@ class GoApiClient {
   }
 
   /**
-   * Save mentor profile
-   */
-  async saveProfile(
-    mentorId: string,
-    authToken: string,
-    profileData: SaveProfileRequest
-  ): Promise<SaveProfileResponse> {
-    return this.request<SaveProfileResponse>('POST', '/api/v1/save-profile', {
-      headers: {
-        'X-Mentor-ID': mentorId,
-        'X-Auth-Token': authToken,
-      },
-      body: profileData as unknown as Record<string, unknown>,
-    })
-  }
-
-  /**
-   * Upload profile picture
-   */
-  async uploadProfilePicture(
-    mentorId: string,
-    authToken: string,
-    imageData: UploadProfilePictureRequest
-  ): Promise<UploadProfilePictureResponse> {
-    return this.request<UploadProfilePictureResponse>('POST', '/api/v1/upload-profile-picture', {
-      headers: {
-        'X-Mentor-ID': mentorId,
-        'X-Auth-Token': authToken,
-      },
-      body: imageData as unknown as Record<string, unknown>,
-    })
-  }
-
-  /**
    * Contact a mentor
    */
   async contactMentor(contactData: ContactMentorRequest): Promise<ContactMentorResponse> {
