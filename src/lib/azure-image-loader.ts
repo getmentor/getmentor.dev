@@ -18,10 +18,10 @@ export function imageLoader({ src, width, quality }: ImageLoaderParams): string 
     'https://' + STORAGE_DOMAIN + (process.env.NEXT_PUBLIC_CDN_ENDPOINT ? '' : '/' + STORAGE_BUCKET)
 
   let size: ImageSize = 'full'
-  if (width && width <= 900) {
-    size = 'large'
-  } else if (width && width <= 36) {
+  if (width && width <= 36) {
     size = 'small'
+  } else if (width && width <= 900) {
+    size = 'large'
   }
 
   if (quality === 'full' || quality === 'large' || quality === 'small') {
