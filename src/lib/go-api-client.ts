@@ -173,15 +173,15 @@ class GoApiClient {
   }
 
   /**
-   * Get a single mentor by Airtable record ID
+   * Get a single mentor by UUID
    */
-  async getOneMentorByRecordId(
-    rec: string,
+  async getOneMentorByUuid(
+    uuid: string,
     params: GetOneMentorParams = {}
   ): Promise<MentorBase | MentorWithSecureFields> {
     return this.request<MentorBase | MentorWithSecureFields>(
       'POST',
-      `/api/v1/internal/mentors?rec=${rec}`,
+      `/api/v1/internal/mentors?rec=${uuid}`,
       {
         body: {
           show_hidden: params.showHiddenFields,

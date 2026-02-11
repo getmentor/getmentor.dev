@@ -48,11 +48,11 @@ export async function getOneMentorById(
 /**
  * Get a single mentor by UUID
  */
-export async function getOneMentorByRecordId(
-  rec: string,
+export async function getOneMentorByUuid(
+  uuid: string,
   params: GetOneMentorParams = {}
 ): Promise<MentorBase | MentorWithSecureFields> {
-  const result = await client.getOneMentorByRecordId(rec, params)
+  const result = await client.getOneMentorByUuid(uuid, params)
   // Go API returns single object, not array
   return result
 }

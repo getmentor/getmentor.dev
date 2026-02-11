@@ -6,7 +6,7 @@ jest.mock('@/lib/go-api-client', () => {
     getAllMentors: jest.fn(),
     getOneMentorBySlug: jest.fn(),
     getOneMentorById: jest.fn(),
-    getOneMentorByRecordId: jest.fn(),
+    getOneMentorByUuid: jest.fn(),
     forceRefreshCache: jest.fn(),
   }
   return {
@@ -20,7 +20,7 @@ import {
   getAllMentors,
   getOneMentorBySlug,
   getOneMentorById,
-  getOneMentorByRecordId,
+  getOneMentorByUuid,
   forceRefreshCache,
 } from '@/server/mentors-data'
 import { getGoApiClient } from '@/lib/go-api-client'
@@ -31,7 +31,7 @@ const mockGoApiModule = jest.requireMock('@/lib/go-api-client') as {
     getAllMentors: jest.Mock
     getOneMentorBySlug: jest.Mock
     getOneMentorById: jest.Mock
-    getOneMentorByRecordId: jest.Mock
+    getOneMentorByUuid: jest.Mock
     forceRefreshCache: jest.Mock
   }
 }
@@ -189,13 +189,13 @@ describe('mentors-data', () => {
     })
   })
 
-  describe('getOneMentorByRecordId', () => {
+  describe('getOneMentorByUuid', () => {
     it('returns mentor by UUID', async () => {
-      mockClient.getOneMentorByRecordId.mockResolvedValue(mockMentorList[0])
+      mockClient.getOneMentorByUuid.mockResolvedValue(mockMentorList[0])
 
-      const result = await getOneMentorByRecordId('a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d')
+      const result = await getOneMentorByUuid('a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d')
 
-      expect(mockClient.getOneMentorByRecordId).toHaveBeenCalledWith(
+      expect(mockClient.getOneMentorByUuid).toHaveBeenCalledWith(
         'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
         {}
       )
