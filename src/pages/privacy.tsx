@@ -196,7 +196,7 @@ export default function Privacy(): JSX.Element {
 
           <ul>
             <li>PostgreSQL (Managed Database Service) — хранение и управление данными;</li>
-            <li>SendGrid (Twilio) — отправка транзакционных email-уведомлений;</li>
+            <li>Yandex Cloud Postbox — отправка транзакционных email-уведомлений;</li>
             <li>Grafana Cloud — логирование и мониторинг;</li>
             <li>Яндекс.Метрика — веб-аналитика;</li>
             <li>Mixpanel — продуктовая аналитика.</li>
