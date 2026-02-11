@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import register from '@/lib/metrics'
 
@@ -37,7 +38,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
   }
 
   // Constant-time comparison to prevent timing attacks
-  if (authToken !== expectedToken) {
+  const a = Buffer.from(authToken)
+  const b = Buffer.from(expectedToken)
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     res.status(403).json({ error: 'Invalid authentication token' })
     return
   }
