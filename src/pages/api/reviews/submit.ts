@@ -5,12 +5,16 @@ import { withObservability } from '@/lib/with-observability'
 
 interface SubmitReviewRequest {
   requestId: string
-  review: string
+  mentorReview: string
+  platformReview?: string
+  improvements?: string
+  recaptchaToken: string
 }
 
 interface SubmitReviewResponse {
   success: boolean
-  message?: string
+  reviewId?: string
+  error?: string
 }
 
 interface ErrorResponse {
@@ -32,7 +36,8 @@ async function handler(
   }
 
   try {
-    const { requestId, review } = req.body as SubmitReviewRequest
+    const { requestId, mentorReview, platformReview, improvements, recaptchaToken } =
+      req.body as SubmitReviewRequest
 
     // Validation
     if (!requestId || typeof requestId !== 'string') {
@@ -40,13 +45,18 @@ async function handler(
       return
     }
 
-    if (!review || typeof review !== 'string' || !review.trim()) {
+    if (!mentorReview || typeof mentorReview !== 'string' || !mentorReview.trim()) {
       res.status(400).json({ error: 'Review text is required' })
       return
     }
 
-    if (review.length > 5000) {
+    if (mentorReview.length > 5000) {
       res.status(400).json({ error: 'Review text is too long (max 5000 characters)' })
+      return
+    }
+
+    if (!recaptchaToken || typeof recaptchaToken !== 'string') {
+      res.status(400).json({ error: 'Captcha token is required' })
       return
     }
 
@@ -56,7 +66,12 @@ async function handler(
       'POST',
       `/api/v1/reviews/${encodeURIComponent(requestId)}`,
       {
-        body: { review: review.trim() },
+        body: {
+          mentorReview: mentorReview.trim(),
+          platformReview: (platformReview || '').trim(),
+          improvements: (improvements || '').trim(),
+          recaptchaToken,
+        },
       }
     )
 
