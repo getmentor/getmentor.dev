@@ -72,12 +72,12 @@ export default function useMentors(
 
   // filter by experience
   if (selectedExperience.length) {
-    const selectedAirtableExperience = selectedExperience.map(
+    const experienceValues = selectedExperience.map(
       (e) => filters.experience[e as keyof typeof filters.experience]
     )
 
     filteredMentors = filteredMentors.filter((mentor) =>
-      selectedAirtableExperience.includes(mentor.experience)
+      experienceValues.includes(mentor.experience)
     )
   }
 
@@ -124,7 +124,13 @@ export default function useMentors(
       reset: () => setSelectedNewMentor(false),
     },
     count: () => {
-      return selectedTags.length + selectedExperience.length + (selectedPrice ? 1 : 0)
+      return (
+        selectedTags.length +
+        selectedExperience.length +
+        (selectedPrice ? 1 : 0) +
+        (selectedNoSessions ? 1 : 0) +
+        (selectedNewMentor ? 1 : 0)
+      )
     },
   }
 

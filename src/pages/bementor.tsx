@@ -100,21 +100,6 @@ export default function Bementor(): JSX.Element {
             Помогать другим – почётно и круто. Спасибо, что хотите этим заниматься.
             <br />
             Заполните форму ниже, и мы обязательно рассмотрим вашу заявку как можно скорее.
-            <br />
-            <br />
-            <em>
-              Если форма ниже по какой-то причине не работает, используйте эту{' '}
-              <u>
-                <a
-                  href="https://airtable.com/shraFoLi9aSqzU4U9"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  ссылку
-                </a>
-              </u>
-              .
-            </em>
           </p>
         </div>
       </Section>

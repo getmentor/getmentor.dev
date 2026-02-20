@@ -7,13 +7,12 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation'
 import { W3CTraceContextPropagator } from '@opentelemetry/core'
 import { trace, Tracer } from '@opentelemetry/api'
 import { Resource } from '@opentelemetry/resources'
-import {
-  ATTR_SERVICE_NAME,
-  ATTR_SERVICE_VERSION,
-  ATTR_SERVICE_NAMESPACE,
-  ATTR_SERVICE_INSTANCE_ID,
-  ATTR_DEPLOYMENT_ENVIRONMENT,
-} from './semver'
+// OpenTelemetry semantic convention attribute keys
+const ATTR_SERVICE_NAME = 'service.name'
+const ATTR_SERVICE_VERSION = 'service.version'
+const ATTR_SERVICE_NAMESPACE = 'service.namespace'
+const ATTR_SERVICE_INSTANCE_ID = 'service.instance.id'
+const ATTR_DEPLOYMENT_ENVIRONMENT = 'deployment.environment.name'
 import { v4 as uuidv4 } from 'uuid'
 
 let isInitialized = false

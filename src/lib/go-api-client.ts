@@ -173,55 +173,21 @@ class GoApiClient {
   }
 
   /**
-   * Get a single mentor by Airtable record ID
+   * Get a single mentor by UUID
    */
-  async getOneMentorByRecordId(
-    rec: string,
+  async getOneMentorByUuid(
+    uuid: string,
     params: GetOneMentorParams = {}
   ): Promise<MentorBase | MentorWithSecureFields> {
     return this.request<MentorBase | MentorWithSecureFields>(
       'POST',
-      `/api/v1/internal/mentors?rec=${rec}`,
+      `/api/v1/internal/mentors?rec=${uuid}`,
       {
         body: {
           show_hidden: params.showHiddenFields,
         },
       }
     )
-  }
-
-  /**
-   * Save mentor profile
-   */
-  async saveProfile(
-    mentorId: string,
-    authToken: string,
-    profileData: SaveProfileRequest
-  ): Promise<SaveProfileResponse> {
-    return this.request<SaveProfileResponse>('POST', '/api/v1/save-profile', {
-      headers: {
-        'X-Mentor-ID': mentorId,
-        'X-Auth-Token': authToken,
-      },
-      body: profileData as unknown as Record<string, unknown>,
-    })
-  }
-
-  /**
-   * Upload profile picture
-   */
-  async uploadProfilePicture(
-    mentorId: string,
-    authToken: string,
-    imageData: UploadProfilePictureRequest
-  ): Promise<UploadProfilePictureResponse> {
-    return this.request<UploadProfilePictureResponse>('POST', '/api/v1/upload-profile-picture', {
-      headers: {
-        'X-Mentor-ID': mentorId,
-        'X-Auth-Token': authToken,
-      },
-      body: imageData as unknown as Record<string, unknown>,
-    })
   }
 
   /**

@@ -23,10 +23,11 @@ export interface GetOneMentorParams {
  * Contact mentor form request
  */
 export interface ContactMentorRequest {
-  mentorId: number
+  mentorId: string
   name: string
   email: string
-  telegram?: string
+  telegramUsername: string
+  experience?: string
   intro: string
   recaptchaToken: string
 }

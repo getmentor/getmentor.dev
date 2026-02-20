@@ -6,6 +6,6 @@ export {
   getAllMentors,
   getOneMentorBySlug,
   getOneMentorById,
-  getOneMentorByRecordId,
+  getOneMentorByUuid,
   forceRefreshCache,
 } from './mentors-data'

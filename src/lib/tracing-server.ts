@@ -4,13 +4,12 @@ import { NodeSDK } from '@opentelemetry/sdk-node'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 import { Resource } from '@opentelemetry/resources'
-import {
-  ATTR_SERVICE_NAME,
-  ATTR_SERVICE_VERSION,
-  ATTR_SERVICE_NAMESPACE,
-  ATTR_SERVICE_INSTANCE_ID,
-  ATTR_DEPLOYMENT_ENVIRONMENT,
-} from './semver'
+// OpenTelemetry semantic convention attribute keys
+const ATTR_SERVICE_NAME = 'service.name'
+const ATTR_SERVICE_VERSION = 'service.version'
+const ATTR_SERVICE_NAMESPACE = 'service.namespace'
+const ATTR_SERVICE_INSTANCE_ID = 'service.instance.id'
+const ATTR_DEPLOYMENT_ENVIRONMENT = 'deployment.environment.name'
 import type { SpanExporter } from '@opentelemetry/sdk-trace-base'
 import { v4 as uuidv4 } from 'uuid'
 

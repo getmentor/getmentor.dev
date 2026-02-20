@@ -124,8 +124,8 @@ export interface RequestsListResponse {
  * Matches JWT payload from backend
  */
 export interface MentorSession {
-  mentor_id: number
-  airtable_id: string
+  mentor_uuid: string // NEW: Primary identifier (UUID from PostgreSQL)
+  legacy_id: number // NEW: Old integer ID
   email: string
   name: string
   exp: number // Unix timestamp
