@@ -8,6 +8,13 @@ import type {
   MentorBase,
   MentorWithSecureFields,
   MentorListItem,
+  AdminSession,
+  AdminMentorDetails,
+  AdminMentorsListResponse,
+  AdminMentorResponse,
+  AdminMentorProfileUpdateRequest,
+  AdminStatusUpdateRequest,
+  MentorModerationFilter,
   GetAllMentorsParams,
   GetOneMentorParams,
   ContactMentorRequest,
@@ -427,6 +434,131 @@ class GoApiClient {
     const { data } = await this.requestWithCookies<UploadProfilePictureResponse>(
       'POST',
       '/api/v1/mentor/profile/picture',
+      { cookies, body: imageData as unknown as Record<string, unknown> }
+    )
+    return data
+  }
+
+  // ============================================
+  // Admin Moderation API Methods
+  // ============================================
+
+  async adminRequestLogin(email: string): Promise<{ success: boolean; message?: string }> {
+    const { data } = await this.requestWithCookies<{ success: boolean; message?: string }>(
+      'POST',
+      '/api/v1/auth/admin/request-login',
+      { body: { email } }
+    )
+    return data
+  }
+
+  async adminVerifyLogin(token: string): Promise<{
+    data: { success: boolean; session?: AdminSession; error?: string }
+    headers: Headers
+  }> {
+    return this.requestWithCookies<{ success: boolean; session?: AdminSession; error?: string }>(
+      'POST',
+      '/api/v1/auth/admin/verify',
+      { body: { token } }
+    )
+  }
+
+  async adminLogout(cookies?: string): Promise<{ data: { success: boolean }; headers: Headers }> {
+    return this.requestWithCookies<{ success: boolean }>('POST', '/api/v1/auth/admin/logout', {
+      cookies,
+    })
+  }
+
+  async adminGetSession(
+    cookies: string
+  ): Promise<{ data: { success: boolean; session?: AdminSession }; headers: Headers }> {
+    return this.requestWithCookies<{ success: boolean; session?: AdminSession }>(
+      'GET',
+      '/api/v1/auth/admin/session',
+      { cookies }
+    )
+  }
+
+  async adminListMentors(
+    cookies: string,
+    status: MentorModerationFilter
+  ): Promise<AdminMentorsListResponse> {
+    const { data } = await this.requestWithCookies<AdminMentorsListResponse>(
+      'GET',
+      `/api/v1/admin/mentors?status=${status}`,
+      { cookies }
+    )
+    return data
+  }
+
+  async adminGetMentorById(cookies: string, mentorId: string): Promise<AdminMentorDetails | null> {
+    try {
+      const { data } = await this.requestWithCookies<AdminMentorResponse>(
+        'GET',
+        `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}`,
+        { cookies }
+      )
+      return data.mentor
+    } catch (error) {
+      if (error instanceof HttpError && error.statusCode === 404) {
+        return null
+      }
+      throw error
+    }
+  }
+
+  async adminUpdateMentor(
+    cookies: string,
+    mentorId: string,
+    profileData: AdminMentorProfileUpdateRequest
+  ): Promise<AdminMentorDetails> {
+    const { data } = await this.requestWithCookies<AdminMentorResponse>(
+      'POST',
+      `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}`,
+      { cookies, body: profileData as unknown as Record<string, unknown> }
+    )
+    return data.mentor
+  }
+
+  async adminApproveMentor(cookies: string, mentorId: string): Promise<AdminMentorDetails> {
+    const { data } = await this.requestWithCookies<AdminMentorResponse>(
+      'POST',
+      `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}/approve`,
+      { cookies }
+    )
+    return data.mentor
+  }
+
+  async adminDeclineMentor(cookies: string, mentorId: string): Promise<AdminMentorDetails> {
+    const { data } = await this.requestWithCookies<AdminMentorResponse>(
+      'POST',
+      `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}/decline`,
+      { cookies }
+    )
+    return data.mentor
+  }
+
+  async adminUpdateMentorStatus(
+    cookies: string,
+    mentorId: string,
+    payload: AdminStatusUpdateRequest
+  ): Promise<AdminMentorDetails> {
+    const { data } = await this.requestWithCookies<AdminMentorResponse>(
+      'POST',
+      `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}/status`,
+      { cookies, body: payload as unknown as Record<string, unknown> }
+    )
+    return data.mentor
+  }
+
+  async adminUploadMentorPicture(
+    cookies: string,
+    mentorId: string,
+    imageData: UploadProfilePictureRequest
+  ): Promise<UploadProfilePictureResponse> {
+    const { data } = await this.requestWithCookies<UploadProfilePictureResponse>(
+      'POST',
+      `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}/picture`,
       { cookies, body: imageData as unknown as Record<string, unknown> }
     )
     return data

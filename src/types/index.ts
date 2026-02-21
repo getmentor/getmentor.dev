@@ -97,3 +97,17 @@ export {
   STATUS_COLORS,
   DECLINE_REASONS,
 } from './mentor-requests'
+
+// Admin moderation types
+export type {
+  ModeratorRole,
+  MentorModerationFilter,
+  MentorModerationStatus,
+  AdminSession,
+  AdminMentorListItem,
+  AdminMentorDetails,
+  AdminMentorsListResponse,
+  AdminMentorResponse,
+  AdminMentorProfileUpdateRequest,
+  AdminStatusUpdateRequest,
+} from './admin-moderation'
