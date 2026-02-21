@@ -127,6 +127,13 @@ function MentorModerationEditContent(): JSX.Element {
     }
   }, [isAuthenticated, session, mentorId, router])
 
+  useEffect(() => {
+    if (!session || session.role !== 'moderator' || !mentor) return
+    if (mentor.status !== 'pending') {
+      router.replace('/admin/mentors/pending')
+    }
+  }, [mentor, session, router])
+
   const availableTags = useMemo(() => {
     const selected = formData?.tags || []
     return Array.from(new Set([...filters.tags, ...filters.sponsors, ...selected])).sort((a, b) =>
