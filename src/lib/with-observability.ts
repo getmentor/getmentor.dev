@@ -25,6 +25,11 @@ function normalizeRoute(url: string): string {
       /\/api\/mentor\/requests\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
       '/api/mentor/requests/:id'
     )
+    // Normalize /api/admin/mentors/uuid... paths
+    .replace(
+      /\/api\/admin\/mentors\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+      '/api/admin/mentors/:id'
+    )
     // Normalize /mentor/[slug] patterns (mentor slugs are lowercase with hyphens)
     .replace(/\/mentor\/[a-z0-9-]+(?:\/|$)/, '/mentor/:slug/')
     // Remove trailing slash for consistency
