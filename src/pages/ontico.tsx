@@ -98,8 +98,17 @@ export default function Ontico({
     useMentors(pageMentors)
 
   useEffect(() => {
-    analytics.event('Visit Ontico Page')
+    analytics.event(analytics.events.ONTICO_PAGE_VIEWED)
   }, [])
+
+  const handleShowMoreMentors = (): void => {
+    analytics.event(analytics.events.MENTORS_LIST_LOAD_MORE_CLICKED, {
+      visible_count: mentors.length,
+      total_count: pageMentors.length,
+      active_filters_count: appliedFilters.count(),
+    })
+    showMoreMentors()
+  }
 
   const title = 'Конференции Онтико | ' + seo.title
 
@@ -276,7 +285,7 @@ export default function Ontico({
         <MentorsList
           mentors={mentors}
           hasMore={hasMoreMentors}
-          onClickMore={() => showMoreMentors()}
+          onClickMore={handleShowMoreMentors}
         />
       </Section>
 

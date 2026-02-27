@@ -84,14 +84,23 @@ export default function Home({
   })
 
   useEffect(() => {
-    analytics.event('Visit Index Page')
+    analytics.event(analytics.events.HOME_PAGE_VIEWED)
   }, [])
 
   useEffect(() => {
     if (sponsorsInView) {
-      analytics.event('Sponsors Banner Shown')
+      analytics.event(analytics.events.SPONSORS_BANNER_VIEWED)
     }
   }, [sponsorsInView])
+
+  const handleShowMoreMentors = (): void => {
+    analytics.event(analytics.events.MENTORS_LIST_LOAD_MORE_CLICKED, {
+      visible_count: mentors.length,
+      total_count: pageMentors.length,
+      active_filters_count: appliedFilters.count(),
+    })
+    showMoreMentors()
+  }
 
   return (
     <>
@@ -198,7 +207,7 @@ export default function Home({
         <MentorsList
           mentors={mentors}
           hasMore={hasMoreMentors}
-          onClickMore={() => showMoreMentors()}
+          onClickMore={handleShowMoreMentors}
         />
       </Section>
 

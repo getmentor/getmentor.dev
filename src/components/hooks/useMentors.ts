@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import filters from '@/config/filters'
+import analytics from '@/lib/analytics'
 import type { MentorListItem, AppliedFilters, UseMentorsReturn } from '@/types'
 
 // Pagination configuration
@@ -19,6 +20,7 @@ export default function useMentors(
   const [selectedNoSessions, setSelectedNoSessions] = useState(false)
 
   const [selectedNewMentor, setSelectedNewMentor] = useState(false)
+  const lastTrackedSearch = useRef<string>('')
 
   // reset pagination on filters change
   useEffect(() => {
@@ -100,6 +102,43 @@ export default function useMentors(
 
   const mentors = filteredMentors.slice(0, mentorsCount)
   const hasMoreMentors = filteredMentors.length > mentorsCount
+
+  useEffect(() => {
+    const normalizedSearch = searchInput.trim().toLowerCase()
+    if (normalizedSearch.length < 2 || normalizedSearch === lastTrackedSearch.current) {
+      return
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      analytics.event(analytics.events.MENTORS_SEARCH_USED, {
+        query_length: normalizedSearch.length,
+        token_count: normalizedSearch
+          .split(',')
+          .map((token) => token.trim())
+          .filter(Boolean).length,
+        matched_results_count: filteredMentors.length,
+        active_filters_count:
+          selectedTags.length +
+          selectedExperience.length +
+          (selectedPrice ? 1 : 0) +
+          (selectedNoSessions ? 1 : 0) +
+          (selectedNewMentor ? 1 : 0),
+      })
+      lastTrackedSearch.current = normalizedSearch
+    }, 400)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [
+    filteredMentors.length,
+    searchInput,
+    selectedExperience.length,
+    selectedNewMentor,
+    selectedNoSessions,
+    selectedPrice,
+    selectedTags.length,
+  ])
 
   const appliedFilters: AppliedFilters = {
     tags: { values: selectedTags, set: setSelectedTags, reset: () => setSelectedTags([]) },

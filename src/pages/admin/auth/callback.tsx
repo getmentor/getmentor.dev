@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { AdminAuthProvider, useAdminAuth } from '@/components/admin-moderation'
+import analytics from '@/lib/analytics'
 
 type CallbackState = 'verifying' | 'success' | 'error'
 
@@ -26,6 +27,9 @@ function CallbackHandler(): JSX.Element {
     if (!router.isReady) return
 
     if (!token) {
+      analytics.event(analytics.events.ADMIN_AUTH_LOGIN_VERIFIED, {
+        outcome: 'invalid_token',
+      })
       router.replace('/admin/login?callback_error=invalid_token')
       return
     }
@@ -35,15 +39,26 @@ function CallbackHandler(): JSX.Element {
         const result = await verifyLogin(token)
         if (result.success) {
           setState('success')
+          analytics.event(analytics.events.ADMIN_AUTH_LOGIN_VERIFIED, {
+            outcome: 'success',
+          })
           setTimeout(() => {
             router.replace('/admin/mentors/pending')
           }, 1500)
         } else {
           setState('error')
+          analytics.event(analytics.events.ADMIN_AUTH_LOGIN_VERIFIED, {
+            outcome: 'error',
+            error_type: 'invalid_token',
+          })
           setErrorMessage(result.message || 'Недействительная или просроченная ссылка')
         }
       } catch {
         setState('error')
+        analytics.event(analytics.events.ADMIN_AUTH_LOGIN_VERIFIED, {
+          outcome: 'error',
+          error_type: 'verification_failed',
+        })
         setErrorMessage('Произошла ошибка при проверке ссылки')
       }
     }
