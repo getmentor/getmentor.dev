@@ -16,6 +16,7 @@ declare global {
       track: (name: string, params?: Record<string, unknown>) => void
       init: (token: string, config?: Record<string, unknown>) => void
       identify: (id: string) => void
+      reset?: () => void
       people?: {
         set: (props: Record<string, unknown>) => void
       }

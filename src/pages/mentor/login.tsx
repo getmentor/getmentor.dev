@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { MentorAuthProvider, useMentorAuth } from '@/components/mentor-admin'
+import analytics from '@/lib/analytics'
 
 interface LoginFormData {
   email: string
@@ -39,19 +40,39 @@ function LoginForm(): JSX.Element {
     }
   }, [authLoading, isAuthenticated, router])
 
+  useEffect(() => {
+    analytics.event(analytics.events.MENTOR_AUTH_LOGIN_REQUESTED, {
+      outcome: 'login_page_viewed',
+    })
+  }, [])
+
   const onSubmit = async (data: LoginFormData): Promise<void> => {
     setIsSubmitting(true)
     setSubmitError(null)
+    analytics.event(analytics.events.MENTOR_AUTH_LOGIN_REQUESTED, {
+      outcome: 'submitted',
+    })
 
     try {
       const result = await requestLogin(data.email)
       if (result.success) {
         setSubmitSuccess(true)
+        analytics.event(analytics.events.MENTOR_AUTH_LOGIN_REQUESTED, {
+          outcome: 'success',
+        })
       } else {
         setSubmitError(result.message || 'Произошла ошибка. Попробуйте ещё раз.')
+        analytics.event(analytics.events.MENTOR_AUTH_LOGIN_REQUESTED, {
+          outcome: 'error',
+          error_type: 'api_error',
+        })
       }
     } catch {
       setSubmitError('Произошла ошибка. Попробуйте ещё раз.')
+      analytics.event(analytics.events.MENTOR_AUTH_LOGIN_REQUESTED, {
+        outcome: 'error',
+        error_type: 'network_error',
+      })
     } finally {
       setIsSubmitting(false)
     }
