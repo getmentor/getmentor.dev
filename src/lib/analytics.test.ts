@@ -41,6 +41,32 @@ describe('analytics', () => {
     expect(payload.name).toBeUndefined()
   })
 
+  it('keeps safe aggregate keys that include blocked fragments', async () => {
+    const track = jest.fn()
+    window.mixpanel = {
+      track,
+      identify: jest.fn(),
+      reset: jest.fn(),
+      init: jest.fn(),
+      people: { set: jest.fn() },
+    }
+
+    const { default: analytics, analyticsEvents } = await import('@/lib/analytics')
+    analytics.event(analyticsEvents.MENTEE_CONTACT_SUBMITTED, {
+      has_telegram_username: true,
+      review_id: 'rev_123',
+      mentor_review: 'raw review text',
+    })
+
+    expect(track).toHaveBeenCalledTimes(1)
+    const [, payload] = track.mock.calls[0]
+    expect(payload).toMatchObject({
+      has_telegram_username: true,
+      review_id: 'rev_123',
+    })
+    expect(payload.mentor_review).toBeUndefined()
+  })
+
   it('queues track events until mixpanel is available', async () => {
     const { default: analytics, analyticsEvents } = await import('@/lib/analytics')
     analytics.event(analyticsEvents.HOME_PAGE_VIEWED, { foo: 'bar' })
@@ -86,5 +112,26 @@ describe('analytics', () => {
     expect(identify).toHaveBeenCalledWith('mentor:123')
     expect(setPeople).toHaveBeenCalledWith({ role: 'mentor' })
     expect(reset).toHaveBeenCalledTimes(1)
+  })
+
+  it('stops retry loop and drops queued commands when mixpanel never loads', async () => {
+    const { default: analytics, analyticsEvents } = await import('@/lib/analytics')
+    analytics.event(analyticsEvents.HOME_PAGE_VIEWED, { foo: 'bar' })
+
+    for (let i = 0; i < 30; i += 1) {
+      jest.runOnlyPendingTimers()
+    }
+
+    const track = jest.fn()
+    window.mixpanel = {
+      track,
+      identify: jest.fn(),
+      reset: jest.fn(),
+      init: jest.fn(),
+      people: { set: jest.fn() },
+    }
+
+    jest.runOnlyPendingTimers()
+    expect(track).toHaveBeenCalledTimes(0)
   })
 })

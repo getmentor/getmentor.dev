@@ -53,23 +53,33 @@ const SOURCE_SYSTEM = 'frontend'
 const EVENT_VERSION = 'v1'
 const FLUSH_INTERVAL_MS = 250
 const MAX_QUEUE_SIZE = 200
+const MAX_FLUSH_RETRIES = 20
 const ENVIRONMENT =
   process.env.NEXT_PUBLIC_APP_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.NODE_ENV
 
 const queue: PendingCommand[] = []
 let flushTimer: number | null = null
+let flushRetries = 0
 
-const blockedPropertyFragments = [
+const blockedPropertyKeys = new Set([
   'email',
+  'mentoremail',
+  'moderatoremail',
   'name',
+  'mentorname',
+  'moderatorname',
   'telegram',
+  'telegramusername',
   'intro',
   'description',
   'review',
+  'mentorreview',
+  'platformreview',
+  'improvements',
   'about',
   'competencies',
   'loginurl',
-]
+])
 
 function getMixpanel(): MixpanelClient | null {
   if (typeof window === 'undefined') return null
@@ -91,7 +101,7 @@ function normalizePropertyKey(key: string): string {
 
 function isBlockedProperty(key: string): boolean {
   const normalized = normalizePropertyKey(key)
-  return blockedPropertyFragments.some((fragment) => normalized.includes(fragment))
+  return blockedPropertyKeys.has(normalized)
 }
 
 function trimString(value: string): string {
@@ -153,10 +163,16 @@ function executeCommand(command: PendingCommand): void {
 function flushQueue(): void {
   const mixpanel = getMixpanel()
   if (!mixpanel) {
+    flushRetries += 1
+    if (flushRetries >= MAX_FLUSH_RETRIES) {
+      queue.length = 0
+      return
+    }
     scheduleFlush()
     return
   }
 
+  flushRetries = 0
   while (queue.length > 0) {
     const command = queue.shift()
     if (!command) break
@@ -177,6 +193,7 @@ function enqueue(command: PendingCommand): void {
     queue.shift()
   }
   queue.push(command)
+  flushRetries = 0
   scheduleFlush()
 }
 
@@ -188,6 +205,7 @@ const analytics: Analytics = {
     if (!eventName || typeof window === 'undefined') return
 
     if (getMixpanel()) {
+      flushQueue()
       executeCommand({ type: 'track', event: eventName, properties: params })
       return
     }
@@ -200,6 +218,7 @@ const analytics: Analytics = {
     if (!normalizedDistinctId || typeof window === 'undefined') return
 
     if (getMixpanel()) {
+      flushQueue()
       executeCommand({ type: 'identify', distinctId: normalizedDistinctId, properties: params })
       return
     }
@@ -211,6 +230,7 @@ const analytics: Analytics = {
     if (typeof window === 'undefined') return
 
     if (getMixpanel()) {
+      flushQueue()
       executeCommand({ type: 'reset' })
       return
     }
