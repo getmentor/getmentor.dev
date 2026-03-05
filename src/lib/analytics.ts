@@ -178,7 +178,7 @@ function canFlush(providerName: AnalyticsProvider): boolean {
   if (providerName === 'none') return false
   if (providerName === 'mixpanel') return getMixpanel() !== null
   if (providerName === 'posthog') return getPostHog() !== null
-  return getMixpanel() !== null && getPostHog() !== null
+  return getMixpanel() !== null || getPostHog() !== null
 }
 
 function executeCommand(command: PendingCommand): void {

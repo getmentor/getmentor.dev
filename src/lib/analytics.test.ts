@@ -190,4 +190,29 @@ describe('analytics', () => {
     expect(identify).toHaveBeenCalledWith('mentor:123', { role: 'mentor' })
     expect(reset).toHaveBeenCalledTimes(1)
   })
+
+  it('flushes to posthog in dual mode when mixpanel is unavailable', async () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER = 'dual'
+
+    const { default: analytics, analyticsEvents } = await import('@/lib/analytics')
+    analytics.event(analyticsEvents.HOME_PAGE_VIEWED, { foo: 'bar' })
+
+    const capture = jest.fn()
+    window.posthog = {
+      capture,
+      identify: jest.fn(),
+      reset: jest.fn(),
+    }
+
+    jest.runOnlyPendingTimers()
+
+    expect(capture).toHaveBeenCalledTimes(1)
+    const [eventName, properties] = capture.mock.calls[0]
+    expect(eventName).toBe(analyticsEvents.HOME_PAGE_VIEWED)
+    expect(properties).toMatchObject({
+      foo: 'bar',
+      source_system: 'frontend',
+      event_version: 'v1',
+    })
+  })
 })
