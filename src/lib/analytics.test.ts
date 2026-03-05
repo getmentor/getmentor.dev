@@ -1,13 +1,21 @@
 describe('analytics', () => {
+  const originalFetch = global.fetch
+
   beforeEach(() => {
     jest.useFakeTimers()
     jest.resetModules()
     delete window.mixpanel
+    delete process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER
+    delete process.env.NEXT_PUBLIC_POSTHOG_KEY
+    delete process.env.NEXT_PUBLIC_POSTHOG_HOST
+    window.localStorage.clear()
+    global.fetch = originalFetch
   })
 
   afterEach(() => {
     jest.useRealTimers()
     delete window.mixpanel
+    global.fetch = originalFetch
   })
 
   it('sanitizes properties and adds common metadata', async () => {
@@ -133,5 +141,27 @@ describe('analytics', () => {
 
     jest.runOnlyPendingTimers()
     expect(track).toHaveBeenCalledTimes(0)
+  })
+
+  it('sends events to posthog when provider is posthog', async () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER = 'posthog'
+    process.env.NEXT_PUBLIC_POSTHOG_KEY = 'ph_test_key'
+    process.env.NEXT_PUBLIC_POSTHOG_HOST = 'https://us.i.posthog.com'
+
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+    })
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    const { default: analytics, analyticsEvents } = await import('@/lib/analytics')
+    analytics.event(analyticsEvents.HOME_PAGE_VIEWED, { foo: 'bar' })
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const [url, request] = fetchMock.mock.calls[0]
+    expect(url).toBe('https://us.i.posthog.com/capture/')
+    expect(request.method).toBe('POST')
+    expect(request.body).toContain('"event":"home_page_viewed"')
+    expect(request.body).toContain('"source_system":"frontend"')
+    expect(request.body).toContain('"foo":"bar"')
   })
 })

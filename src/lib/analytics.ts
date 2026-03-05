@@ -5,6 +5,8 @@ type PendingCommand =
   | { type: 'identify'; distinctId: string; properties?: AnalyticsProperties }
   | { type: 'reset' }
 
+type AnalyticsProvider = 'none' | 'mixpanel' | 'posthog' | 'dual'
+
 interface MixpanelClient {
   track: (name: string, params?: AnalyticsProperties) => void
   identify: (id: string) => void
@@ -50,12 +52,24 @@ interface Analytics {
 }
 
 const SOURCE_SYSTEM = 'frontend'
-const EVENT_VERSION = 'v1'
+const EVENT_VERSION =
+  process.env.NEXT_PUBLIC_ANALYTICS_EVENT_VERSION ||
+  process.env.NEXT_PUBLIC_MIXPANEL_EVENT_VERSION ||
+  'v1'
 const FLUSH_INTERVAL_MS = 250
 const MAX_QUEUE_SIZE = 200
 const MAX_FLUSH_RETRIES = 20
 const ENVIRONMENT =
   process.env.NEXT_PUBLIC_APP_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.NODE_ENV
+
+const ANALYTICS_PROVIDER = (process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER || '').trim().toLowerCase()
+const POSTHOG_KEY = (process.env.NEXT_PUBLIC_POSTHOG_KEY || '').trim()
+const POSTHOG_CAPTURE_ENDPOINT = buildPostHogCaptureEndpoint(
+  process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
+  process.env.NEXT_PUBLIC_POSTHOG_CAPTURE_ENDPOINT || ''
+)
+
+const POSTHOG_DISTINCT_ID_KEY = 'analytics_posthog_distinct_id'
 
 const queue: PendingCommand[] = []
 let flushTimer: number | null = null
@@ -80,6 +94,21 @@ const blockedPropertyKeys = new Set([
   'competencies',
   'loginurl',
 ])
+
+function resolveProvider(): AnalyticsProvider {
+  const explicit = ANALYTICS_PROVIDER
+  const hasPosthog = POSTHOG_KEY !== '' && POSTHOG_CAPTURE_ENDPOINT !== ''
+
+  if (explicit === 'none') return 'none'
+  if (explicit === 'mixpanel') return 'mixpanel'
+  if (explicit === 'posthog') return hasPosthog ? 'posthog' : 'none'
+  if (explicit === 'dual') return hasPosthog ? 'dual' : 'mixpanel'
+
+  if (hasPosthog) return 'dual'
+  return 'mixpanel'
+}
+
+const provider = resolveProvider()
 
 function getMixpanel(): MixpanelClient | null {
   if (typeof window === 'undefined') return null
@@ -138,7 +167,34 @@ function withCommonProperties(params?: AnalyticsProperties): AnalyticsProperties
   }
 }
 
+function canFlush(providerName: AnalyticsProvider): boolean {
+  if (providerName === 'none') return false
+  if (providerName === 'posthog') return typeof window !== 'undefined'
+  return getMixpanel() !== null
+}
+
 function executeCommand(command: PendingCommand): void {
+  if (provider === 'none' || typeof window === 'undefined') {
+    return
+  }
+
+  if (provider === 'mixpanel') {
+    executeMixpanelCommand(command)
+    return
+  }
+
+  if (provider === 'posthog') {
+    executePostHogCommand(command)
+    return
+  }
+
+  if (provider === 'dual') {
+    executePostHogCommand(command)
+    executeMixpanelCommand(command)
+  }
+}
+
+function executeMixpanelCommand(command: PendingCommand): void {
   const mixpanel = getMixpanel()
   if (!mixpanel) return
 
@@ -160,9 +216,122 @@ function executeCommand(command: PendingCommand): void {
   }
 }
 
+function executePostHogCommand(command: PendingCommand): void {
+  if (POSTHOG_KEY === '' || POSTHOG_CAPTURE_ENDPOINT === '' || typeof window === 'undefined') {
+    return
+  }
+
+  if (command.type === 'track') {
+    sendPostHogCapture(
+      command.event,
+      withCommonProperties(command.properties),
+      getPostHogDistinctId()
+    )
+    return
+  }
+
+  if (command.type === 'identify') {
+    const previousDistinctId = getPostHogDistinctId()
+    setPostHogDistinctId(command.distinctId)
+
+    sendPostHogCapture(
+      '$identify',
+      {
+        ...sanitizeProperties(command.properties),
+        $anon_distinct_id: previousDistinctId,
+      },
+      command.distinctId
+    )
+    return
+  }
+
+  if (command.type === 'reset') {
+    clearPostHogDistinctId()
+  }
+}
+
+function sendPostHogCapture(
+  eventName: string,
+  properties: AnalyticsProperties,
+  distinctId: string
+): void {
+  const payload = {
+    api_key: POSTHOG_KEY,
+    event: eventName,
+    distinct_id: distinctId,
+    timestamp: new Date().toISOString(),
+    properties: {
+      ...properties,
+      distinct_id: distinctId,
+    },
+  }
+
+  void fetch(POSTHOG_CAPTURE_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch(() => {
+    // PostHog errors are intentionally ignored to avoid blocking product flows.
+  })
+}
+
+function getPostHogDistinctId(): string {
+  const fallback = generateDistinctId()
+  if (typeof window === 'undefined') {
+    return fallback
+  }
+
+  try {
+    const existing = window.localStorage.getItem(POSTHOG_DISTINCT_ID_KEY)
+    if (existing && existing.trim()) {
+      return existing
+    }
+
+    window.localStorage.setItem(POSTHOG_DISTINCT_ID_KEY, fallback)
+    return fallback
+  } catch {
+    return fallback
+  }
+}
+
+function setPostHogDistinctId(distinctId: string): void {
+  if (typeof window === 'undefined') return
+
+  const normalizedDistinctId = distinctId.trim()
+  if (!normalizedDistinctId) return
+
+  try {
+    window.localStorage.setItem(POSTHOG_DISTINCT_ID_KEY, normalizedDistinctId)
+  } catch {
+    // ignore
+  }
+}
+
+function clearPostHogDistinctId(): void {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.localStorage.removeItem(POSTHOG_DISTINCT_ID_KEY)
+  } catch {
+    // ignore
+  }
+}
+
+function generateDistinctId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `anon:${crypto.randomUUID()}`
+  }
+
+  const randomPart = Math.random().toString(36).slice(2)
+  return `anon:${Date.now()}-${randomPart}`
+}
+
 function flushQueue(): void {
-  const mixpanel = getMixpanel()
-  if (!mixpanel) {
+  if (!canFlush(provider)) {
     flushRetries += 1
     if (flushRetries >= MAX_FLUSH_RETRIES) {
       queue.length = 0
@@ -197,6 +366,20 @@ function enqueue(command: PendingCommand): void {
   scheduleFlush()
 }
 
+function buildPostHogCaptureEndpoint(host: string, endpoint: string): string {
+  const override = endpoint.trim()
+  if (override) {
+    return override
+  }
+
+  const normalizedHost = host.trim()
+  if (!normalizedHost) {
+    return ''
+  }
+
+  return `${normalizedHost.replace(/\/+$/, '')}/capture/`
+}
+
 const analytics: Analytics = {
   events: analyticsEvents,
 
@@ -204,7 +387,7 @@ const analytics: Analytics = {
     const eventName = name.trim()
     if (!eventName || typeof window === 'undefined') return
 
-    if (getMixpanel()) {
+    if (canFlush(provider)) {
       flushQueue()
       executeCommand({ type: 'track', event: eventName, properties: params })
       return
@@ -217,7 +400,7 @@ const analytics: Analytics = {
     const normalizedDistinctId = distinctId.trim()
     if (!normalizedDistinctId || typeof window === 'undefined') return
 
-    if (getMixpanel()) {
+    if (canFlush(provider)) {
       flushQueue()
       executeCommand({ type: 'identify', distinctId: normalizedDistinctId, properties: params })
       return
@@ -229,7 +412,7 @@ const analytics: Analytics = {
   reset(): void {
     if (typeof window === 'undefined') return
 
-    if (getMixpanel()) {
+    if (canFlush(provider)) {
       flushQueue()
       executeCommand({ type: 'reset' })
       return
