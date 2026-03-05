@@ -16,6 +16,12 @@ interface MixpanelClient {
   }
 }
 
+interface PostHogClient {
+  capture: (name: string, properties?: AnalyticsProperties) => void
+  identify: (id: string, properties?: AnalyticsProperties) => void
+  reset?: () => void
+}
+
 export const analyticsEvents = {
   HOME_PAGE_VIEWED: 'home_page_viewed',
   ONTICO_PAGE_VIEWED: 'ontico_page_viewed',
@@ -63,13 +69,6 @@ const ENVIRONMENT =
   process.env.NEXT_PUBLIC_APP_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.NODE_ENV
 
 const ANALYTICS_PROVIDER = (process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER || '').trim().toLowerCase()
-const POSTHOG_KEY = (process.env.NEXT_PUBLIC_POSTHOG_KEY || '').trim()
-const POSTHOG_CAPTURE_ENDPOINT = buildPostHogCaptureEndpoint(
-  process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
-  process.env.NEXT_PUBLIC_POSTHOG_CAPTURE_ENDPOINT || ''
-)
-
-const POSTHOG_DISTINCT_ID_KEY = 'analytics_posthog_distinct_id'
 
 const queue: PendingCommand[] = []
 let flushTimer: number | null = null
@@ -97,14 +96,12 @@ const blockedPropertyKeys = new Set([
 
 function resolveProvider(): AnalyticsProvider {
   const explicit = ANALYTICS_PROVIDER
-  const hasPosthog = POSTHOG_KEY !== '' && POSTHOG_CAPTURE_ENDPOINT !== ''
 
   if (explicit === 'none') return 'none'
   if (explicit === 'mixpanel') return 'mixpanel'
-  if (explicit === 'posthog') return hasPosthog ? 'posthog' : 'none'
-  if (explicit === 'dual') return hasPosthog ? 'dual' : 'mixpanel'
+  if (explicit === 'posthog') return 'posthog'
+  if (explicit === 'dual') return 'dual'
 
-  if (hasPosthog) return 'dual'
   return 'mixpanel'
 }
 
@@ -122,6 +119,16 @@ function getMixpanel(): MixpanelClient | null {
     return null
   }
   return mixpanel as MixpanelClient
+}
+
+function getPostHog(): PostHogClient | null {
+  if (typeof window === 'undefined') return null
+
+  const posthog = window.posthog
+  if (!posthog || typeof posthog.capture !== 'function' || typeof posthog.identify !== 'function') {
+    return null
+  }
+  return posthog as PostHogClient
 }
 
 function normalizePropertyKey(key: string): string {
@@ -169,8 +176,9 @@ function withCommonProperties(params?: AnalyticsProperties): AnalyticsProperties
 
 function canFlush(providerName: AnalyticsProvider): boolean {
   if (providerName === 'none') return false
-  if (providerName === 'posthog') return typeof window !== 'undefined'
-  return getMixpanel() !== null
+  if (providerName === 'mixpanel') return getMixpanel() !== null
+  if (providerName === 'posthog') return getPostHog() !== null
+  return getMixpanel() !== null && getPostHog() !== null
 }
 
 function executeCommand(command: PendingCommand): void {
@@ -217,117 +225,22 @@ function executeMixpanelCommand(command: PendingCommand): void {
 }
 
 function executePostHogCommand(command: PendingCommand): void {
-  if (POSTHOG_KEY === '' || POSTHOG_CAPTURE_ENDPOINT === '' || typeof window === 'undefined') {
-    return
-  }
+  const posthog = getPostHog()
+  if (!posthog) return
 
   if (command.type === 'track') {
-    sendPostHogCapture(
-      command.event,
-      withCommonProperties(command.properties),
-      getPostHogDistinctId()
-    )
+    posthog.capture(command.event, withCommonProperties(command.properties))
     return
   }
 
   if (command.type === 'identify') {
-    const previousDistinctId = getPostHogDistinctId()
-    setPostHogDistinctId(command.distinctId)
-
-    sendPostHogCapture(
-      '$identify',
-      {
-        ...sanitizeProperties(command.properties),
-        $anon_distinct_id: previousDistinctId,
-      },
-      command.distinctId
-    )
+    posthog.identify(command.distinctId, sanitizeProperties(command.properties))
     return
   }
 
   if (command.type === 'reset') {
-    clearPostHogDistinctId()
+    posthog.reset?.()
   }
-}
-
-function sendPostHogCapture(
-  eventName: string,
-  properties: AnalyticsProperties,
-  distinctId: string
-): void {
-  const payload = {
-    api_key: POSTHOG_KEY,
-    event: eventName,
-    distinct_id: distinctId,
-    timestamp: new Date().toISOString(),
-    properties: {
-      ...properties,
-      distinct_id: distinctId,
-    },
-  }
-
-  void fetch(POSTHOG_CAPTURE_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify(payload),
-    keepalive: true,
-  }).catch(() => {
-    // PostHog errors are intentionally ignored to avoid blocking product flows.
-  })
-}
-
-function getPostHogDistinctId(): string {
-  const fallback = generateDistinctId()
-  if (typeof window === 'undefined') {
-    return fallback
-  }
-
-  try {
-    const existing = window.localStorage.getItem(POSTHOG_DISTINCT_ID_KEY)
-    if (existing && existing.trim()) {
-      return existing
-    }
-
-    window.localStorage.setItem(POSTHOG_DISTINCT_ID_KEY, fallback)
-    return fallback
-  } catch {
-    return fallback
-  }
-}
-
-function setPostHogDistinctId(distinctId: string): void {
-  if (typeof window === 'undefined') return
-
-  const normalizedDistinctId = distinctId.trim()
-  if (!normalizedDistinctId) return
-
-  try {
-    window.localStorage.setItem(POSTHOG_DISTINCT_ID_KEY, normalizedDistinctId)
-  } catch {
-    // ignore
-  }
-}
-
-function clearPostHogDistinctId(): void {
-  if (typeof window === 'undefined') return
-
-  try {
-    window.localStorage.removeItem(POSTHOG_DISTINCT_ID_KEY)
-  } catch {
-    // ignore
-  }
-}
-
-function generateDistinctId(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return `anon:${crypto.randomUUID()}`
-  }
-
-  const randomPart = Math.random().toString(36).slice(2)
-  return `anon:${Date.now()}-${randomPart}`
 }
 
 function flushQueue(): void {
@@ -364,20 +277,6 @@ function enqueue(command: PendingCommand): void {
   queue.push(command)
   flushRetries = 0
   scheduleFlush()
-}
-
-function buildPostHogCaptureEndpoint(host: string, endpoint: string): string {
-  const override = endpoint.trim()
-  if (override) {
-    return override
-  }
-
-  const normalizedHost = host.trim()
-  if (!normalizedHost) {
-    return ''
-  }
-
-  return `${normalizedHost.replace(/\/+$/, '')}/capture/`
 }
 
 const analytics: Analytics = {

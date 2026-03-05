@@ -1,21 +1,16 @@
 describe('analytics', () => {
-  const originalFetch = global.fetch
-
   beforeEach(() => {
     jest.useFakeTimers()
     jest.resetModules()
     delete window.mixpanel
+    delete window.posthog
     delete process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER
-    delete process.env.NEXT_PUBLIC_POSTHOG_KEY
-    delete process.env.NEXT_PUBLIC_POSTHOG_HOST
-    window.localStorage.clear()
-    global.fetch = originalFetch
   })
 
   afterEach(() => {
     jest.useRealTimers()
     delete window.mixpanel
-    global.fetch = originalFetch
+    delete window.posthog
   })
 
   it('sanitizes properties and adds common metadata', async () => {
@@ -143,25 +138,56 @@ describe('analytics', () => {
     expect(track).toHaveBeenCalledTimes(0)
   })
 
-  it('sends events to posthog when provider is posthog', async () => {
+  it('queues posthog events until posthog is available', async () => {
     process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER = 'posthog'
-    process.env.NEXT_PUBLIC_POSTHOG_KEY = 'ph_test_key'
-    process.env.NEXT_PUBLIC_POSTHOG_HOST = 'https://us.i.posthog.com'
-
-    const fetchMock = jest.fn().mockResolvedValue({
-      ok: true,
-    })
-    global.fetch = fetchMock as unknown as typeof fetch
 
     const { default: analytics, analyticsEvents } = await import('@/lib/analytics')
-    analytics.event(analyticsEvents.HOME_PAGE_VIEWED, { foo: 'bar' })
+    analytics.event(analyticsEvents.HOME_PAGE_VIEWED, {
+      foo: 'bar',
+      email: 'private@getmentor.dev',
+    })
 
-    expect(fetchMock).toHaveBeenCalledTimes(1)
-    const [url, request] = fetchMock.mock.calls[0]
-    expect(url).toBe('https://us.i.posthog.com/capture/')
-    expect(request.method).toBe('POST')
-    expect(request.body).toContain('"event":"home_page_viewed"')
-    expect(request.body).toContain('"source_system":"frontend"')
-    expect(request.body).toContain('"foo":"bar"')
+    const capture = jest.fn()
+    window.posthog = {
+      capture,
+      identify: jest.fn(),
+      reset: jest.fn(),
+    }
+
+    jest.runOnlyPendingTimers()
+
+    expect(capture).toHaveBeenCalledTimes(1)
+    const [eventName, properties] = capture.mock.calls[0]
+    expect(eventName).toBe(analyticsEvents.HOME_PAGE_VIEWED)
+    expect(properties).toMatchObject({
+      foo: 'bar',
+      source_system: 'frontend',
+      event_version: 'v1',
+    })
+    expect(properties.email).toBeUndefined()
+  })
+
+  it('queues identify and reset commands until posthog is available', async () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER = 'posthog'
+
+    const { default: analytics } = await import('@/lib/analytics')
+    analytics.identify('mentor:123', {
+      role: 'mentor',
+      email: 'private@getmentor.dev',
+    })
+    analytics.reset()
+
+    const identify = jest.fn()
+    const reset = jest.fn()
+    window.posthog = {
+      capture: jest.fn(),
+      identify,
+      reset,
+    }
+
+    jest.runOnlyPendingTimers()
+
+    expect(identify).toHaveBeenCalledWith('mentor:123', { role: 'mentor' })
+    expect(reset).toHaveBeenCalledTimes(1)
   })
 })

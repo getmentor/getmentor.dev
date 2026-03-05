@@ -91,7 +91,7 @@ module.exports = {
             key: 'Content-Security-Policy',
             value:
               "default-src 'self'; " +
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://getmentor.dev https://ru.getmentor.dev https://cdn.mxpnl.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://mc.yandex.ru https://mc.yandex.com https://decide.mixpanel.com https://faro-collector-prod-eu-west-3.grafana.net; " +
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://getmentor.dev https://ru.getmentor.dev https://cdn.mxpnl.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://mc.yandex.ru https://mc.yandex.com https://decide.mixpanel.com https://us.i.posthog.com https://eu.i.posthog.com https://us-assets.i.posthog.com https://eu-assets.i.posthog.com https://faro-collector-prod-eu-west-3.grafana.net; " +
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
               "img-src 'self' https: data:; " +
               "font-src 'self' data: https://fonts.gstatic.com https://at.alicdn.com; " +
