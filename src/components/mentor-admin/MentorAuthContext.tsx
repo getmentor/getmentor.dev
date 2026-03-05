@@ -15,6 +15,7 @@ import {
   verifyLogin as apiVerifyLogin,
   logout as apiLogout,
 } from '@/lib/mentor-admin-api'
+import analytics from '@/lib/analytics'
 
 interface MentorAuthContextValue {
   session: MentorSession | null
@@ -88,13 +89,33 @@ export function MentorAuthProvider({ children }: MentorAuthProviderProps): JSX.E
   }, [])
 
   const logout = useCallback(async () => {
+    if (session?.mentor_uuid) {
+      analytics.event(analytics.events.MENTOR_AUTH_LOGOUT, {
+        mentor_id: session.mentor_uuid,
+        outcome: 'submitted',
+      })
+    }
+
     try {
       await apiLogout()
     } finally {
       clearMentorSession()
       setSession(null)
     }
-  }, [])
+  }, [session])
+
+  useEffect(() => {
+    if (isLoading) return
+
+    if (session?.mentor_uuid) {
+      analytics.identify(`mentor:${session.mentor_uuid}`, {
+        role: 'mentor',
+      })
+      return
+    }
+
+    analytics.reset()
+  }, [isLoading, session?.mentor_uuid])
 
   const value = useMemo(
     () => ({

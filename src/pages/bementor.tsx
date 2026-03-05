@@ -29,7 +29,7 @@ export default function Bementor(): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
-    analytics.event('Visit Become Mentor Page')
+    analytics.event(analytics.events.MENTOR_REGISTRATION_PAGE_VIEWED)
   }, [])
 
   const handleSubmit = async (data: RegisterMentorRequest): Promise<void> => {
@@ -38,14 +38,12 @@ export default function Bementor(): JSX.Element {
     setErrorMessage('')
 
     try {
-      analytics.event('Submit Mentor Registration', {
-        name: data.name,
-        email: data.email,
-        job: data.job,
-        workplace: data.workplace,
+      analytics.event(analytics.events.MENTOR_REGISTRATION_SUBMITTED, {
+        outcome: 'submitted',
         experience: data.experience,
         price: data.price,
-        tags: data.tags.join(', '),
+        tags_count: data.tags.length,
+        has_calendar_url: Boolean(data.calendarUrl),
       })
 
       const response = await fetch('/api/register-mentor', {
@@ -60,21 +58,25 @@ export default function Bementor(): JSX.Element {
 
       if (response.ok && result.success) {
         setSubmitStatus('success')
-        analytics.event('Mentor Registration Success', {
-          mentorId: result.mentorId,
+        analytics.event(analytics.events.MENTOR_REGISTRATION_SUBMITTED, {
+          outcome: 'success',
+          mentor_id: result.mentorId,
         })
       } else {
         setSubmitStatus('error')
         setErrorMessage(result.error || 'Произошла ошибка при отправке заявки.')
-        analytics.event('Mentor Registration Error', {
-          error: result.error || 'Unknown error',
+        analytics.event(analytics.events.MENTOR_REGISTRATION_SUBMITTED, {
+          outcome: 'error',
+          error_type: 'api_error',
+          status_code: response.status,
         })
       }
     } catch (error) {
       setSubmitStatus('error')
       setErrorMessage('Произошла ошибка при отправке заявки. Попробуйте позже.')
-      analytics.event('Mentor Registration Error', {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      analytics.event(analytics.events.MENTOR_REGISTRATION_SUBMITTED, {
+        outcome: 'error',
+        error_type: error instanceof Error ? error.name : 'unknown',
       })
     } finally {
       setIsSubmitting(false)

@@ -12,11 +12,6 @@ interface MentorsFiltersProps {
   appliedFilters: AppliedFilters
 }
 
-interface AnalyticsEvents {
-  onRemove: string
-  onAdd: string
-}
-
 interface MultiValueFilter {
   values: string[]
   set: (values: string[]) => void
@@ -43,8 +38,8 @@ export default function MentorsFilters(props: MentorsFiltersProps): JSX.Element 
       appliedFilters.tags.set(newTags)
 
       if (newTags.length > 0) {
-        analytics.event('Landed With Selected Tags', {
-          tags: newTags,
+        analytics.event(analytics.events.MENTOR_FILTERS_INITIALIZED_FROM_URL, {
+          tags_count: newTags.length,
         })
       }
     }
@@ -58,61 +53,64 @@ export default function MentorsFilters(props: MentorsFiltersProps): JSX.Element 
     appliedFilters.noSessions.reset()
     appliedFilters.newMentor.reset()
 
-    analytics.event('Reset All Filters')
+    analytics.event(analytics.events.MENTOR_FILTERS_RESET)
     history.replaceState(null, '', '#')
   }
 
   const onClickTag = (tag: string): void => {
-    const newTags = onClickFilterMultiple(tag, appliedFilters.tags, {
-      onRemove: 'Filter Removed Tag',
-      onAdd: 'Filter Added Tag',
-    })
+    const newTags = onClickFilterMultiple(tag, appliedFilters.tags, 'tag')
 
     history.replaceState(null, '', '#tags:' + newTags.join('|'))
   }
 
   const onClickExperience = (experience: string): void => {
-    onClickFilterMultiple(experience, appliedFilters.experience, {
-      onRemove: 'Filter Removed Experience',
-      onAdd: 'Filter Added Experience',
-    })
+    onClickFilterMultiple(experience, appliedFilters.experience, 'experience')
   }
 
   const onClickNoSessions = (): void => {
     const selected = appliedFilters.noSessions.value
     appliedFilters.noSessions.set(!selected)
+    analytics.event(analytics.events.MENTOR_FILTER_CHANGED, {
+      filter_type: 'no_sessions',
+      action: selected ? 'removed' : 'added',
+    })
   }
 
   const onClickNewMentor = (): void => {
     const selected = appliedFilters.newMentor.value
     appliedFilters.newMentor.set(!selected)
+    analytics.event(analytics.events.MENTOR_FILTER_CHANGED, {
+      filter_type: 'new_mentor',
+      action: selected ? 'removed' : 'added',
+    })
   }
 
   const onClickPrice = (price: string): void => {
-    onClickFilterSingle(price, appliedFilters.price, {
-      onRemove: 'Filter Removed Price',
-      onAdd: 'Filter Added Price',
-    })
+    onClickFilterSingle(price, appliedFilters.price, 'price')
   }
 
   const onClickFilterMultiple = (
     newValue: string,
     filter: MultiValueFilter,
-    analyticsEvents: AnalyticsEvents
+    filterType: string
   ): string[] => {
     let newValues: string[] = []
 
     if (filter.values.includes(newValue)) {
       newValues = filter.values.filter((item) => item !== newValue)
 
-      analytics.event(analyticsEvents.onRemove, {
-        tagName: newValue,
+      analytics.event(analytics.events.MENTOR_FILTER_CHANGED, {
+        filter_type: filterType,
+        filter_value: newValue,
+        action: 'removed',
       })
     } else {
       newValues = [...filter.values, newValue]
 
-      analytics.event(analyticsEvents.onAdd, {
-        tagName: newValue,
+      analytics.event(analytics.events.MENTOR_FILTER_CHANGED, {
+        filter_type: filterType,
+        filter_value: newValue,
+        action: 'added',
       })
     }
 
@@ -124,19 +122,23 @@ export default function MentorsFilters(props: MentorsFiltersProps): JSX.Element 
   const onClickFilterSingle = (
     newValue: string,
     filter: SingleValueFilter,
-    analyticsEvents: AnalyticsEvents
+    filterType: string
   ): string => {
     if (filter.values === newValue) {
       filter.set(undefined)
 
-      analytics.event(analyticsEvents.onRemove, {
-        tagName: newValue,
+      analytics.event(analytics.events.MENTOR_FILTER_CHANGED, {
+        filter_type: filterType,
+        filter_value: newValue,
+        action: 'removed',
       })
     } else {
       filter.set(newValue)
 
-      analytics.event(analyticsEvents.onAdd, {
-        tagName: newValue,
+      analytics.event(analytics.events.MENTOR_FILTER_CHANGED, {
+        filter_type: filterType,
+        filter_value: newValue,
+        action: 'added',
       })
     }
 

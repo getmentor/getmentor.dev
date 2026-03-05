@@ -60,13 +60,14 @@ export default function Mentor({
   const title = mentor.name + ' | ' + seo.title
 
   useEffect(() => {
-    analytics.event('View Mentor Page', {
-      'Mentor Id': mentor.id,
-      'Mentor Name': mentor.name,
-      'Mentor Experience': mentor.experience,
-      'Mentor Price': mentor.price,
-      'Mentor Sponsors': mentor.sponsors,
-      'Mentee Count': mentor.menteeCount,
+    analytics.event(analytics.events.MENTOR_PROFILE_VIEWED, {
+      mentor_id: mentor.mentorId,
+      mentor_slug: mentor.slug,
+      mentor_experience_years: mentor.experience,
+      mentor_price_tier: mentor.price,
+      sponsors_count: (mentor.sponsors || []).length,
+      mentee_count: mentor.menteeCount,
+      is_visible: mentor.isVisible,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Intentionally run once on mount - analytics tracking

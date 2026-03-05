@@ -8,6 +8,7 @@ import {
   verifyAdminLogin as apiVerifyAdminLogin,
   logoutAdmin as apiLogoutAdmin,
 } from '@/lib/admin-moderation-api'
+import analytics from '@/lib/analytics'
 
 interface AdminAuthContextValue {
   session: AdminSession | null
@@ -78,13 +79,34 @@ export function AdminAuthProvider({ children }: AdminAuthProviderProps): JSX.Ele
   }, [])
 
   const logout = useCallback(async () => {
+    if (session?.moderatorId) {
+      analytics.event(analytics.events.ADMIN_AUTH_LOGOUT, {
+        moderator_id: session.moderatorId,
+        moderator_role: session.role,
+        outcome: 'submitted',
+      })
+    }
+
     try {
       await apiLogoutAdmin()
     } finally {
       clearAdminSession()
       setSession(null)
     }
-  }, [])
+  }, [session])
+
+  useEffect(() => {
+    if (isLoading) return
+
+    if (session?.moderatorId) {
+      analytics.identify(`moderator:${session.moderatorId}`, {
+        role: session.role,
+      })
+      return
+    }
+
+    analytics.reset()
+  }, [isLoading, session?.moderatorId, session?.role])
 
   const value = useMemo(
     () => ({

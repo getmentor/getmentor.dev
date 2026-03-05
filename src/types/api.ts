@@ -37,7 +37,9 @@ export interface ContactMentorRequest {
  */
 export interface ContactMentorResponse {
   success: boolean
-  message?: string
+  requestId?: string
+  calendar_url?: string
+  error?: string
 }
 
 /**

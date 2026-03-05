@@ -78,6 +78,7 @@ export default function OrderMentor({
 }: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
   const [readyStatus, setReadyStatus] = useState<ReadyStatus>('')
   const [formData, setFormData] = useState<ContactFormData | undefined>()
+  const [submissionRequestId, setSubmissionRequestId] = useState<string | undefined>()
 
   const today = new Date().toISOString().slice(0, 10)
   const title = 'Запись к ментору | ' + mentor.name + ' | ' + seo.title
@@ -105,12 +106,13 @@ export default function OrderMentor({
   }
 
   useEffect(() => {
-    analytics.event('Request a Mentor', {
-      'Mentor Id': mentor.id,
-      'Mentor Name': mentor.name,
-      'Mentor Experience': mentor.experience,
-      'Mentor Price': mentor.price,
-      'Mentor Sponsors': mentor.sponsors,
+    analytics.event(analytics.events.MENTOR_CONTACT_PAGE_VIEWED, {
+      mentor_id: mentor.mentorId,
+      mentor_slug: mentor.slug,
+      mentor_experience_years: mentor.experience,
+      mentor_price_tier: mentor.price,
+      sponsors_count: (mentor.sponsors || []).length,
+      is_visible: mentor.isVisible,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Intentionally run once on mount - analytics tracking
@@ -118,6 +120,11 @@ export default function OrderMentor({
   useEffect(() => {
     if (!hasRequestPerDayLeft()) {
       setReadyStatus('limit')
+      analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
+        mentor_id: mentor.mentorId,
+        mentor_slug: mentor.slug,
+        outcome: 'rate_limited',
+      })
       return
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -130,10 +137,22 @@ export default function OrderMentor({
 
     if (!hasRequestPerDayLeft()) {
       setReadyStatus('limit')
+      analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
+        mentor_id: mentor.mentorId,
+        mentor_slug: mentor.slug,
+        outcome: 'rate_limited',
+      })
       return
     }
 
     setReadyStatus('loading')
+    analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
+      mentor_id: mentor.mentorId,
+      mentor_slug: mentor.slug,
+      experience: data.experience,
+      has_telegram_username: Boolean(data.telegramUsername),
+      outcome: 'submitted',
+    })
 
     setFormData({ ...data })
 
@@ -151,21 +170,51 @@ export default function OrderMentor({
     })
       .then((res) => {
         if (!res.ok) {
+          analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
+            mentor_id: mentor.mentorId,
+            mentor_slug: mentor.slug,
+            outcome: 'error',
+            status_code: res.status,
+          })
           throw new Error(`HTTP error! status: ${res.status}`)
         }
-        return res.json() as Promise<{ success: boolean; calendar_url?: string }>
+        return res.json() as Promise<{
+          success: boolean
+          requestId?: string
+          calendar_url?: string
+        }>
       })
       .then((responseData) => {
         if (responseData.success) {
+          setSubmissionRequestId(responseData.requestId)
           mentor.calendarUrl = responseData.calendar_url
           setReadyStatus('success')
           incrementRequestsPerDay()
+          analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
+            mentor_id: mentor.mentorId,
+            mentor_slug: mentor.slug,
+            request_id: responseData.requestId,
+            calendar_url_available: Boolean(responseData.calendar_url),
+            outcome: 'success',
+          })
         } else {
           setReadyStatus('error')
+          analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
+            mentor_id: mentor.mentorId,
+            mentor_slug: mentor.slug,
+            outcome: 'error',
+            error_type: 'api_error',
+          })
         }
       })
       .catch((e) => {
         setReadyStatus('error')
+        analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
+          mentor_id: mentor.mentorId,
+          mentor_slug: mentor.slug,
+          outcome: 'error',
+          error_type: e instanceof Error ? e.name : 'network_error',
+        })
         // Client-side error - console.error is appropriate here
         console.error('Contact mentor error:', e)
       })
@@ -227,13 +276,13 @@ export default function OrderMentor({
 
       {mentor.isVisible && readyStatus === 'success' && (
         <Section>
-          <SuccessMessage mentor={mentor} formData={formData} />
+          <SuccessMessage mentor={mentor} formData={formData} requestId={submissionRequestId} />
         </Section>
       )}
 
       {mentor.isVisible && readyStatus !== 'success' && readyStatus === 'limit' && (
         <Section>
-          <LimitMessage mentor={mentor} />
+          <LimitMessage />
         </Section>
       )}
 
@@ -256,26 +305,17 @@ export default function OrderMentor({
 interface SuccessMessageProps {
   mentor: MentorContact
   formData?: ContactFormData
+  requestId?: string
 }
 
-function SuccessMessage({ mentor, formData }: SuccessMessageProps) {
-  useEffect(() => {
-    analytics.event('Mentor Request Sent', {
-      'Mentor Id': mentor.id,
-      'Mentor Name': mentor.name,
-      'Mentor Experience': mentor.experience,
-      'Mentor Price': mentor.price,
-      'Mentor Sponsors': mentor.sponsors,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Intentionally run once on mount - analytics tracking
-
+function SuccessMessage({ mentor, formData, requestId }: SuccessMessageProps) {
   return (
     <div className="text-center">
       <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-green-100 text-green-500">
         <FontAwesomeIcon icon={faCheck} size="2x" />
       </div>
       <p className="text-xl mt-6">Ваша заявка принята</p>
+      {requestId && <p className="mt-2 text-sm text-gray-500">ID заявки: {requestId}</p>}
 
       <div className="flex justify-center">
         {mentor.calendarType !== 'none' ? (
@@ -319,22 +359,7 @@ function SuccessMessage({ mentor, formData }: SuccessMessageProps) {
   )
 }
 
-interface LimitMessageProps {
-  mentor: MentorContact
-}
-
-function LimitMessage({ mentor }: LimitMessageProps) {
-  useEffect(() => {
-    analytics.event('Mentor Request Limit Exceeded', {
-      'Mentor Id': mentor.id,
-      'Mentor Name': mentor.name,
-      'Mentor Experience': mentor.experience,
-      'Mentor Price': mentor.price,
-      'Mentor Sponsors': mentor.sponsors,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Intentionally run once on mount - analytics tracking
-
+function LimitMessage(): JSX.Element {
   return (
     <div className="text-center">
       <div className="inline-flex justify-center items-center rounded-full h-24 w-24 bg-red-100 text-red-500">

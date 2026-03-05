@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { MentorAuthProvider, useMentorAuth } from '@/components/mentor-admin'
+import analytics from '@/lib/analytics'
 
 type CallbackState = 'verifying' | 'success' | 'error'
 
@@ -35,6 +36,9 @@ function CallbackHandler(): JSX.Element {
 
     // If no token, redirect to login with error
     if (!token) {
+      analytics.event(analytics.events.MENTOR_AUTH_LOGIN_VERIFIED, {
+        outcome: 'invalid_token',
+      })
       router.replace('/mentor/login?callback_error=invalid_token')
       return
     }
@@ -45,16 +49,27 @@ function CallbackHandler(): JSX.Element {
         const result = await verifyLogin(token)
         if (result.success) {
           setState('success')
+          analytics.event(analytics.events.MENTOR_AUTH_LOGIN_VERIFIED, {
+            outcome: 'success',
+          })
           // Redirect to dashboard after brief success message
           setTimeout(() => {
             router.replace('/mentor')
           }, 1500)
         } else {
           setState('error')
+          analytics.event(analytics.events.MENTOR_AUTH_LOGIN_VERIFIED, {
+            outcome: 'error',
+            error_type: 'invalid_token',
+          })
           setErrorMessage(result.message || 'Недействительная или просроченная ссылка')
         }
       } catch {
         setState('error')
+        analytics.event(analytics.events.MENTOR_AUTH_LOGIN_VERIFIED, {
+          outcome: 'error',
+          error_type: 'verification_failed',
+        })
         setErrorMessage('Произошла ошибка при проверке ссылки')
       }
     }
