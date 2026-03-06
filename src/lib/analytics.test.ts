@@ -3,11 +3,14 @@ describe('analytics', () => {
     jest.useFakeTimers()
     jest.resetModules()
     delete window.mixpanel
+    delete window.posthog
+    delete process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER
   })
 
   afterEach(() => {
     jest.useRealTimers()
     delete window.mixpanel
+    delete window.posthog
   })
 
   it('sanitizes properties and adds common metadata', async () => {
@@ -133,5 +136,83 @@ describe('analytics', () => {
 
     jest.runOnlyPendingTimers()
     expect(track).toHaveBeenCalledTimes(0)
+  })
+
+  it('queues posthog events until posthog is available', async () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER = 'posthog'
+
+    const { default: analytics, analyticsEvents } = await import('@/lib/analytics')
+    analytics.event(analyticsEvents.HOME_PAGE_VIEWED, {
+      foo: 'bar',
+      email: 'private@getmentor.dev',
+    })
+
+    const capture = jest.fn()
+    window.posthog = {
+      capture,
+      identify: jest.fn(),
+      reset: jest.fn(),
+    }
+
+    jest.runOnlyPendingTimers()
+
+    expect(capture).toHaveBeenCalledTimes(1)
+    const [eventName, properties] = capture.mock.calls[0]
+    expect(eventName).toBe(analyticsEvents.HOME_PAGE_VIEWED)
+    expect(properties).toMatchObject({
+      foo: 'bar',
+      source_system: 'frontend',
+      event_version: 'v1',
+    })
+    expect(properties.email).toBeUndefined()
+  })
+
+  it('queues identify and reset commands until posthog is available', async () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER = 'posthog'
+
+    const { default: analytics } = await import('@/lib/analytics')
+    analytics.identify('mentor:123', {
+      role: 'mentor',
+      email: 'private@getmentor.dev',
+    })
+    analytics.reset()
+
+    const identify = jest.fn()
+    const reset = jest.fn()
+    window.posthog = {
+      capture: jest.fn(),
+      identify,
+      reset,
+    }
+
+    jest.runOnlyPendingTimers()
+
+    expect(identify).toHaveBeenCalledWith('mentor:123', { role: 'mentor' })
+    expect(reset).toHaveBeenCalledTimes(1)
+  })
+
+  it('flushes to posthog in dual mode when mixpanel is unavailable', async () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER = 'dual'
+
+    const { default: analytics, analyticsEvents } = await import('@/lib/analytics')
+    analytics.event(analyticsEvents.HOME_PAGE_VIEWED, { foo: 'bar' })
+
+    const capture = jest.fn()
+    window.posthog = {
+      capture,
+      identify: jest.fn(),
+      reset: jest.fn(),
+    }
+
+    jest.runOnlyPendingTimers()
+
+    expect(capture).toHaveBeenCalledTimes(1)
+    const [eventName, properties] = capture.mock.calls[0]
+    expect(eventName).toBe(analyticsEvents.HOME_PAGE_VIEWED)
+    expect(properties).toMatchObject({
+      foo: 'bar',
+      source_system: 'frontend',
+      event_version: 'v1',
+    })
   })
 })
