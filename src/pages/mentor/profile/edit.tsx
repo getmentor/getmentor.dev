@@ -19,6 +19,7 @@ import { hasMentorSecureFields } from '@/types'
 import { MentorAuthProvider, useMentorAuth, MentorAdminLayout } from '@/components/mentor-admin'
 import { ProfileForm, Notification } from '@/components'
 import { useRouter } from 'next/router'
+import { captureException } from '@/lib/posthog'
 
 type ReadyStatus = '' | 'loading' | 'success' | 'error'
 type ImageUploadStatus = 'idle' | 'loading' | 'success' | 'error'
@@ -109,6 +110,9 @@ function ProfileEditContent(): JSX.Element {
       setReadyStatus(result.success ? 'success' : 'error')
     } catch (e) {
       setReadyStatus('error')
+      if (e instanceof Error) {
+        captureException(e, { page: 'edit-profile', action: 'save' })
+      }
       console.error('Profile save error:', e)
     }
   }
@@ -153,6 +157,9 @@ function ProfileEditContent(): JSX.Element {
     } catch (e) {
       setImageUploadStatus('error')
       setTempImagePreview(null)
+      if (e instanceof Error) {
+        captureException(e, { page: 'edit-profile', action: 'image-upload' })
+      }
       console.error('Profile picture upload error:', e)
     }
   }
