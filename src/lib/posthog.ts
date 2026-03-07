@@ -20,12 +20,6 @@ export function initializePostHog(): typeof posthog | null {
   posthog.init(apiKey, {
     api_host: apiHost,
     ui_host: 'https://eu.posthog.com',
-    person_profiles: 'identified_only',
-    autocapture: false,
-    capture_pageview: false,
-    capture_pageleave: false,
-    enable_recording_console_log: false,
-    persistence: 'localStorage+cookie',
 
     // Error tracking — auto-capture unhandled errors and promise rejections
     capture_exceptions: true,
