@@ -52,3 +52,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
 }
 
 export default withObservability(handler)
+
+// Match backend image validation limit (10 MB).
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+}
