@@ -76,8 +76,10 @@ export function MentorModerationListPage({
 
   const filteredMentors = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
-    const sorted = [...mentors].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    const sorted = [...mentors].sort((a, b) =>
+      status === 'pending'
+        ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
     if (!query) return sorted
 
