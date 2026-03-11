@@ -4,6 +4,7 @@ interface ImageLoaderParams {
   src: string
   width?: number
   quality?: ImageSize | number
+  version?: string | number
 }
 
 const STORAGE_DOMAIN =
@@ -13,7 +14,7 @@ const STORAGE_DOMAIN =
 
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_YANDEX_STORAGE_BUCKET || 'mentor-images'
 
-export function imageLoader({ src, width, quality }: ImageLoaderParams): string {
+export function imageLoader({ src, width, quality, version }: ImageLoaderParams): string {
   const url =
     'https://' + STORAGE_DOMAIN + (process.env.NEXT_PUBLIC_CDN_ENDPOINT ? '' : '/' + STORAGE_BUCKET)
 
@@ -28,5 +29,12 @@ export function imageLoader({ src, width, quality }: ImageLoaderParams): string 
     size = quality
   }
 
-  return `${url}/${src}/${size}`
+  const baseUrl = `${url}/${src}/${size}`
+  return version !== undefined ? `${baseUrl}?v=${version}` : baseUrl
+}
+
+export function updatedAtToVersion(updatedAt: string | undefined): number | undefined {
+  if (!updatedAt) return undefined
+  const ms = new Date(updatedAt).getTime()
+  return isNaN(ms) ? undefined : Math.floor(ms / 1000)
 }

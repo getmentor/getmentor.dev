@@ -96,6 +96,7 @@ export interface MentorBase {
   isNew: boolean
   calendarType: CalendarType
   sponsors?: string[]
+  updatedAt?: string
 }
 
 /**

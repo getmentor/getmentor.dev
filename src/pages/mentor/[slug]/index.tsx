@@ -10,7 +10,7 @@ import seo from '@/config/seo'
 import allFilters from '@/config/filters'
 import analytics from '@/lib/analytics'
 import pluralize from '@/lib/pluralize'
-import { imageLoader } from '@/lib/azure-image-loader'
+import { imageLoader, updatedAtToVersion } from '@/lib/azure-image-loader'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
 import logger, { getTraceContext } from '@/lib/logger'
 import type { MentorBase } from '@/types'
@@ -112,7 +112,7 @@ export default function Mentor({
             <div className="mb-4 md:hidden">
               <div className="aspect-w-1 aspect-h-1">
                 <Image
-                  src={imageLoader({ src: mentor.slug, quality: 'full' })}
+                  src={imageLoader({ src: mentor.slug, quality: 'full', version: updatedAtToVersion(mentor.updatedAt) })}
                   alt={mentor.name}
                   fill
                   sizes="100vw"
@@ -182,7 +182,7 @@ export default function Mentor({
           <div className="flex-1 pl-4 hidden md:block">
             <div className="aspect-w-1 aspect-h-1">
               <Image
-                src={imageLoader({ src: mentor.slug, quality: 'large' })}
+                src={imageLoader({ src: mentor.slug, quality: 'large', version: updatedAtToVersion(mentor.updatedAt) })}
                 alt={mentor.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
