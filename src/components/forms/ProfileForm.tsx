@@ -8,7 +8,7 @@ import { faCircleNotch, faQuestionCircle } from '@fortawesome/free-solid-svg-ico
 import { Tooltip } from 'react-tooltip'
 import Link from 'next/link'
 import { useState, useRef, type ChangeEvent } from 'react'
-import { imageLoader } from '@/lib/azure-image-loader'
+import { imageLoader, updatedAtToVersion } from '@/lib/azure-image-loader'
 import type { MentorWithSecureFields } from '@/types'
 
 interface TagOption {
@@ -263,13 +263,13 @@ export default function ProfileForm({
                 />
               ) : (
                 <Image
-                  src={imageLoader({ src: mentor.slug, quality: 'full' })}
+                  src={imageLoader({ src: mentor.slug, quality: 'full', version: updatedAtToVersion(mentor.updatedAt) })}
                   alt="Current profile"
                   className="w-24 h-24 rounded-full object-cover"
                   width={40}
                   height={40}
                   unoptimized
-                  key={mentor.photo_url}
+                  key={mentor.updatedAt ?? mentor.photo_url}
                 />
               )}
               <span className="text-sm text-gray-600">Текущее фото</span>
