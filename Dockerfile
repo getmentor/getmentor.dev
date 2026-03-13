@@ -39,6 +39,10 @@ ARG FARO_API_ENDPOINT
 ARG FARO_APP_ID
 ARG FARO_STACK_ID
 ARG FARO_API_KEY
+ARG NEXT_PUBLIC_POSTHOG_KEY
+ARG NEXT_PUBLIC_POSTHOG_HOST
+ARG POSTHOG_PERSONAL_API_KEY
+ARG POSTHOG_PROJECT_ID
 
 ENV NEXT_PUBLIC_GO_API_URL=$NEXT_PUBLIC_GO_API_URL
 ENV NEXT_PUBLIC_AZURE_STORAGE_DOMAIN=$NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
@@ -56,6 +60,8 @@ ENV NEXT_PUBLIC_CDN_ENDPOINT=$NEXT_PUBLIC_CDN_ENDPOINT
 ENV NEXT_PUBLIC_FARO_APP_NAME=$NEXT_PUBLIC_FARO_APP_NAME
 ENV NEXT_PUBLIC_FARO_COLLECTOR_URL=$NEXT_PUBLIC_FARO_COLLECTOR_URL
 ENV NEXT_PUBLIC_FARO_SAMPLE_RATE=$NEXT_PUBLIC_FARO_SAMPLE_RATE
+ENV NEXT_PUBLIC_POSTHOG_KEY=$NEXT_PUBLIC_POSTHOG_KEY
+ENV NEXT_PUBLIC_POSTHOG_HOST=$NEXT_PUBLIC_POSTHOG_HOST
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the Next.js application
@@ -76,6 +82,27 @@ RUN if [ -n "$FARO_API_KEY" ] && [ -n "$FARO_APP_ID" ] && [ -n "$FARO_STACK_ID" 
         -b "${NEXT_PUBLIC_O11Y_FE_SERVICE_VERSION:-1.0.0}"; \
     else \
       echo "Skipping source map upload (FARO_API_KEY, FARO_APP_ID, or FARO_STACK_ID not set)"; \
+    fi
+
+# Upload source maps to PostHog (if credentials provided)
+# Uses posthog-cli to inject chunk IDs and upload source maps
+RUN if [ -n "$POSTHOG_PERSONAL_API_KEY" ] && [ -n "$POSTHOG_PROJECT_ID" ]; then \
+      echo "Installing PostHog CLI..." && \
+      curl --proto '=https' --tlsv1.2 -LsSf \
+        https://github.com/PostHog/posthog/releases/latest/download/posthog-cli-installer.sh | sh && \
+      export POSTHOG_CLI_TOKEN="$POSTHOG_PERSONAL_API_KEY" && \
+      export POSTHOG_CLI_ENV_ID="$POSTHOG_PROJECT_ID" && \
+      export POSTHOG_CLI_HOST="https://eu.posthog.com" && \
+      echo "Injecting PostHog source map metadata..." && \
+      posthog-cli sourcemap inject --directory .next/static && \
+      echo "Uploading source maps to PostHog..." && \
+      posthog-cli sourcemap upload \
+        --directory .next/static \
+        --release-name getmentor-frontend \
+        --release-version "${NEXT_PUBLIC_O11Y_FE_SERVICE_VERSION:-1.0.0}" && \
+      echo "PostHog source maps uploaded successfully"; \
+    else \
+      echo "Skipping PostHog source map upload (POSTHOG_PERSONAL_API_KEY or POSTHOG_PROJECT_ID not set)"; \
     fi
 
 # Stage 3: Production image (using Alpine for smaller size)

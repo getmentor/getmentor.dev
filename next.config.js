@@ -41,6 +41,8 @@ module.exports = {
     'prom-client',
     // Winston logger
     'winston',
+    // PostHog server-side SDK
+    'posthog-node',
   ],
 
   // Enable Turbopack (Next.js 16 default)
@@ -167,6 +169,6 @@ module.exports = {
     return rewrites
   },
 
-  // Enable source maps in production for Faro error tracking
+  // Enable source maps in production for error tracking (Faro + PostHog)
   productionBrowserSourceMaps: true,
 }

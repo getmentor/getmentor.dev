@@ -16,6 +16,7 @@ import {
 import seo from '@/config/seo'
 import { getOneMentorBySlug } from '@/server/mentors-data'
 import analytics from '@/lib/analytics'
+import { captureException } from '@/lib/posthog'
 import { imageLoader } from '@/lib/azure-image-loader'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
 import logger, { getTraceContext } from '@/lib/logger'
@@ -209,13 +210,15 @@ export default function OrderMentor({
       })
       .catch((e) => {
         setReadyStatus('error')
+        if (e instanceof Error) {
+          captureException(e, { page: 'contact-mentor', mentorSlug: mentor.slug })
+        }
         analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
           mentor_id: mentor.mentorId,
           mentor_slug: mentor.slug,
           outcome: 'error',
           error_type: e instanceof Error ? e.name : 'network_error',
         })
-        // Client-side error - console.error is appropriate here
         console.error('Contact mentor error:', e)
       })
   }
