@@ -88,8 +88,7 @@ RUN if [ -n "$FARO_API_KEY" ] && [ -n "$FARO_APP_ID" ] && [ -n "$FARO_STACK_ID" 
 # Uses posthog-cli to inject chunk IDs and upload source maps
 RUN if [ -n "$POSTHOG_PERSONAL_API_KEY" ] && [ -n "$POSTHOG_PROJECT_ID" ]; then \
       echo "Installing PostHog CLI..." && \
-      curl --proto '=https' --tlsv1.2 -LsSf \
-        https://github.com/PostHog/posthog/releases/latest/download/posthog-cli-installer.sh | sh && \
+      npm install -g @posthog/cli && \
       export POSTHOG_CLI_TOKEN="$POSTHOG_PERSONAL_API_KEY" && \
       export POSTHOG_CLI_ENV_ID="$POSTHOG_PROJECT_ID" && \
       export POSTHOG_CLI_HOST="$NEXT_PUBLIC_POSTHOG_HOST" && \
