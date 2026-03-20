@@ -184,6 +184,7 @@ module.exports = posthogUploadEnabled
       host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com',
       sourcemaps: {
         releaseName: 'getmentor-frontend',
+        releaseVersion: process.env.NEXT_PUBLIC_O11Y_FE_SERVICE_VERSION || 'unknown',
         deleteAfterUpload: true,
       },
     })
