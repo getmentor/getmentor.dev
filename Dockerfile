@@ -92,7 +92,7 @@ RUN if [ -n "$POSTHOG_PERSONAL_API_KEY" ] && [ -n "$POSTHOG_PROJECT_ID" ]; then 
         https://github.com/PostHog/posthog/releases/latest/download/posthog-cli-installer.sh | sh && \
       export POSTHOG_CLI_TOKEN="$POSTHOG_PERSONAL_API_KEY" && \
       export POSTHOG_CLI_ENV_ID="$POSTHOG_PROJECT_ID" && \
-      export POSTHOG_CLI_HOST="https://eu.posthog.com" && \
+      export POSTHOG_CLI_HOST="$NEXT_PUBLIC_POSTHOG_HOST" && \
       echo "Injecting PostHog source map metadata..." && \
       posthog-cli sourcemap inject --directory .next/static && \
       echo "Uploading source maps to PostHog..." && \
