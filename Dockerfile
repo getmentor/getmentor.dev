@@ -2,7 +2,7 @@
 # Simplified without Grafana Alloy (hosted elsewhere)
 
 # Stage 1: Install dependencies
-FROM node:22.21.1-alpine3.22 AS deps
+FROM node:22.22.1-alpine3.23 AS deps
 WORKDIR /app
 
 # Copy package files and install dependencies
@@ -10,7 +10,7 @@ COPY package.json yarn.lock* ./
 RUN yarn install --frozen-lockfile
 
 # Stage 2: Build the application
-FROM node:22.21.1-alpine3.22 AS builder
+FROM node:22.22.1-alpine3.23 AS builder
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -106,7 +106,7 @@ RUN if [ -n "$POSTHOG_PERSONAL_API_KEY" ] && [ -n "$POSTHOG_PROJECT_ID" ]; then 
     fi
 
 # Stage 3: Production image (using Alpine for smaller size)
-FROM node:22.21.1-alpine3.22 AS runner
+FROM node:22.22.1-alpine3.23 AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
