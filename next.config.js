@@ -1,4 +1,6 @@
-module.exports = {
+const { withPostHogConfig } = require('@posthog/nextjs-config')
+
+const nextConfig = {
   // Enable standalone output for Docker deployments
   output: 'standalone',
 
@@ -169,6 +171,20 @@ module.exports = {
     return rewrites
   },
 
-  // Enable source maps in production for error tracking (Faro + PostHog)
-  productionBrowserSourceMaps: true,
 }
+
+const posthogUploadEnabled = !!(
+  process.env.POSTHOG_PERSONAL_API_KEY && process.env.POSTHOG_PROJECT_ID
+)
+
+module.exports = posthogUploadEnabled
+  ? withPostHogConfig(nextConfig, {
+      personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY,
+      projectId: process.env.POSTHOG_PROJECT_ID,
+      host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com',
+      sourcemaps: {
+        releaseName: 'getmentor-frontend',
+        deleteAfterUpload: true,
+      },
+    })
+  : nextConfig

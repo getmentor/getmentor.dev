@@ -62,6 +62,8 @@ ENV NEXT_PUBLIC_FARO_COLLECTOR_URL=$NEXT_PUBLIC_FARO_COLLECTOR_URL
 ENV NEXT_PUBLIC_FARO_SAMPLE_RATE=$NEXT_PUBLIC_FARO_SAMPLE_RATE
 ENV NEXT_PUBLIC_POSTHOG_KEY=$NEXT_PUBLIC_POSTHOG_KEY
 ENV NEXT_PUBLIC_POSTHOG_HOST=$NEXT_PUBLIC_POSTHOG_HOST
+ENV POSTHOG_PERSONAL_API_KEY=$POSTHOG_PERSONAL_API_KEY
+ENV POSTHOG_PROJECT_ID=$POSTHOG_PROJECT_ID
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the Next.js application
@@ -84,25 +86,6 @@ RUN if [ -n "$FARO_API_KEY" ] && [ -n "$FARO_APP_ID" ] && [ -n "$FARO_STACK_ID" 
       echo "Skipping source map upload (FARO_API_KEY, FARO_APP_ID, or FARO_STACK_ID not set)"; \
     fi
 
-# Upload source maps to PostHog (if credentials provided)
-# Uses posthog-cli to inject chunk IDs and upload source maps
-RUN if [ -n "$POSTHOG_PERSONAL_API_KEY" ] && [ -n "$POSTHOG_PROJECT_ID" ]; then \
-      echo "Installing PostHog CLI..." && \
-      npm install -g @posthog/cli && \
-      export POSTHOG_CLI_TOKEN="$POSTHOG_PERSONAL_API_KEY" && \
-      export POSTHOG_CLI_ENV_ID="$POSTHOG_PROJECT_ID" && \
-      export POSTHOG_CLI_HOST="$NEXT_PUBLIC_POSTHOG_HOST" && \
-      echo "Injecting PostHog source map metadata..." && \
-      posthog-cli sourcemap inject --directory .next/static && \
-      echo "Uploading source maps to PostHog..." && \
-      posthog-cli sourcemap upload \
-        --directory .next/static \
-        --release-name getmentor-frontend \
-        --release-version "${NEXT_PUBLIC_O11Y_FE_SERVICE_VERSION:-1.0.0}" && \
-      echo "PostHog source maps uploaded successfully"; \
-    else \
-      echo "Skipping PostHog source map upload (POSTHOG_PERSONAL_API_KEY or POSTHOG_PROJECT_ID not set)"; \
-    fi
 
 # Stage 3: Production image (using Alpine for smaller size)
 FROM node:22.22.1-alpine3.23 AS runner
