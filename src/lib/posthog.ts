@@ -31,6 +31,10 @@ export function initializePostHog(): typeof posthog | null {
     capture_exceptions: true,
   })
 
+  // The npm module does not set window.posthog (unlike the GTM snippet).
+  // analytics.ts reads window.posthog to route custom events in dual mode.
+  window.posthog = posthog as typeof window.posthog
+
   initialized = true
   return posthog
 }
