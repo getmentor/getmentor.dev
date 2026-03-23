@@ -21,6 +21,12 @@ export function initializePostHog(): typeof posthog | null {
     api_host: apiHost,
     ui_host: 'https://eu.posthog.com',
 
+    // Explicitly set to true — posthog-js v1.359+ defaults to "history_change"
+    // when no `defaults` date is provided (string "unset" >= "2025-05-24"),
+    // which skips the initial page load $pageview and breaks web metrics.
+    capture_pageview: true,
+    capture_pageleave: true,
+
     // Error tracking — auto-capture unhandled errors and promise rejections
     capture_exceptions: true,
   })
