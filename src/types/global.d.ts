@@ -21,11 +21,6 @@ declare global {
         set: (props: Record<string, unknown>) => void
       }
     }
-    posthog?: {
-      capture: (name: string, properties?: Record<string, unknown>) => void
-      identify: (id: string, properties?: Record<string, unknown>) => void
-      reset?: () => void
-    }
     dataLayer?: unknown[]
   }
 }
