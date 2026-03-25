@@ -2,7 +2,7 @@
 # Simplified without Grafana Alloy (hosted elsewhere)
 
 # Stage 1: Install dependencies
-FROM node:22.21.1-alpine3.22 AS deps
+FROM node:22.22.1-alpine3.23 AS deps
 WORKDIR /app
 
 # Copy package files and install dependencies
@@ -10,7 +10,7 @@ COPY package.json yarn.lock* ./
 RUN yarn install --frozen-lockfile
 
 # Stage 2: Build the application
-FROM node:22.21.1-alpine3.22 AS builder
+FROM node:22.22.1-alpine3.23 AS builder
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -39,6 +39,10 @@ ARG FARO_API_ENDPOINT
 ARG FARO_APP_ID
 ARG FARO_STACK_ID
 ARG FARO_API_KEY
+ARG NEXT_PUBLIC_POSTHOG_KEY
+ARG NEXT_PUBLIC_POSTHOG_HOST
+ARG POSTHOG_PERSONAL_API_KEY
+ARG POSTHOG_PROJECT_ID
 
 ENV NEXT_PUBLIC_GO_API_URL=$NEXT_PUBLIC_GO_API_URL
 ENV NEXT_PUBLIC_AZURE_STORAGE_DOMAIN=$NEXT_PUBLIC_AZURE_STORAGE_DOMAIN
@@ -56,6 +60,10 @@ ENV NEXT_PUBLIC_CDN_ENDPOINT=$NEXT_PUBLIC_CDN_ENDPOINT
 ENV NEXT_PUBLIC_FARO_APP_NAME=$NEXT_PUBLIC_FARO_APP_NAME
 ENV NEXT_PUBLIC_FARO_COLLECTOR_URL=$NEXT_PUBLIC_FARO_COLLECTOR_URL
 ENV NEXT_PUBLIC_FARO_SAMPLE_RATE=$NEXT_PUBLIC_FARO_SAMPLE_RATE
+ENV NEXT_PUBLIC_POSTHOG_KEY=$NEXT_PUBLIC_POSTHOG_KEY
+ENV NEXT_PUBLIC_POSTHOG_HOST=$NEXT_PUBLIC_POSTHOG_HOST
+ENV POSTHOG_PERSONAL_API_KEY=$POSTHOG_PERSONAL_API_KEY
+ENV POSTHOG_PROJECT_ID=$POSTHOG_PROJECT_ID
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the Next.js application
@@ -78,8 +86,9 @@ RUN if [ -n "$FARO_API_KEY" ] && [ -n "$FARO_APP_ID" ] && [ -n "$FARO_STACK_ID" 
       echo "Skipping source map upload (FARO_API_KEY, FARO_APP_ID, or FARO_STACK_ID not set)"; \
     fi
 
+
 # Stage 3: Production image (using Alpine for smaller size)
-FROM node:22.21.1-alpine3.22 AS runner
+FROM node:22.22.1-alpine3.23 AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production

@@ -57,6 +57,12 @@ declare namespace NodeJS {
     NEXT_PUBLIC_FARO_APP_NAME?: string
     NEXT_PUBLIC_FARO_SAMPLE_RATE?: string
 
+    // PostHog
+    NEXT_PUBLIC_POSTHOG_KEY?: string
+    NEXT_PUBLIC_POSTHOG_HOST?: string
+    POSTHOG_PERSONAL_API_KEY?: string
+    POSTHOG_PROJECT_ID?: string
+
     // Domain
     DOMAIN?: string
 

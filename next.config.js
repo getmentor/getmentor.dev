@@ -1,4 +1,6 @@
-module.exports = {
+const { withPostHogConfig } = require('@posthog/nextjs-config')
+
+const nextConfig = {
   // Enable standalone output for Docker deployments
   output: 'standalone',
 
@@ -41,6 +43,8 @@ module.exports = {
     'prom-client',
     // Winston logger
     'winston',
+    // PostHog server-side SDK
+    'posthog-node',
   ],
 
   // Enable Turbopack (Next.js 16 default)
@@ -167,6 +171,21 @@ module.exports = {
     return rewrites
   },
 
-  // Enable source maps in production for Faro error tracking
-  productionBrowserSourceMaps: true,
 }
+
+const posthogUploadEnabled = !!(
+  process.env.POSTHOG_PERSONAL_API_KEY && process.env.POSTHOG_PROJECT_ID
+)
+
+module.exports = posthogUploadEnabled
+  ? withPostHogConfig(nextConfig, {
+      personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY,
+      projectId: process.env.POSTHOG_PROJECT_ID,
+      host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com',
+      sourcemaps: {
+        releaseName: 'getmentor-frontend',
+        releaseVersion: process.env.NEXT_PUBLIC_O11Y_FE_SERVICE_VERSION || 'unknown',
+        deleteAfterUpload: true,
+      },
+    })
+  : nextConfig
