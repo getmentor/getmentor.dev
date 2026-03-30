@@ -29,6 +29,9 @@ export function initializePostHog(): typeof posthog | null {
 
     // Error tracking — auto-capture unhandled errors and promise rejections
     capture_exceptions: true,
+
+    // heatmaps
+    enable_heatmaps: true,
   })
 
   initialized = true
