@@ -1,5 +1,4 @@
 import { captureException } from '@/lib/posthog'
-import { getPostHogServerClient } from '@/lib/posthog-server'
 import type { NextPageContext } from 'next'
 
 interface ErrorPageProps {
@@ -21,10 +20,11 @@ function ErrorPage({ statusCode }: ErrorPageProps): JSX.Element {
   )
 }
 
-ErrorPage.getInitialProps = ({ res, err }: NextPageContext): ErrorPageProps => {
+ErrorPage.getInitialProps = async ({ res, err }: NextPageContext): Promise<ErrorPageProps> => {
   const statusCode = res?.statusCode ?? err?.statusCode ?? 500
   if (err) {
     if (typeof window === 'undefined') {
+      const { getPostHogServerClient } = await import('@/lib/posthog-server')
       const serverClient = getPostHogServerClient()
       serverClient?.captureException(err)
     } else {
