@@ -1,3 +1,5 @@
+import { getPostHogClient } from '@/lib/posthog'
+
 type AnalyticsProperties = Record<string, unknown>
 
 type PendingCommand =
@@ -122,13 +124,9 @@ function getMixpanel(): MixpanelClient | null {
 }
 
 function getPostHog(): PostHogClient | null {
-  if (typeof window === 'undefined') return null
-
-  const posthog = window.posthog
-  if (!posthog || typeof posthog.capture !== 'function' || typeof posthog.identify !== 'function') {
-    return null
-  }
-  return posthog as PostHogClient
+  const client = getPostHogClient()
+  if (!client) return null
+  return client as unknown as PostHogClient
 }
 
 function normalizePropertyKey(key: string): string {

@@ -166,7 +166,7 @@ export default function RegisterMentorForm({
   }
 
   const handleFormSubmit = (data: RegisterFormData): void => {
-    if (!selectedImage) {
+    if (!selectedImage || !imagePreview) {
       setImageError('Пожалуйста, выберите фотографию профиля.')
       return
     }
@@ -175,26 +175,13 @@ export default function RegisterMentorForm({
       return
     }
 
-    // Read the image file as base64
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      const base64Image = reader.result as string
-
-      const profilePicture: ProfilePictureData = {
-        image: base64Image,
-        fileName: selectedImage.name,
-        contentType: selectedImage.type,
-      }
-
-      const requestData: RegisterMentorRequest = {
-        ...data,
-        profilePicture,
-        recaptchaToken,
-      }
-
-      onSubmit(requestData)
+    const profilePicture: ProfilePictureData = {
+      image: imagePreview,
+      fileName: selectedImage.name,
+      contentType: selectedImage.type,
     }
-    reader.readAsDataURL(selectedImage)
+
+    onSubmit({ ...data, profilePicture, recaptchaToken })
   }
 
   const requiredText = 'Это поле обязательно для заполнения.'

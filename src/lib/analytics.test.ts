@@ -1,16 +1,24 @@
+import type posthog from 'posthog-js'
+
+// Mock the posthog module so analytics.ts gets a controllable client
+const mockPostHogClient: { current: Partial<typeof posthog> | null } = { current: null }
+jest.mock('@/lib/posthog', () => ({
+  getPostHogClient: () => mockPostHogClient.current,
+}))
+
 describe('analytics', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     jest.resetModules()
     delete window.mixpanel
-    delete window.posthog
+    mockPostHogClient.current = null
     delete process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER
   })
 
   afterEach(() => {
     jest.useRealTimers()
     delete window.mixpanel
-    delete window.posthog
+    mockPostHogClient.current = null
   })
 
   it('sanitizes properties and adds common metadata', async () => {
@@ -148,11 +156,11 @@ describe('analytics', () => {
     })
 
     const capture = jest.fn()
-    window.posthog = {
+    mockPostHogClient.current = {
       capture,
       identify: jest.fn(),
       reset: jest.fn(),
-    }
+    } as unknown as typeof posthog
 
     jest.runOnlyPendingTimers()
 
@@ -179,11 +187,11 @@ describe('analytics', () => {
 
     const identify = jest.fn()
     const reset = jest.fn()
-    window.posthog = {
+    mockPostHogClient.current = {
       capture: jest.fn(),
       identify,
       reset,
-    }
+    } as unknown as typeof posthog
 
     jest.runOnlyPendingTimers()
 
@@ -198,11 +206,11 @@ describe('analytics', () => {
     analytics.event(analyticsEvents.HOME_PAGE_VIEWED, { foo: 'bar' })
 
     const capture = jest.fn()
-    window.posthog = {
+    mockPostHogClient.current = {
       capture,
       identify: jest.fn(),
       reset: jest.fn(),
-    }
+    } as unknown as typeof posthog
 
     jest.runOnlyPendingTimers()
 
