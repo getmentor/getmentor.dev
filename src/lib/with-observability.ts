@@ -5,6 +5,7 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Histogram } from 'prom-client'
+import { trace } from '@opentelemetry/api'
 import { httpRequestDuration, httpRequestTotal, activeRequests } from './metrics'
 import { logHttpRequest, logError } from './logger'
 import { getPostHogServerClient } from './posthog-server'
@@ -58,11 +59,22 @@ export function withObservability(handler: NextApiHandler): NextApiHandler {
       const statusCode = res.statusCode
       const duration = (Date.now() - start) / 1000 // Convert to seconds
 
-      // Record metrics
-      httpRequestDuration.observe(
-        { http_request_method: method, http_route: route, http_response_status_code: statusCode },
-        duration
-      )
+      // Build exemplar labels from active trace context (enables metrics → trace linking in Grafana)
+      const spanContext = trace.getActiveSpan()?.spanContext()
+      const exemplarLabels = spanContext
+        ? { traceID: spanContext.traceId, spanID: spanContext.spanId }
+        : undefined
+
+      // Record metrics (with trace exemplar for Grafana Tempo correlation)
+      httpRequestDuration.observe({
+        labels: {
+          http_request_method: method,
+          http_route: route,
+          http_response_status_code: statusCode,
+        },
+        value: duration,
+        exemplarLabels,
+      })
       httpRequestTotal.inc({
         http_request_method: method,
         http_route: route,
