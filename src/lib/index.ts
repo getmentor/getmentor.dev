@@ -35,8 +35,10 @@ export {
 export { withObservability, measureAsync, measureSync } from './with-observability'
 export { withSSRObservability, withStaticPropsObservability } from './with-ssr-observability'
 // Tracing
-export { registerClientTracing, getTracer } from './tracing-client'
 export { registerServerTracing } from './tracing-server'
 
 // Grafana Faro (client-side observability)
 export { initializeFaro, getFaro, pushEvent, pushError, setUser } from './faro'
+
+// Unified error reporting (Faro + PostHog)
+export { reportError } from './report-error'

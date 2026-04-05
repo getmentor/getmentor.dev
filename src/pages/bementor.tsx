@@ -4,7 +4,7 @@ import type { GetServerSideProps } from 'next'
 import { Footer, MetaHeader, NavHeader, Section } from '@/components'
 import RegisterMentorForm from '@/components/forms/RegisterMentorForm'
 import analytics from '@/lib/analytics'
-import { captureException } from '@/lib/posthog'
+import { reportError } from '@/lib/report-error'
 import seo from '@/config/seo'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
 import logger, { getTraceContext } from '@/lib/logger'
@@ -76,7 +76,7 @@ export default function Bementor(): JSX.Element {
       setSubmitStatus('error')
       setErrorMessage('Произошла ошибка при отправке заявки. Попробуйте позже.')
       if (error instanceof Error) {
-        captureException(error, { page: 'bementor' })
+        reportError(error, { page: 'bementor' })
       }
       analytics.event(analytics.events.MENTOR_REGISTRATION_SUBMITTED, {
         outcome: 'error',

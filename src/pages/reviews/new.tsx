@@ -16,6 +16,7 @@ import {
   faCheckCircle,
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons'
+import { reportError } from '@/lib/report-error'
 
 interface ReviewFormData {
   mentorReview: string
@@ -115,6 +116,9 @@ export default function NewReviewPage(): JSX.Element {
       setIsSuccess(true)
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Произошла ошибка')
+      if (err instanceof Error) {
+        reportError(err, { page: 'review-new', action: 'submit' })
+      }
       recaptchaRef.current?.reset()
       setValue('recaptchaToken', '')
     } finally {
