@@ -38,7 +38,7 @@ export { withSSRObservability, withStaticPropsObservability } from './with-ssr-o
 export { registerServerTracing } from './tracing-server'
 
 // Grafana Faro (client-side observability)
-export { initializeFaro, getFaro, pushEvent, pushError, setUser } from './faro'
+export { initializeFaro, getFaro, pushEvent, pushError, setUser, resetUser } from './faro'
 
 // Unified error reporting (Faro + PostHog)
 export { reportError } from './report-error'

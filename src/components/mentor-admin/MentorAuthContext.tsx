@@ -16,7 +16,7 @@ import {
   logout as apiLogout,
 } from '@/lib/mentor-admin-api'
 import analytics from '@/lib/analytics'
-import { setUser as setFaroUser } from '@/lib/faro'
+import { setUser as setFaroUser, resetUser as resetFaroUser } from '@/lib/faro'
 
 interface MentorAuthContextValue {
   session: MentorSession | null
@@ -117,6 +117,7 @@ export function MentorAuthProvider({ children }: MentorAuthProviderProps): JSX.E
     }
 
     analytics.reset()
+    resetFaroUser()
   }, [isLoading, session?.mentor_uuid])
 
   const value = useMemo(

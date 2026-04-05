@@ -9,7 +9,7 @@ import {
   logoutAdmin as apiLogoutAdmin,
 } from '@/lib/admin-moderation-api'
 import analytics from '@/lib/analytics'
-import { setUser as setFaroUser } from '@/lib/faro'
+import { setUser as setFaroUser, resetUser as resetFaroUser } from '@/lib/faro'
 
 interface AdminAuthContextValue {
   session: AdminSession | null
@@ -108,6 +108,7 @@ export function AdminAuthProvider({ children }: AdminAuthProviderProps): JSX.Ele
     }
 
     analytics.reset()
+    resetFaroUser()
   }, [isLoading, session?.moderatorId, session?.role])
 
   const value = useMemo(
