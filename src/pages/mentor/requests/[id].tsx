@@ -30,6 +30,7 @@ import {
   formatDateTime,
 } from '@/components/mentor-admin'
 import { getRequestById, updateRequestStatus, declineRequest } from '@/lib/mentor-admin-api'
+import { reportError } from '@/lib/report-error'
 
 /**
  * Get the next status in the workflow
@@ -121,6 +122,9 @@ function RequestDetailsContent(): JSX.Element {
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Не удалось загрузить заявку')
+        if (err instanceof Error) {
+          reportError(err, { page: 'mentor-request-detail', action: 'load' })
+        }
       } finally {
         setIsLoading(false)
       }
@@ -140,6 +144,9 @@ function RequestDetailsContent(): JSX.Element {
       setRequest(updated)
     } catch (err) {
       setStatusError(err instanceof Error ? err.message : 'Не удалось обновить статус')
+      if (err instanceof Error) {
+        reportError(err, { page: 'mentor-request-detail', action: 'update-status' })
+      }
     } finally {
       setIsUpdatingStatus(false)
     }

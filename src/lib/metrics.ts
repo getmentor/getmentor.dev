@@ -4,11 +4,14 @@
  * Backend metrics (Airtable, Cache) now handled by Go API
  */
 
-import promClient, { Counter, Gauge, Histogram, Registry } from 'prom-client'
+import promClient, { Counter, Gauge, Histogram, type RegistryContentType } from 'prom-client'
 
 // Use the default global registry to avoid issues with Next.js module loading
 // This ensures all metrics across all API routes use the same registry instance
-const register: Registry = promClient.register
+const register = promClient.register as promClient.Registry<RegistryContentType>
+
+// Use OpenMetrics format to support exemplars (enables metrics → trace linking in Grafana)
+register.setContentType(promClient.Registry.OPENMETRICS_CONTENT_TYPE)
 
 // Set default labels for ALL metrics in this registry
 // These constant labels are added to every metric automatically
@@ -37,7 +40,8 @@ interface MetricConfig {
   help: string
   labelNames?: string[]
   buckets?: number[]
-  registers?: Registry[]
+  registers?: promClient.Registry<promClient.RegistryContentType>[]
+  enableExemplars?: boolean
 }
 
 // Helper function to get or create metric
@@ -53,6 +57,7 @@ function getOrCreateHistogram(config: MetricConfig): Histogram<string> {
     labelNames: config.labelNames || [],
     buckets: config.buckets,
     registers: config.registers,
+    enableExemplars: config.enableExemplars,
   })
 }
 
@@ -82,13 +87,14 @@ function getOrCreateGauge(config: MetricConfig): Gauge<string> {
   })
 }
 
-// HTTP request duration histogram
+// HTTP request duration histogram (with exemplars for trace correlation in Grafana)
 export const httpRequestDuration: Histogram<string> = getOrCreateHistogram({
   name: 'http_server_request_duration_seconds',
   help: 'Duration of HTTP requests in seconds',
   labelNames: ['http_request_method', 'http_route', 'http_response_status_code'],
   buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
   registers: [register],
+  enableExemplars: true,
 })
 
 // HTTP request counter

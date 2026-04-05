@@ -19,6 +19,7 @@ import {
   SortToggle,
 } from '@/components/mentor-admin'
 import { getActiveRequests } from '@/lib/mentor-admin-api'
+import { reportError } from '@/lib/report-error'
 
 /**
  * Filter requests by search query
@@ -76,6 +77,9 @@ function ActiveRequestsContent(): JSX.Element {
         setRequests(data)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Не удалось загрузить заявки')
+        if (err instanceof Error) {
+          reportError(err, { page: 'mentor-requests', action: 'load' })
+        }
       } finally {
         setIsLoading(false)
       }
