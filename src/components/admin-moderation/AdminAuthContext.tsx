@@ -9,6 +9,7 @@ import {
   logoutAdmin as apiLogoutAdmin,
 } from '@/lib/admin-moderation-api'
 import analytics from '@/lib/analytics'
+import { setUser as setFaroUser } from '@/lib/faro'
 
 interface AdminAuthContextValue {
   session: AdminSession | null
@@ -102,6 +103,7 @@ export function AdminAuthProvider({ children }: AdminAuthProviderProps): JSX.Ele
       analytics.identify(`moderator:${session.moderatorId}`, {
         role: session.role,
       })
+      setFaroUser(`moderator:${session.moderatorId}`, { role: session.role })
       return
     }
 

@@ -16,6 +16,7 @@ import {
   logout as apiLogout,
 } from '@/lib/mentor-admin-api'
 import analytics from '@/lib/analytics'
+import { setUser as setFaroUser } from '@/lib/faro'
 
 interface MentorAuthContextValue {
   session: MentorSession | null
@@ -111,6 +112,7 @@ export function MentorAuthProvider({ children }: MentorAuthProviderProps): JSX.E
       analytics.identify(`mentor:${session.mentor_uuid}`, {
         role: 'mentor',
       })
+      setFaroUser(`mentor:${session.mentor_uuid}`, { role: 'mentor' })
       return
     }
 

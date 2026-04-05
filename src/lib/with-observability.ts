@@ -7,6 +7,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Histogram } from 'prom-client'
 import { httpRequestDuration, httpRequestTotal, activeRequests } from './metrics'
 import { logHttpRequest, logError } from './logger'
+import { getPostHogServerClient } from './posthog-server'
 
 type NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<void> | void
 
@@ -86,6 +87,17 @@ export function withObservability(handler: NextApiHandler): NextApiHandler {
           route,
           url: req.url,
         })
+
+        // Report to PostHog server-side
+        const posthog = getPostHogServerClient()
+        if (posthog) {
+          posthog.captureException(error, 'api-route', {
+            method,
+            route,
+            url: req.url || '',
+            environment: process.env.NEXT_PUBLIC_APP_ENV || process.env.NODE_ENV || 'unknown',
+          })
+        }
       }
 
       // Re-throw to let Next.js handle it
