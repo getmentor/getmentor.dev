@@ -22,13 +22,14 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   }
 
   componentDidMount(): void {
-    // Reset error state on client-side navigation so a crash on one page
-    // does not lock users on the fallback screen for all subsequent routes
-    Router.events.on('routeChangeStart', this.handleRouteChange)
+    // Reset error state after navigation completes so users can leave a
+    // crashing page. Using routeChangeComplete (not Start) avoids resetting
+    // while the broken page is still mounted, which would re-trigger the error.
+    Router.events.on('routeChangeComplete', this.handleRouteChange)
   }
 
   componentWillUnmount(): void {
-    Router.events.off('routeChangeStart', this.handleRouteChange)
+    Router.events.off('routeChangeComplete', this.handleRouteChange)
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
