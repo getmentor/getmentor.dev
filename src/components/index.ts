@@ -18,6 +18,7 @@ export { default as CalendlabWidget } from './calendar/CalendlabWidget'
 
 // Mentor Components
 export { default as MentorsList } from './mentors/MentorsList'
+export { default as MentorsListAd } from './mentors/MentorsListAd'
 export { default as MentorsFilters } from './mentors/MentorsFilters'
 export { default as MentorsSearch } from './mentors/MentorsSearch'
 export { default as FilterGroupDropdown } from './mentors/FilterGroupDropdown'

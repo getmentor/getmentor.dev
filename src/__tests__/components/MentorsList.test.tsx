@@ -45,6 +45,7 @@ jest.mock('next/link', () => ({
 jest.mock('@/lib/azure-image-loader', () => ({
   imageLoader: ({ src, quality }: { src: string; quality: string }) =>
     `https://storage.example.com/${src}-${quality}.jpg`,
+  updatedAtToVersion: () => 'v1',
 }))
 
 const mockMentors: MentorListItem[] = [
@@ -166,5 +167,72 @@ describe('MentorsList', () => {
     render(<MentorsList mentors={[]} hasMore={false} onClickMore={() => {}} />)
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
+  })
+
+  describe('ad block placement', () => {
+    const makeMentors = (count: number): MentorListItem[] =>
+      Array.from({ length: count }, (_, i) => ({
+        ...mockMentors[0],
+        id: i + 1,
+        mentorId: `rec${i + 1}`,
+        slug: `mentor-${i + 1}`,
+        name: `Mentor ${i + 1}`,
+      }))
+
+    it('does not render ad when showAd is not set', () => {
+      render(<MentorsList mentors={makeMentors(10)} hasMore={false} onClickMore={() => {}} />)
+      expect(screen.queryByTestId('mentors-list-ad')).not.toBeInTheDocument()
+    })
+
+    it('hides ad when fewer than 4 mentors', () => {
+      render(<MentorsList mentors={makeMentors(3)} hasMore={false} onClickMore={() => {}} showAd />)
+      expect(screen.queryByTestId('mentors-list-ad')).not.toBeInTheDocument()
+    })
+
+    it('places ad at position 4 when between 4 and 8 mentors', () => {
+      const { container } = render(
+        <MentorsList mentors={makeMentors(8)} hasMore={false} onClickMore={() => {}} showAd />
+      )
+
+      const grid = container.querySelector('.grid')
+      expect(grid).not.toBeNull()
+
+      const children = Array.from(grid?.children ?? [])
+      expect(children).toHaveLength(9)
+      expect(children[3]).toHaveAttribute('data-testid', 'mentors-list-ad')
+    })
+
+    it('places ad at position 4 with exactly 4 mentors', () => {
+      const { container } = render(
+        <MentorsList mentors={makeMentors(4)} hasMore={false} onClickMore={() => {}} showAd />
+      )
+
+      const grid = container.querySelector('.grid')
+      const children = Array.from(grid?.children ?? [])
+      expect(children).toHaveLength(5)
+      expect(children[3]).toHaveAttribute('data-testid', 'mentors-list-ad')
+    })
+
+    it('places ad at position 8 with 9 or more mentors', () => {
+      const { container } = render(
+        <MentorsList mentors={makeMentors(20)} hasMore={false} onClickMore={() => {}} showAd />
+      )
+
+      const grid = container.querySelector('.grid')
+      const children = Array.from(grid?.children ?? [])
+      expect(children).toHaveLength(21)
+      expect(children[7]).toHaveAttribute('data-testid', 'mentors-list-ad')
+    })
+
+    it('places ad at position 8 with exactly 9 mentors', () => {
+      const { container } = render(
+        <MentorsList mentors={makeMentors(9)} hasMore={false} onClickMore={() => {}} showAd />
+      )
+
+      const grid = container.querySelector('.grid')
+      const children = Array.from(grid?.children ?? [])
+      expect(children).toHaveLength(10)
+      expect(children[7]).toHaveAttribute('data-testid', 'mentors-list-ad')
+    })
   })
 })
