@@ -5,8 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import type { MentorModerationFilter, AdminMentorListItem } from '@/types'
 import { useAdminAuth } from './AdminAuthContext'
-import { AdminLayout } from './AdminLayout'
-import { getModerationMentors } from '@/lib/admin-moderation-api'
+import { AdminLayout, useAdminMentors } from './AdminLayout'
 
 const PAGE_SIZE = 50
 
@@ -22,57 +21,15 @@ function getStatusBadge(status: AdminMentorListItem['status']): string {
   return 'bg-yellow-100 text-yellow-800'
 }
 
-export function MentorModerationListPage({
-  status,
-  title,
-}: MentorModerationListPageProps): JSX.Element {
-  const router = useRouter()
-  const { isAuthenticated, isLoading: authLoading, session } = useAdminAuth()
-  const [mentors, setMentors] = useState<AdminMentorListItem[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+function MentorModerationListContent({ status }: { status: MentorModerationFilter }): JSX.Element {
+  const { getStatusEntry } = useAdminMentors()
+  const entry = getStatusEntry(status)
+  const mentors = entry.mentors ?? []
+  const isLoading = entry.isLoading && !entry.mentors
+  const error = entry.error ?? null
+
   const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.replace('/admin/login')
-      return
-    }
-
-    if (session?.role === 'moderator' && status !== 'pending') {
-      router.replace('/admin/mentors/pending')
-    }
-  }, [authLoading, isAuthenticated, router, session, status])
-
-  useEffect(() => {
-    if (!isAuthenticated || !session) return
-    let mounted = true
-
-    const loadMentors = async (): Promise<void> => {
-      try {
-        setIsLoading(true)
-        setError(null)
-        const data = await getModerationMentors(status)
-        if (mounted) {
-          setMentors(data)
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err.message : 'Failed to load mentors')
-        }
-      } finally {
-        if (mounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    loadMentors()
-    return () => {
-      mounted = false
-    }
-  }, [isAuthenticated, session, status])
 
   const filteredMentors = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -89,7 +46,7 @@ export function MentorModerationListPage({
       const telegram = mentor.telegram.toLowerCase()
       return name.includes(query) || email.includes(query) || telegram.includes(query)
     })
-  }, [mentors, searchQuery])
+  }, [mentors, searchQuery, status])
 
   const totalPages = Math.max(1, Math.ceil(filteredMentors.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -99,16 +56,8 @@ export function MentorModerationListPage({
     setPage(1)
   }, [searchQuery, mentors.length])
 
-  if (authLoading || !isAuthenticated) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-2xl text-indigo-500" />
-      </div>
-    )
-  }
-
   return (
-    <AdminLayout title={title}>
+    <>
       <div className="mb-4">
         <input
           type="text"
@@ -197,6 +146,39 @@ export function MentorModerationListPage({
           </button>
         </div>
       )}
+    </>
+  )
+}
+
+export function MentorModerationListPage({
+  status,
+  title,
+}: MentorModerationListPageProps): JSX.Element {
+  const router = useRouter()
+  const { isAuthenticated, isLoading: authLoading, session } = useAdminAuth()
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.replace('/admin/login')
+      return
+    }
+
+    if (session?.role === 'moderator' && status !== 'pending') {
+      router.replace('/admin/mentors/pending')
+    }
+  }, [authLoading, isAuthenticated, router, session, status])
+
+  if (authLoading || !isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-2xl text-indigo-500" />
+      </div>
+    )
+  }
+
+  return (
+    <AdminLayout title={title}>
+      <MentorModerationListContent status={status} />
     </AdminLayout>
   )
 }
