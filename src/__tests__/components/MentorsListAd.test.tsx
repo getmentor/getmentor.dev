@@ -44,6 +44,7 @@ function uninstallFakeYa(): void {
   delete window.yaContextCb
   delete window.__yaRenderCalls
   delete window.__yaDestroyCalls
+  delete window.getmentorAds
 }
 
 describe('MentorsListAd', () => {
@@ -95,10 +96,53 @@ describe('MentorsListAd', () => {
     expect(window.__yaRenderCalls).toHaveLength(2)
   })
 
-  it('uses the default block id and slot id when not provided', () => {
-    render(<MentorsListAd />)
-    expect(window.__yaRenderCalls).toEqual([
-      { blockId: 'R-A-19309570-2', renderTo: 'mentors-list-ad-slot' },
-    ])
+  it('reads block id from window.getmentorAds when no prop is passed', () => {
+    window.getmentorAds = { mentorsListBlockId: 'R-FROM-GTM-1' }
+    render(<MentorsListAd id="my-slot" />)
+    expect(window.__yaRenderCalls).toEqual([{ blockId: 'R-FROM-GTM-1', renderTo: 'my-slot' }])
+  })
+
+  it('prop blockId overrides window.getmentorAds', () => {
+    window.getmentorAds = { mentorsListBlockId: 'R-FROM-GTM-1' }
+    render(<MentorsListAd id="my-slot" blockId="R-PROP-1" />)
+    expect(window.__yaRenderCalls).toEqual([{ blockId: 'R-PROP-1', renderTo: 'my-slot' }])
+  })
+
+  it('does not call render when no block id is configured anywhere', () => {
+    render(<MentorsListAd id="my-slot" />)
+    expect(window.__yaRenderCalls).toEqual([])
+    expect(window.__yaDestroyCalls).toEqual([])
+  })
+
+  it('picks up a block id set after mount but before SDK loads', () => {
+    // Simulate GTM firing after React mount but before Yandex SDK is ready:
+    // start with a plain queue array, mount the component, then have GTM
+    // set the block id, then have the SDK consume the queue.
+    window.yaContextCb = []
+    delete window.Ya
+
+    render(<MentorsListAd id="my-slot" />)
+    expect(window.yaContextCb).toHaveLength(1)
+
+    // GTM fires — sets the block id.
+    window.getmentorAds = { mentorsListBlockId: 'R-LATE-1' }
+
+    // Yandex SDK loads — install Ya and drain the queue (as Yandex does).
+    const renderCalls: RenderCall[] = []
+    const destroyCalls: RenderCall[] = []
+    window.__yaRenderCalls = renderCalls
+    window.__yaDestroyCalls = destroyCalls
+    window.Ya = {
+      Context: {
+        AdvManager: {
+          render: (opts) => renderCalls.push(opts),
+          destroy: (opts) => destroyCalls.push(opts),
+        },
+      },
+    }
+    const queued = window.yaContextCb as Array<() => void>
+    queued.forEach((cb) => cb())
+
+    expect(renderCalls).toEqual([{ blockId: 'R-LATE-1', renderTo: 'my-slot' }])
   })
 })

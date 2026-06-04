@@ -15,10 +15,12 @@ declare global {
         AdvManager?: YaAdvManager
       }
     }
+    getmentorAds?: {
+      mentorsListBlockId?: string
+    }
   }
 }
 
-const DEFAULT_BLOCK_ID = 'R-A-19309570-2'
 const DEFAULT_SLOT_ID = 'mentors-list-ad-slot'
 
 interface MentorsListAdProps {
@@ -32,28 +34,38 @@ function queueYaCallback(cb: YaContextCallback): void {
   window.yaContextCb.push(cb)
 }
 
+function resolveBlockId(override?: string): string | undefined {
+  if (override) return override
+  if (typeof window === 'undefined') return undefined
+  return window.getmentorAds?.mentorsListBlockId
+}
+
 export default function MentorsListAd({
   id = DEFAULT_SLOT_ID,
-  blockId = DEFAULT_BLOCK_ID,
+  blockId,
 }: MentorsListAdProps): JSX.Element {
   useEffect(() => {
     queueYaCallback(() => {
+      const resolvedBlockId = resolveBlockId(blockId)
+      if (!resolvedBlockId) return
       const advManager = window.Ya?.Context?.AdvManager
       if (!advManager) return
       try {
-        advManager.destroy({ blockId, renderTo: id })
+        advManager.destroy({ blockId: resolvedBlockId, renderTo: id })
       } catch {
         // No existing block on first mount — expected.
       }
-      advManager.render({ blockId, renderTo: id })
+      advManager.render({ blockId: resolvedBlockId, renderTo: id })
     })
 
     return () => {
       queueYaCallback(() => {
+        const resolvedBlockId = resolveBlockId(blockId)
+        if (!resolvedBlockId) return
         const advManager = window.Ya?.Context?.AdvManager
         if (!advManager) return
         try {
-          advManager.destroy({ blockId, renderTo: id })
+          advManager.destroy({ blockId: resolvedBlockId, renderTo: id })
         } catch {
           // Already gone — ignore.
         }
