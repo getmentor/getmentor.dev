@@ -1,4 +1,4 @@
-import { render, cleanup } from '@testing-library/react'
+import { render, cleanup, act, screen } from '@testing-library/react'
 import MentorsListAd from '@/components/mentors/MentorsListAd'
 
 interface RenderCall {
@@ -112,6 +112,101 @@ describe('MentorsListAd', () => {
     render(<MentorsListAd id="my-slot" />)
     expect(window.__yaRenderCalls).toEqual([])
     expect(window.__yaDestroyCalls).toEqual([])
+  })
+
+  describe('ad blocker fallback', () => {
+    beforeEach(() => {
+      jest.useFakeTimers()
+    })
+
+    afterEach(() => {
+      act(() => {
+        jest.runOnlyPendingTimers()
+      })
+      jest.useRealTimers()
+    })
+
+    it('does not show the fallback while Yandex SDK is available', () => {
+      render(<MentorsListAd id="my-slot" blockId="R-X-1" blockDetectionTimeoutMs={3000} />)
+      act(() => {
+        jest.advanceTimersByTime(3500)
+      })
+      expect(screen.queryByTestId('mentors-list-ad-fallback')).not.toBeInTheDocument()
+    })
+
+    it('shows the fallback message when the Yandex SDK fails to load', () => {
+      delete window.Ya
+      window.yaContextCb = []
+
+      render(<MentorsListAd id="my-slot" blockId="R-X-1" blockDetectionTimeoutMs={3000} />)
+      expect(screen.queryByTestId('mentors-list-ad-fallback')).not.toBeInTheDocument()
+
+      act(() => {
+        jest.advanceTimersByTime(3500)
+      })
+
+      expect(screen.getByTestId('mentors-list-ad-fallback')).toBeInTheDocument()
+      expect(
+        screen.getByText('Здесь должен был быть рекламный блок, но его заблокировали')
+      ).toBeInTheDocument()
+    })
+
+    it('hides the fallback if the SDK loads later than the timeout', () => {
+      delete window.Ya
+      window.yaContextCb = []
+
+      render(<MentorsListAd id="my-slot" blockId="R-X-1" blockDetectionTimeoutMs={3000} />)
+      act(() => {
+        jest.advanceTimersByTime(3500)
+      })
+      expect(screen.getByTestId('mentors-list-ad-fallback')).toBeInTheDocument()
+
+      // Yandex SDK finally arrives and drains the queue.
+      const renderCalls: RenderCall[] = []
+      const destroyCalls: RenderCall[] = []
+      window.__yaRenderCalls = renderCalls
+      window.__yaDestroyCalls = destroyCalls
+      window.Ya = {
+        Context: {
+          AdvManager: {
+            render: (opts) => renderCalls.push(opts),
+            destroy: (opts) => destroyCalls.push(opts),
+          },
+        },
+      }
+      const queued = window.yaContextCb as Array<() => void>
+      act(() => {
+        queued.forEach((cb) => cb())
+      })
+
+      expect(screen.queryByTestId('mentors-list-ad-fallback')).not.toBeInTheDocument()
+      expect(renderCalls).toHaveLength(1)
+    })
+
+    it('does not show the fallback before the timeout elapses', () => {
+      delete window.Ya
+      window.yaContextCb = []
+
+      render(<MentorsListAd id="my-slot" blockId="R-X-1" blockDetectionTimeoutMs={3000} />)
+      act(() => {
+        jest.advanceTimersByTime(2000)
+      })
+      expect(screen.queryByTestId('mentors-list-ad-fallback')).not.toBeInTheDocument()
+    })
+
+    it('keeps the slot div in the DOM even when fallback is visible', () => {
+      delete window.Ya
+      window.yaContextCb = []
+
+      const { container } = render(
+        <MentorsListAd id="my-slot" blockId="R-X-1" blockDetectionTimeoutMs={3000} />
+      )
+      act(() => {
+        jest.advanceTimersByTime(3500)
+      })
+      // Slot must remain so a delayed SDK can still inject the iframe.
+      expect(container.querySelector('#my-slot')).not.toBeNull()
+    })
   })
 
   it('picks up a block id set after mount but before SDK loads', () => {
