@@ -208,6 +208,7 @@ export default function Home({
           mentors={mentors}
           hasMore={hasMoreMentors}
           onClickMore={handleShowMoreMentors}
+          showAd
         />
       </Section>
 

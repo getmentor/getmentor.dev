@@ -33,6 +33,7 @@ export interface MentorsListProps {
   mentors: MentorListItem[]
   hasMore: boolean
   onClickMore: () => void
+  showAd?: boolean
 }
 
 /**

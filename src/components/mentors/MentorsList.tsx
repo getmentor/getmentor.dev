@@ -1,65 +1,88 @@
+import { Fragment } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import pluralize from '@/lib/pluralize'
 import { imageLoader, updatedAtToVersion } from '@/lib/azure-image-loader'
+import MentorsListAd from './MentorsListAd'
 import type { MentorListItem } from '@/types'
 
 interface MentorsListProps {
   mentors: MentorListItem[]
   hasMore: boolean
   onClickMore: () => void
+  showAd?: boolean
+}
+
+function getAdPosition(mentorsCount: number): number | null {
+  if (mentorsCount < 4) return null
+  if (mentorsCount < 9) return 4
+  return 8
 }
 
 export default function MentorsList({
   mentors,
   hasMore,
   onClickMore,
+  showAd = false,
 }: MentorsListProps): JSX.Element {
+  const adPosition = showAd ? getAdPosition(mentors.length) : null
+
   return (
     <>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
-        {mentors.map((mentor) => (
-          <Link key={mentor.id} href={'/mentor/' + mentor.slug} target="_blank">
-            <div className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat">
-              <Image
-                src={imageLoader({ src: mentor.slug, quality: 'large', version: updatedAtToVersion(mentor.updatedAt) })}
-                alt={mentor.name}
-                placeholder="blur"
-                blurDataURL={imageLoader({ src: mentor.slug, quality: 'small', version: updatedAtToVersion(mentor.updatedAt) })}
-                fill
-                sizes="100vw"
-                style={{
-                  objectFit: 'cover',
-                }}
-                unoptimized
-              />
-              {mentor.isNew && (
-                <div className="bg-gray-800 text-white w-20 h-1 absolute m-2 rounded-lg p-1.5 h-8 align-middle text-center text-sm">
-                  🎉 New
-                </div>
-              )}
-            </div>
-
-            <div className="mt-3 mb-5">
-              <div className="text-2xl mb-1">{mentor.name}</div>
-              <div className="mb-2">
-                {mentor.job} @ {mentor.workplace}
+        {mentors.map((mentor, index) => (
+          <Fragment key={mentor.id}>
+            {adPosition !== null && index === adPosition - 1 && <MentorsListAd />}
+            <Link href={'/mentor/' + mentor.slug} target="_blank">
+              <div className="aspect-w-5 aspect-h-4 bg-center bg-cover bg-no-repeat">
+                <Image
+                  src={imageLoader({
+                    src: mentor.slug,
+                    quality: 'large',
+                    version: updatedAtToVersion(mentor.updatedAt),
+                  })}
+                  alt={mentor.name}
+                  placeholder="blur"
+                  blurDataURL={imageLoader({
+                    src: mentor.slug,
+                    quality: 'small',
+                    version: updatedAtToVersion(mentor.updatedAt),
+                  })}
+                  fill
+                  sizes="100vw"
+                  style={{
+                    objectFit: 'cover',
+                  }}
+                  unoptimized
+                />
+                {mentor.isNew && (
+                  <div className="bg-gray-800 text-white w-20 h-1 absolute m-2 rounded-lg p-1.5 h-8 align-middle text-center text-sm">
+                    🎉 New
+                  </div>
+                )}
               </div>
 
-              <div>😎 {mentor.experience} лет опыта</div>
-              <div>💰 {mentor.price}</div>
-              {mentor.menteeCount > 0 && (
-                <div>
-                  🤝 {mentor.menteeCount}{' '}
-                  {pluralize(mentor.menteeCount, [
-                    'человек получил помощь',
-                    'человека получили помощь',
-                    'человек получили помощь',
-                  ])}
+              <div className="mt-3 mb-5">
+                <div className="text-2xl mb-1">{mentor.name}</div>
+                <div className="mb-2">
+                  {mentor.job} @ {mentor.workplace}
                 </div>
-              )}
-            </div>
-          </Link>
+
+                <div>😎 {mentor.experience} лет опыта</div>
+                <div>💰 {mentor.price}</div>
+                {mentor.menteeCount > 0 && (
+                  <div>
+                    🤝 {mentor.menteeCount}{' '}
+                    {pluralize(mentor.menteeCount, [
+                      'человек получил помощь',
+                      'человека получили помощь',
+                      'человек получили помощь',
+                    ])}
+                  </div>
+                )}
+              </div>
+            </Link>
+          </Fragment>
         ))}
       </div>
 
