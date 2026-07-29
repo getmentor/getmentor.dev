@@ -28,6 +28,10 @@ export const analyticsEvents = {
   HOME_PAGE_VIEWED: 'home_page_viewed',
   ONTICO_PAGE_VIEWED: 'ontico_page_viewed',
   SPONSORS_BANNER_VIEWED: 'sponsors_banner_viewed',
+  // Top band promoting the international sibling project openmentor.io
+  OPENMENTOR_BANNER_CLICKED: 'openmentor_banner_clicked',
+  // Homepage section promoting openmentor.io (`placement` distinguishes links)
+  OPENMENTOR_SECTION_CLICKED: 'openmentor_section_clicked',
 
   MENTOR_PROFILE_VIEWED: 'mentor_profile_viewed',
   MENTOR_CONTACT_PAGE_VIEWED: 'mentor_contact_page_viewed',

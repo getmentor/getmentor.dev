@@ -12,6 +12,7 @@ import {
   MentorsSearch,
   MetaHeader,
   NavHeader,
+  OpenMentorSection,
   Section,
   useMentors,
   Footer,
@@ -277,6 +278,8 @@ export default function Home({
           </a>
         </div>
       </Section>
+
+      <OpenMentorSection />
 
       <Section id="donate">
         <Section.Title>🍩 Донат</Section.Title>

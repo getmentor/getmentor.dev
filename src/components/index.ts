@@ -10,6 +10,8 @@ export { default as HtmlContent } from './ui/HtmlContent'
 // Layout Components
 export { default as MetaHeader } from './layout/MetaHeader'
 export { default as NavHeader } from './layout/NavHeader'
+export { default as PromoBanner } from './layout/PromoBanner'
+export { default as OpenMentorSection } from './layout/OpenMentorSection'
 export { default as Footer } from './layout/Footer'
 
 // Calendar Components
