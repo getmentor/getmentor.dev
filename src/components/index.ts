@@ -24,6 +24,7 @@ export { default as MentorsListAd } from './mentors/MentorsListAd'
 export { default as MentorsFilters } from './mentors/MentorsFilters'
 export { default as MentorsSearch } from './mentors/MentorsSearch'
 export { default as FilterGroupDropdown } from './mentors/FilterGroupDropdown'
+export { default as OpenMentorCrossLink, openmentorProfileUrl } from './mentors/OpenMentorCrossLink'
 
 // Form Components
 export { default as ContactMentorForm } from './forms/ContactMentorForm'

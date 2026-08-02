@@ -1,0 +1,8 @@
+<svg width="440" height="120" viewBox="0 0 440 120" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(0,16.0) scale(0.7333333333333333)">
+    <circle cx="60" cy="60" r="34" fill="none" stroke="#5B8CFF" stroke-width="14" stroke-linecap="round" stroke-dasharray="180.98 32.65" transform="rotate(-20 60 60)"/>
+  <line x1="32" y1="88" x2="90" y2="30" stroke="#2BD9C9" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="90" cy="30" r="7.5" fill="#FFC15E"/>
+  </g>
+  <text x="108" y="75.0" font-family="'Inter', -apple-system, 'Segoe UI', sans-serif" font-size="40" font-weight="700" letter-spacing="-1" fill="#FFFFFF">openmentor<tspan font-weight="500" letter-spacing="-0.4" fill="#9AA3B4">.io</tspan></text>
+</svg>

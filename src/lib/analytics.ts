@@ -32,6 +32,8 @@ export const analyticsEvents = {
   OPENMENTOR_BANNER_CLICKED: 'openmentor_banner_clicked',
   // Homepage section promoting openmentor.io (`placement` distinguishes links)
   OPENMENTOR_SECTION_CLICKED: 'openmentor_section_clicked',
+  // Cross-link card on a mentor profile that also exists on openmentor.io
+  OPENMENTOR_PROFILE_CLICKED: 'openmentor_profile_clicked',
 
   MENTOR_PROFILE_VIEWED: 'mentor_profile_viewed',
   MENTOR_CONTACT_PAGE_VIEWED: 'mentor_contact_page_viewed',

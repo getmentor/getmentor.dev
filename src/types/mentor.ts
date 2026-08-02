@@ -97,6 +97,12 @@ export interface MentorBase {
   calendarType: CalendarType
   sponsors?: string[]
   updatedAt?: string
+  /**
+   * Slug of the same person's profile on openmentor.io, the international
+   * sibling project. Served by the Go API only for the minority of mentors who
+   * have one, so it is omitted (not null) for everyone else.
+   */
+  openmentorSlug?: string
 }
 
 /**

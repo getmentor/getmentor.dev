@@ -4,9 +4,18 @@ import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import { Footer, HtmlContent, MetaHeader, NavHeader, Section } from '@/components'
+import {
+  Footer,
+  HtmlContent,
+  MetaHeader,
+  NavHeader,
+  OpenMentorCrossLink,
+  openmentorProfileUrl,
+  Section,
+} from '@/components'
 import { getOneMentorBySlug } from '@/server/mentors-data'
 import seo from '@/config/seo'
+import constants from '@/config/constants'
 import allFilters from '@/config/filters'
 import analytics from '@/lib/analytics'
 import pluralize from '@/lib/pluralize'
@@ -59,6 +68,34 @@ export default function Mentor({
 }: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
   const title = mentor.name + ' | ' + seo.title
 
+  /**
+   * Declares that this profile and the openmentor.io one are the same person.
+   * `sameAs` must be the canonical URL, so no UTM parameters here — the visible
+   * link in the card carries those instead.
+   *
+   * `<` is escaped because the values are mentor-editable: JSON.stringify does
+   * not escape it, and a literal `</script>` inside a name would otherwise
+   * close this tag early.
+   */
+  const personJsonLd = mentor.openmentorSlug
+    ? JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: mentor.name,
+        // constants.BASE_URL, not seo.domain: seo.domain is `process.env.DOMAIN`
+        // raw, which in every deployed environment is a bare host with no
+        // scheme ("getmentor.dev/mentor/x" is not a valid schema.org URL).
+        // BASE_URL prefixes https:// and carries a trailing slash — it is what
+        // sitemap.xml already uses to build absolute mentor URLs.
+        url: `${constants.BASE_URL}mentor/${mentor.slug}`,
+        jobTitle: mentor.job || undefined,
+        worksFor: mentor.workplace
+          ? { '@type': 'Organization', name: mentor.workplace }
+          : undefined,
+        sameAs: [openmentorProfileUrl(mentor.openmentorSlug)],
+      }).replace(/</g, '\\u003c')
+    : null
+
   useEffect(() => {
     analytics.event(analytics.events.MENTOR_PROFILE_VIEWED, {
       mentor_id: mentor.mentorId,
@@ -82,6 +119,10 @@ export default function Mentor({
           customDescription={mentor.job + ' @ ' + mentor.workplace}
           customImage={mentor.photo_url}
         />
+
+        {personJsonLd && (
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: personJsonLd }} />
+        )}
       </Head>
 
       <NavHeader className="bg-primary-100" />
@@ -112,7 +153,11 @@ export default function Mentor({
             <div className="mb-4 md:hidden">
               <div className="aspect-w-1 aspect-h-1">
                 <Image
-                  src={imageLoader({ src: mentor.slug, quality: 'full', version: updatedAtToVersion(mentor.updatedAt) })}
+                  src={imageLoader({
+                    src: mentor.slug,
+                    quality: 'full',
+                    version: updatedAtToVersion(mentor.updatedAt),
+                  })}
                   alt={mentor.name}
                   fill
                   sizes="100vw"
@@ -177,12 +222,29 @@ export default function Mentor({
                 <i>{mentor.competencies}</i>
               </div>
             )}
+
+            {/* Mobile copy: the right column is `hidden md:block`, so without this
+                phone visitors would never see the card. Placed last, below the
+                «Оставить заявку» CTA, which stays the page's primary action.
+                Same mobile/desktop split the photo above already uses. */}
+            {mentor.openmentorSlug && (
+              <div className="mt-8 md:hidden">
+                <OpenMentorCrossLink
+                  mentorName={mentor.name}
+                  openmentorSlug={mentor.openmentorSlug}
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex-1 pl-4 hidden md:block">
             <div className="aspect-w-1 aspect-h-1">
               <Image
-                src={imageLoader({ src: mentor.slug, quality: 'large', version: updatedAtToVersion(mentor.updatedAt) })}
+                src={imageLoader({
+                  src: mentor.slug,
+                  quality: 'large',
+                  version: updatedAtToVersion(mentor.updatedAt),
+                })}
                 alt={mentor.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -191,6 +253,15 @@ export default function Mentor({
                 unoptimized
               />
             </div>
+
+            {mentor.openmentorSlug && (
+              <div className="mt-4">
+                <OpenMentorCrossLink
+                  mentorName={mentor.name}
+                  openmentorSlug={mentor.openmentorSlug}
+                />
+              </div>
+            )}
           </div>
         </div>
       </Section>
