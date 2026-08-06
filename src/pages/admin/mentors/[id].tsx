@@ -522,34 +522,34 @@ function MentorModerationEditContent(): JSX.Element {
             </div>
           </div>
 
-          {session?.role === 'admin' && (
-            <div className="rounded-md border border-gray-200 bg-white p-6">
-              <h3 className="mb-3 text-sm font-semibold text-gray-800">Profile picture</h3>
-              <div className="mb-3 flex items-center gap-4">
-                <Image
-                  src={imagePreview || imageLoader({ src: mentor.slug, quality: 'full' })}
-                  alt="Mentor picture"
-                  width={96}
-                  height={96}
-                  className="h-24 w-24 rounded-full object-cover"
-                  unoptimized
+          <div className="rounded-md border border-gray-200 bg-white p-6">
+            <h3 className="mb-3 text-sm font-semibold text-gray-800">Profile picture</h3>
+            <div className="mb-3 flex items-center gap-4">
+              <Image
+                src={imagePreview || imageLoader({ src: mentor.slug, quality: 'full' })}
+                alt="Mentor picture"
+                width={96}
+                height={96}
+                className="h-24 w-24 rounded-full object-cover"
+                unoptimized
+              />
+              <div className="flex-1">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  onChange={handleImageSelect}
+                  className="block w-full text-sm text-gray-500"
                 />
-                <div className="flex-1">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp"
-                    onChange={handleImageSelect}
-                    className="block w-full text-sm text-gray-500"
-                  />
-                  {pictureState === 'success' && (
-                    <p className="mt-2 text-sm text-green-700">Picture uploaded successfully.</p>
-                  )}
-                  {pictureState === 'error' && (
-                    <p className="mt-2 text-sm text-red-700">Picture upload failed.</p>
-                  )}
-                </div>
+                {pictureState === 'success' && (
+                  <p className="mt-2 text-sm text-green-700">Picture uploaded successfully.</p>
+                )}
+                {pictureState === 'error' && (
+                  <p className="mt-2 text-sm text-red-700">Picture upload failed.</p>
+                )}
               </div>
+            </div>
+            {session?.role === 'admin' && (
               <button
                 type="button"
                 onClick={onUploadPicture}
@@ -565,8 +565,8 @@ function MentorModerationEditContent(): JSX.Element {
                   'Upload picture'
                 )}
               </button>
-            </div>
-          )}
+            )}
+          </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
