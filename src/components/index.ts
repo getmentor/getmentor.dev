@@ -6,6 +6,7 @@
 export { default as Section } from './ui/Section'
 export { default as Notification } from './ui/Notification'
 export { default as HtmlContent } from './ui/HtmlContent'
+export { default as ErrorBoundary } from './ui/ErrorBoundary'
 
 // Layout Components
 export { default as MetaHeader } from './layout/MetaHeader'

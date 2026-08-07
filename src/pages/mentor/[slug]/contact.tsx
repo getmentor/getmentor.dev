@@ -16,7 +16,7 @@ import {
 import seo from '@/config/seo'
 import { getOneMentorBySlug } from '@/server/mentors-data'
 import analytics from '@/lib/analytics'
-import { captureException } from '@/lib/posthog'
+import { reportError } from '@/lib/report-error'
 import { imageLoader } from '@/lib/azure-image-loader'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
 import logger, { getTraceContext } from '@/lib/logger'
@@ -211,7 +211,7 @@ export default function OrderMentor({
       .catch((e) => {
         setReadyStatus('error')
         if (e instanceof Error) {
-          captureException(e, { page: 'contact-mentor', mentorSlug: mentor.slug })
+          reportError(e, { page: 'contact-mentor', mentorSlug: mentor.slug })
         }
         analytics.event(analytics.events.MENTEE_CONTACT_SUBMITTED, {
           mentor_id: mentor.mentorId,

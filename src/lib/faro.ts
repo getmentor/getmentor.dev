@@ -111,3 +111,10 @@ export function setUser(userId: string, attributes?: Record<string, string>): vo
     })
   }
 }
+
+// Helper to clear user context (e.g. on logout)
+export function resetUser(): void {
+  if (faroInstance) {
+    faroInstance.api.resetUser()
+  }
+}

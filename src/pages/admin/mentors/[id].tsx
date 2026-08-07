@@ -22,6 +22,7 @@ import {
   uploadModerationMentorPicture,
 } from '@/lib/admin-moderation-api'
 import { imageLoader } from '@/lib/azure-image-loader'
+import { reportError } from '@/lib/report-error'
 
 type SaveState = 'idle' | 'loading' | 'success' | 'error'
 type PictureState = 'idle' | 'loading' | 'success' | 'error'
@@ -111,6 +112,9 @@ function MentorModerationEditContent(): JSX.Element {
         setMentor(data)
         setFormData(buildFormData(data, session.role === 'admin'))
       } catch (err) {
+        if (err instanceof Error) {
+          reportError(err, { page: 'admin-mentor-detail', action: 'load' })
+        }
         if (mounted) {
           setError(err instanceof Error ? err.message : 'Failed to load mentor')
         }
@@ -170,6 +174,9 @@ function MentorModerationEditContent(): JSX.Element {
     } catch (err) {
       setSaveState('error')
       setActionError(err instanceof Error ? err.message : 'Failed to save changes')
+      if (err instanceof Error) {
+        reportError(err, { page: 'admin-mentor-detail', action: 'save' })
+      }
     }
   }
 
@@ -182,6 +189,9 @@ function MentorModerationEditContent(): JSX.Element {
       setMentor(updated)
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Failed to approve mentor')
+      if (err instanceof Error) {
+        reportError(err, { page: 'admin-mentor-detail', action: 'approve' })
+      }
     }
   }
 
@@ -194,6 +204,9 @@ function MentorModerationEditContent(): JSX.Element {
       setMentor(updated)
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Failed to decline mentor')
+      if (err instanceof Error) {
+        reportError(err, { page: 'admin-mentor-detail', action: 'decline' })
+      }
     }
   }
 
@@ -206,6 +219,9 @@ function MentorModerationEditContent(): JSX.Element {
       setMentor(updated)
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Failed to change status')
+      if (err instanceof Error) {
+        reportError(err, { page: 'admin-mentor-detail', action: 'toggle-status' })
+      }
     }
   }
 
@@ -259,6 +275,9 @@ function MentorModerationEditContent(): JSX.Element {
     } catch (err) {
       setPictureState('error')
       setActionError(err instanceof Error ? err.message : 'Failed to upload image')
+      if (err instanceof Error) {
+        reportError(err, { page: 'admin-mentor-detail', action: 'image-upload' })
+      }
     }
   }
 

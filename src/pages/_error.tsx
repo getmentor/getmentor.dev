@@ -1,4 +1,4 @@
-import { captureException } from '@/lib/posthog'
+import { reportError } from '@/lib/report-error'
 import type { NextPageContext } from 'next'
 
 interface ErrorPageProps {
@@ -28,7 +28,7 @@ ErrorPage.getInitialProps = async ({ res, err }: NextPageContext): Promise<Error
       const serverClient = getPostHogServerClient()
       serverClient?.captureException(err)
     } else {
-      captureException(err)
+      reportError(err)
     }
   }
   return { statusCode }

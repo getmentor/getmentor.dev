@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import TagManager from 'react-gtm-module'
 import { initializeFaro } from '@/lib/faro'
 import { initializePostHog } from '@/lib/posthog'
+import { ErrorBoundary } from '@/components'
 import type { AppProps } from 'next/app'
 
 // Initialize observability on client-side only (outside component to run once)
@@ -18,7 +19,11 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     TagManager.initialize({ gtmId: 'GTM-NBGRPCZ' })
   }, [])
 
-  return <Component {...pageProps} />
+  return (
+    <ErrorBoundary>
+      <Component {...pageProps} />
+    </ErrorBoundary>
+  )
 }
 
 export default MyApp
