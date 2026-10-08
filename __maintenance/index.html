@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GetMentor временно недоступен</title>
+    <meta
+      name="description"
+      content="GetMentor временно недоступен из-за сбоя у облачного провайдера. Пока мы восстанавливаем сайт, найти ментора можно на openmentor.io."
+    />
+    <meta name="robots" content="noindex" />
+
+    <link rel="icon" href="/__maintenance/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/__maintenance/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/__maintenance/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/__maintenance/apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        /* getmentor.dev palette */
+        --gm-cream: #fcf8f2;
+        --gm-orange: #ff6a3d;
+        --gm-text: #374151;
+        --gm-muted: #6b7280;
+        /* openmentor.io palette */
+        --om-navy: #132a52;
+        --om-navy-deep: #0e1f3d;
+        --om-navy-hover: #1a3767;
+        --om-mint: #17c3b2;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Open Sans', 'Segoe UI', sans-serif;
+        color: var(--gm-text);
+        background: #fff;
+        line-height: 1.5;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      @media (min-width: 640px) {
+        .container {
+          padding: 0 2rem;
+        }
+      }
+
+      /* Promo band — same as the sitewide openmentor.io banner */
+      .promo {
+        display: block;
+        background: var(--om-navy);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        text-decoration: none;
+        transition: background-color 0.15s;
+      }
+      .promo:hover {
+        background: var(--om-navy-hover);
+      }
+      .promo .container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem 0.75rem;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        text-align: center;
+      }
+      .promo-text {
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+        border-radius: 9999px;
+        background: var(--om-mint);
+        color: var(--om-navy);
+        padding: 0.25rem 0.75rem;
+        font-size: 13px;
+        font-weight: 700;
+        transition: background-color 0.15s;
+      }
+      .promo:hover .pill {
+        background: #fff;
+      }
+
+      /* Header + hero */
+      .hero {
+        background: var(--gm-cream);
+      }
+      .nav {
+        padding: 13px 0;
+      }
+      .nav img {
+        display: block;
+        width: 120px;
+        height: auto;
+        padding-top: 4px;
+      }
+      .hero-body {
+        text-align: center;
+        padding: 3.5rem 0 4.5rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--gm-orange);
+        margin-bottom: 1.25rem;
+      }
+      .status::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--gm-orange);
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .status::before {
+          animation: none;
+        }
+      }
+      h1 {
+        font-size: 2.25rem;
+        line-height: 1.15;
+        font-weight: 600;
+        margin: 0 0 1.25rem;
+      }
+      @media (min-width: 640px) {
+        h1 {
+          font-size: 3rem;
+        }
+      }
+      .hero-body p {
+        margin: 1rem 0;
+      }
+      .muted {
+        color: var(--gm-muted);
+        font-size: 0.95rem;
+      }
+
+      .button {
+        display: inline-block;
+        color: #fff;
+        padding: 0.87em 1.7em;
+        border-radius: 4px;
+        background: #1a2238;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.3s cubic-bezier(0.374, 0.019, 0.035, 1.861);
+      }
+      .button:hover {
+        transform: scale(1.05);
+      }
+      .button-mint {
+        background: var(--om-mint);
+        color: var(--om-navy);
+        font-weight: 700;
+      }
+
+      /* openmentor.io section — same treatment as the homepage block */
+      .om {
+        background: linear-gradient(to bottom right, var(--om-navy), var(--om-navy-deep));
+        color: #fff;
+        padding: 3.5rem 0;
+        flex: 1 0 auto;
+      }
+      .om-intro {
+        max-width: 768px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .om-logo {
+        display: block;
+        width: 220px;
+        max-width: 70%;
+        height: auto;
+        margin: 0 auto 1.5rem;
+      }
+      .eyebrow {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--om-mint);
+        margin-bottom: 0.75rem;
+      }
+      h2 {
+        font-size: 1.875rem;
+        line-height: 1.2;
+        font-weight: 600;
+        margin: 0 0 1.25rem;
+      }
+      @media (min-width: 640px) {
+        h2 {
+          font-size: 2.25rem;
+        }
+      }
+      .om-intro p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.65;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .om-intro a {
+        color: #fff;
+        font-weight: 600;
+        text-decoration: underline;
+        text-decoration-color: var(--om-mint);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 2px;
+      }
+      .principles {
+        display: grid;
+        gap: 1rem;
+        max-width: 896px;
+        margin: 2.5rem auto 0;
+      }
+      @media (min-width: 640px) {
+        .principles {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .principle {
+        border-radius: 0.75rem;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 1.25rem;
+      }
+      .principle h3 {
+        margin: 0 0 0.5rem;
+        font-size: 17px;
+        line-height: 1.35;
+        font-weight: 700;
+        color: var(--om-mint);
+      }
+      .principle p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .om-cta {
+        margin-top: 2.5rem;
+        text-align: center;
+      }
+
+      footer {
+        background: var(--gm-cream);
+        padding: 2rem 0;
+        text-align: center;
+        font-size: 0.875rem;
+      }
+      footer p {
+        margin: 0.5rem 0;
+      }
+      .link {
+        text-decoration: none;
+        border-bottom: 2px solid;
+      }
+    </style>
+  </head>
+  <body>
+    <a
+      class="promo"
+      href="https://openmentor.io/?utm_source=getmentor.dev&utm_medium=referral&utm_campaign=outage-banner"
+    >
+      <div class="container">
+        <span class="promo-text">🌍 Нужен ментор прямо сейчас?</span>
+        <span class="pill">openmentor.io <span aria-hidden="true">→</span></span>
+      </div>
+    </a>
+
+    <header class="hero">
+      <div class="container">
+        <nav class="nav">
+          <a href="/" aria-label="getmentor.dev">
+            <img src="/__maintenance/logo.png" width="120" height="24" alt="getmentor.dev" />
+          </a>
+        </nav>
+
+        <main class="hero-body">
+          <div class="status">Сайт временно недоступен</div>
+
+          <h1>Мы скоро вернёмся</h1>
+
+          <p>
+            У нашего облачного провайдера произошёл сбой, из-за которого GetMentor сейчас не
+            работает. Мы ждём, пока провайдер восстановит сервис, и сразу вернём сайт в строй.
+          </p>
+          <p>
+            Если вы уже договорились о встрече с ментором, продолжайте общение напрямую — сбой на
+            это не влияет.
+          </p>
+          <p class="muted">
+            Новости о восстановлении — в нашем
+            <a class="link" href="https://t.me/getmentor_dev" target="_blank" rel="noreferrer"
+              >Telegram-канале</a
+            >.
+          </p>
+        </main>
+      </div>
+    </header>
+
+    <section class="om">
+      <div class="container">
+        <div class="om-intro">
+          <img
+            class="om-logo"
+            src="/__maintenance/openmentor-logo.svg"
+            width="440"
+            height="120"
+            alt="openmentor.io"
+          />
+          <div class="eyebrow">🌍 Пока мы чиним сайт</div>
+          <h2>Найдите ментора на openmentor.io</h2>
+          <p>
+            <a
+              href="https://openmentor.io/?utm_source=getmentor.dev&utm_medium=referral&utm_campaign=outage-intro"
+              >openmentor.io</a
+            >
+            — международный проект от команды GetMentor. Та же идея: люди, которым нужен совет, и
+            опытные специалисты, готовые им поделиться. Общение на английском, менторы из компаний
+            по всему миру.
+          </p>
+        </div>
+
+        <div class="principles">
+          <div class="principle">
+            <h3>Бесплатно или платно — решает ментор</h3>
+            <p>Многие менторы помогают бесплатно, другие сами назначают цену. Договариваетесь напрямую.</p>
+          </div>
+          <div class="principle">
+            <h3>Без комиссии</h3>
+            <p>Никаких сборов, пейволлов и премиум-тарифов. Проект живёт на донаты.</p>
+          </div>
+          <div class="principle">
+            <h3>Практики, а не коучи</h3>
+            <p>Инженеры, дизайнеры и менеджеры, которые делятся тем, что реально знают.</p>
+          </div>
+        </div>
+
+        <div class="om-cta">
+          <a
+            class="button button-mint"
+            href="https://openmentor.io/?utm_source=getmentor.dev&utm_medium=referral&utm_campaign=outage-cta"
+            >Найти ментора на openmentor.io →</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p>
+          <a class="link" href="https://t.me/getmentor_dev" target="_blank" rel="noreferrer"
+            >Telegram</a
+          >
+          |
+          <a class="link" href="https://www.facebook.com/getmentor.dev" target="_blank" rel="noreferrer"
+            >Facebook</a
+          >
+          |
+          <a class="link" href="mailto:hello@getmentor.dev">Email</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
