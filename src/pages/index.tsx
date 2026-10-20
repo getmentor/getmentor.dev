@@ -16,6 +16,7 @@ import {
   Section,
   useMentors,
   Footer,
+  DonateLinks,
 } from '@/components'
 import { getAllMentors } from '@/server/mentors-data'
 import donates from '@/config/donates'
@@ -162,28 +163,7 @@ export default function Home({
       <Section className="bg-gray-100" id="support">
         <Section.Title>Поддержать проект</Section.Title>
 
-        <div className="flex flex-wrap justify-center items-center">
-          {donates.map((donate) => (
-            <a
-              key={donate.name}
-              className="h-20 px-8 flex justify-center items-center"
-              href={donate.linkUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Image
-                src={donate.image.url}
-                width={donate.image.width}
-                height={donate.image.height}
-                style={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                }}
-                alt={donate.name}
-              />
-            </a>
-          ))}
-        </div>
+        <DonateLinks donates={donates} />
 
         <div className="text-center mt-4">
           <Link href="/donate" className="link">

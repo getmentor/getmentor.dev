@@ -1,7 +1,6 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import type { GetServerSideProps } from 'next'
-import { Footer, MetaHeader, NavHeader, Section } from '@/components'
+import { DonateLinks, Footer, MetaHeader, NavHeader, Section } from '@/components'
 import donates from '@/config/donates'
 import seo from '@/config/seo'
 import { withSSRObservability } from '@/lib/with-ssr-observability'
@@ -72,28 +71,10 @@ export default function Donate(): JSX.Element {
       <Section id="list">
         <Section.Title>Как донатить</Section.Title>
 
-        <div className="flex flex-wrap justify-center items-center">
-          {donates.map((donate) => (
-            <a
-              key={donate.name}
-              className="rounded hover:bg-gray-100 h-20 px-8 flex justify-center items-center"
-              href={donate.linkUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Image
-                src={donate.image.url}
-                width={donate.image.width}
-                height={donate.image.height}
-                style={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                }}
-                alt={donate.name}
-              />
-            </a>
-          ))}
-        </div>
+        <DonateLinks
+          donates={donates}
+          itemClassName="rounded hover:bg-gray-100 h-20 px-8 flex justify-center items-center"
+        />
 
         <div className="text-center">
           <p>
