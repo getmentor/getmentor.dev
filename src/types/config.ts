@@ -24,6 +24,12 @@ export interface DonateItem {
     width: number
     height: number
   }
+  /** Optional QR code shown in a modal on desktop instead of opening the link */
+  qrCode?: {
+    url: string
+    width: number
+    height: number
+  }
 }
 
 /**

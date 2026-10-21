@@ -14,11 +14,16 @@ const donates: DonateItem[] = [
   {
     name: 'Tinkoff',
     description: 'Перевод на карту',
-    linkUrl: 'https://www.tinkoff.ru/sl/sVXu3fk6nL',
+    linkUrl: 'https://t.tb.ru/pm_short/sVXu3fk6nL',
     image: {
       url: '/images/tinkoff.png',
-      width: 200,
-      height: (72 / 274) * 200,
+      width: 160,
+      height: (462 / 1500) * 160,
+    },
+    qrCode: {
+      url: '/images/tbank-qr.png',
+      width: 650,
+      height: 650,
     },
   },
   {
