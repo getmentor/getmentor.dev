@@ -75,53 +75,60 @@ export default function DonateLinks({
             <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
           </Transition.Child>
 
-          <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-200"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-150"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-                <button
-                  type="button"
-                  className="absolute top-3 right-4 text-gray-400 hover:text-gray-600"
-                  onClick={() => setQrDonate(null)}
-                  aria-label="Закрыть"
-                >
-                  <FontAwesomeIcon icon={faTimes} />
-                </button>
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-200"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-150"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+                  <button
+                    type="button"
+                    className="absolute top-3 right-4 text-gray-400 hover:text-gray-600"
+                    onClick={() => setQrDonate(null)}
+                    aria-label="Закрыть"
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
 
-                {qrDonate?.qrCode && (
-                  <>
-                    <Dialog.Title className="text-xl font-semibold text-center mb-4">
-                      {qrDonate.description}
-                    </Dialog.Title>
+                  {qrDonate?.qrCode && (
+                    <>
+                      <Dialog.Title className="text-xl font-semibold text-center mb-4">
+                        {qrDonate.description}
+                      </Dialog.Title>
 
-                    <Image
-                      src={qrDonate.qrCode.url}
-                      width={qrDonate.qrCode.width}
-                      height={qrDonate.qrCode.height}
-                      style={{
-                        maxWidth: '100%',
-                        height: 'auto',
-                      }}
-                      alt={`QR-код для перевода через ${qrDonate.name}`}
-                    />
+                      <Image
+                        src={qrDonate.qrCode.url}
+                        width={qrDonate.qrCode.width}
+                        height={qrDonate.qrCode.height}
+                        style={{
+                          maxWidth: '100%',
+                          height: 'auto',
+                        }}
+                        alt={`QR-код для перевода через ${qrDonate.name}`}
+                      />
 
-                    <p className="text-center mt-4">
-                      Отсканируйте QR-код или{' '}
-                      <a className="link" href={qrDonate.linkUrl} target="_blank" rel="noreferrer">
-                        перейдите по ссылке
-                      </a>
-                    </p>
-                  </>
-                )}
-              </Dialog.Panel>
-            </Transition.Child>
+                      <p className="text-center mt-4">
+                        Отсканируйте QR-код или{' '}
+                        <a
+                          className="link"
+                          href={qrDonate.linkUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          перейдите по ссылке
+                        </a>
+                      </p>
+                    </>
+                  )}
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
           </div>
         </Dialog>
       </Transition>

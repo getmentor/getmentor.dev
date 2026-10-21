@@ -22,8 +22,8 @@ const donates: DonateItem[] = [
     },
     qrCode: {
       url: '/images/tbank-qr.png',
-      width: 1110,
-      height: 918,
+      width: 650,
+      height: 650,
     },
   },
   {
