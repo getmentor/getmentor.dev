@@ -56,7 +56,7 @@
     "globals": "^16.5.0",
     "next": "16.0.10",
     "object-hash": "^3.0.0",
-    "postcss": "^8.4.14",
+    "postcss": "^8.5.10",
     "posthog-js": "^1.359.1",
     "posthog-node": "^5.28.0",
     "prom-client": "^15.1.3",
