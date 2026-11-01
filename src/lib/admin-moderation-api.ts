@@ -7,7 +7,12 @@ import type {
   AdminStatusUpdateRequest,
   UploadProfilePictureRequest,
   UploadProfilePictureResponse,
+  AdminRequestsQuery,
+  AdminRequestsListResponse,
+  AdminRequestDetails,
+  RequestStatus,
 } from '@/types'
+import { buildAdminRequestsQueryString } from '@/types'
 
 export class ApiError extends Error {
   constructor(message: string, public status: number, public details?: unknown) {
@@ -215,4 +220,39 @@ export async function uploadModerationMentorPicture(
       body: JSON.stringify(imageData),
     }
   )
+}
+
+export async function getAdminRequests(
+  query: AdminRequestsQuery
+): Promise<AdminRequestsListResponse> {
+  const qs = buildAdminRequestsQueryString(query)
+  return apiRequest<AdminRequestsListResponse>(`/api/admin/requests${qs ? `?${qs}` : ''}`)
+}
+
+export async function getAdminRequestById(requestId: string): Promise<AdminRequestDetails | null> {
+  try {
+    const response = await apiRequest<{ request: AdminRequestDetails }>(
+      `/api/admin/requests/${encodeURIComponent(requestId)}`
+    )
+    return response.request
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null
+    }
+    throw error
+  }
+}
+
+export async function updateAdminRequestStatus(
+  requestId: string,
+  status: RequestStatus
+): Promise<AdminRequestDetails> {
+  const response = await apiRequest<{ request: AdminRequestDetails }>(
+    `/api/admin/requests/${encodeURIComponent(requestId)}/status`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ status }),
+    }
+  )
+  return response.request
 }

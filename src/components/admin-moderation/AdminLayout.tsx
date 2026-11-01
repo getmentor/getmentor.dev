@@ -22,6 +22,7 @@ export function AdminLayout({ title, children }: AdminLayoutProps): JSX.Element 
   if (session?.role === 'admin') {
     tabs.push({ href: '/admin/mentors/approved', label: 'Approved' })
     tabs.push({ href: '/admin/mentors/declined', label: 'Declined' })
+    tabs.push({ href: '/admin/requests', label: 'Requests' })
   }
 
   const onLogout = async (): Promise<void> => {
@@ -52,7 +53,8 @@ export function AdminLayout({ title, children }: AdminLayoutProps): JSX.Element 
         </div>
         <div className="mx-auto flex w-full max-w-7xl gap-3 px-4 pb-4">
           {tabs.map((tab) => {
-            const isActive = router.pathname === tab.href
+            const isActive =
+              router.pathname === tab.href || router.pathname.startsWith(`${tab.href}/`)
             return (
               <Link
                 key={tab.href}

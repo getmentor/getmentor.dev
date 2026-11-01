@@ -20,6 +20,7 @@ import {
   declineModerationMentor,
   updateModerationMentorStatus,
   uploadModerationMentorPicture,
+  getAdminRequests,
 } from '@/lib/admin-moderation-api'
 import { imageLoader } from '@/lib/azure-image-loader'
 
@@ -81,6 +82,7 @@ function MentorModerationEditContent(): JSX.Element {
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [requestsCount, setRequestsCount] = useState<number | null>(null)
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -133,6 +135,22 @@ function MentorModerationEditContent(): JSX.Element {
       router.replace('/admin/mentors/pending')
     }
   }, [mentor, session, router])
+
+  // Admins get a link to this mentor's requests; fetch only the count (one-item page)
+  useEffect(() => {
+    if (session?.role !== 'admin' || !mentorId) return
+    let mounted = true
+    getAdminRequests({ mentorId, pageSize: 1 })
+      .then((data) => {
+        if (mounted) setRequestsCount(data.total)
+      })
+      .catch(() => {
+        if (mounted) setRequestsCount(null)
+      })
+    return () => {
+      mounted = false
+    }
+  }, [session, mentorId])
 
   const availableTags = useMemo(() => {
     const selected = formData?.tags || []
@@ -306,6 +324,17 @@ function MentorModerationEditContent(): JSX.Element {
               >
                 Open mentor profile ↗
               </Link>
+              {session?.role === 'admin' && requestsCount !== null && requestsCount > 0 && (
+                <Link
+                  href={`/admin/requests?mentorId=${mentor.mentorId}`}
+                  className="text-sm text-indigo-600 hover:text-indigo-500"
+                >
+                  View requests ({requestsCount}) →
+                </Link>
+              )}
+              {session?.role === 'admin' && requestsCount === 0 && (
+                <span className="text-sm text-gray-400">No requests</span>
+              )}
             </div>
             <span
               className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadge(
