@@ -14,7 +14,7 @@ type NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<voi
  * Normalize dynamic route segments to prevent cardinality explosion in metrics.
  * Converts actual IDs to route templates (e.g., /api/mentor/requests/rec123 -> /api/mentor/requests/:id)
  */
-function normalizeRoute(url: string): string {
+export function normalizeRoute(url: string): string {
   const path = url.split('?')[0]
 
   // Pattern for PostgreSQL UUIDs (8-4-4-4-12 hex format)
@@ -30,6 +30,9 @@ function normalizeRoute(url: string): string {
       /\/api\/admin\/mentors\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
       '/api/admin/mentors/:id'
     )
+    // Normalize /api/admin/requests/<id>... paths. Any segment counts as an ID so
+    // arbitrary values can't create new metric series.
+    .replace(/^\/api\/admin\/requests\/[^/]+/, '/api/admin/requests/:id')
     // Normalize /mentor/[slug] patterns (mentor slugs are lowercase with hyphens)
     .replace(/\/mentor\/[a-z0-9-]+(?:\/|$)/, '/mentor/:slug/')
     // Remove trailing slash for consistency

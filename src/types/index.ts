@@ -111,3 +111,22 @@ export type {
   AdminMentorProfileUpdateRequest,
   AdminStatusUpdateRequest,
 } from './admin-moderation'
+
+// Admin client requests types
+export type {
+  AdminRequestMentor,
+  AdminRequestListItem,
+  AdminRequestReview,
+  AdminRequestDetails,
+  AdminRequestsListResponse,
+  AdminRequestResponse,
+  AdminRequestsQuery,
+  AdminRequestStatusUpdateRequest,
+} from './admin-requests'
+export {
+  ADMIN_REQUEST_STATUSES,
+  ADMIN_CLOSED_REQUEST_STATUSES,
+  ADMIN_REQUEST_STATUS_LABELS,
+  ADMIN_REQUESTS_QUERY_KEYS,
+  buildAdminRequestsQueryString,
+} from './admin-requests'

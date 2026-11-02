@@ -4,6 +4,7 @@
  */
 
 import { context, propagation } from '@opentelemetry/api'
+import { buildAdminRequestsQueryString } from '@/types/admin-requests'
 import type {
   MentorBase,
   MentorWithSecureFields,
@@ -14,6 +15,11 @@ import type {
   AdminMentorResponse,
   AdminMentorProfileUpdateRequest,
   AdminStatusUpdateRequest,
+  AdminRequestDetails,
+  AdminRequestResponse,
+  AdminRequestsListResponse,
+  AdminRequestsQuery,
+  AdminRequestStatusUpdateRequest,
   MentorModerationFilter,
   GetAllMentorsParams,
   GetOneMentorParams,
@@ -562,6 +568,41 @@ class GoApiClient {
       { cookies, body: imageData as unknown as Record<string, unknown> }
     )
     return data
+  }
+
+  async adminListRequests(
+    cookies: string,
+    query: AdminRequestsQuery
+  ): Promise<AdminRequestsListResponse> {
+    const qs = buildAdminRequestsQueryString(query)
+    const { data } = await this.requestWithCookies<AdminRequestsListResponse>(
+      'GET',
+      `/api/v1/admin/requests${qs ? `?${qs}` : ''}`,
+      { cookies }
+    )
+    return data
+  }
+
+  async adminGetRequestById(cookies: string, requestId: string): Promise<AdminRequestDetails> {
+    const { data } = await this.requestWithCookies<AdminRequestResponse>(
+      'GET',
+      `/api/v1/admin/requests/${encodeURIComponent(requestId)}`,
+      { cookies }
+    )
+    return data.request
+  }
+
+  async adminUpdateRequestStatus(
+    cookies: string,
+    requestId: string,
+    payload: AdminRequestStatusUpdateRequest
+  ): Promise<AdminRequestDetails> {
+    const { data } = await this.requestWithCookies<AdminRequestResponse>(
+      'POST',
+      `/api/v1/admin/requests/${encodeURIComponent(requestId)}/status`,
+      { cookies, body: payload as unknown as Record<string, unknown> }
+    )
+    return data.request
   }
 }
 
