@@ -17,9 +17,10 @@ import type {
 } from '@/types'
 import { hasMentorSecureFields } from '@/types'
 import { MentorAuthProvider, useMentorAuth, MentorAdminLayout } from '@/components/mentor-admin'
-import { ProfileForm, Notification } from '@/components'
+import { ProfileForm, Notification, ConfirmModal } from '@/components'
 import { useRouter } from 'next/router'
 import { captureException } from '@/lib/posthog'
+import { deleteMentorProfile } from '@/lib/mentor-admin-api'
 
 type ReadyStatus = '' | 'loading' | 'success' | 'error'
 type ImageUploadStatus = 'idle' | 'loading' | 'success' | 'error'
@@ -35,6 +36,7 @@ function ProfileEditContent(): JSX.Element {
   const [imageUploadStatus, setImageUploadStatus] = useState<ImageUploadStatus>('idle')
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null)
   const [tempImagePreview, setTempImagePreview] = useState<string | null>(null)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -164,6 +166,20 @@ function ProfileEditContent(): JSX.Element {
     }
   }
 
+  const onDeleteProfile = async (): Promise<void> => {
+    if (!mentor) return
+    try {
+      await deleteMentorProfile(mentor.slug)
+    } catch (e) {
+      if (e instanceof Error) {
+        captureException(e, { page: 'edit-profile', action: 'delete' })
+      }
+      throw e
+    }
+    // Full reload so no state from the deleted session survives
+    window.location.assign('/')
+  }
+
   // Show loading while checking auth
   if (authLoading || !isAuthenticated) {
     return (
@@ -230,6 +246,51 @@ function ProfileEditContent(): JSX.Element {
               tempImagePreview={tempImagePreview}
             />
           </div>
+        )}
+
+        {/* Danger zone */}
+        {!isLoading && !error && mentor && (
+          <div className="mt-6 bg-white rounded-lg shadow-sm border border-red-200 p-6">
+            <h2 className="text-base font-medium text-red-700">Удаление профиля</h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Профиль исчезнет с сайта, вы не сможете войти в личный кабинет и Telegram-бота, а все
+              активные заявки будут автоматически отклонены.
+            </p>
+            <button
+              type="button"
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="mt-4 px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Удалить профиль…
+            </button>
+          </div>
+        )}
+
+        {mentor && (
+          <ConfirmModal
+            isOpen={isDeleteModalOpen}
+            title="Удалить профиль?"
+            confirmLabel="Подтвердить удаление"
+            busyLabel="Удаление..."
+            cancelLabel="Отмена"
+            closeLabel="Закрыть"
+            fallbackErrorMessage="Не удалось удалить профиль"
+            confirmationValue={mentor.slug}
+            confirmationLabel={
+              <>
+                Чтобы подтвердить, введите адрес вашего профиля:{' '}
+                <span className="font-mono font-semibold text-gray-900">{mentor.slug}</span>
+              </>
+            }
+            onConfirm={onDeleteProfile}
+            onClose={() => setIsDeleteModalOpen(false)}
+          >
+            <p className="font-medium text-red-700">Это действие необратимо.</p>
+            <p>
+              Ваш профиль исчезнет с сайта, вход в личный кабинет и Telegram-бота станет невозможен,
+              а все активные заявки будут автоматически отклонены — менти получат уведомление.
+            </p>
+          </ConfirmModal>
         )}
 
         {/* Success notification */}

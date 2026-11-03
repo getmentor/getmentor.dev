@@ -209,6 +209,28 @@ export async function updateModerationMentorStatus(
   return response.mentor
 }
 
+export async function deleteModerationMentor(
+  mentorId: string,
+  slug: string
+): Promise<AdminMentorDetails> {
+  const response = await apiRequest<{ mentor: AdminMentorDetails }>(
+    `/api/admin/mentors/${encodeURIComponent(mentorId)}/delete`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ slug }),
+    }
+  )
+  return response.mentor
+}
+
+export async function restoreModerationMentor(mentorId: string): Promise<AdminMentorDetails> {
+  const response = await apiRequest<{ mentor: AdminMentorDetails }>(
+    `/api/admin/mentors/${encodeURIComponent(mentorId)}/restore`,
+    { method: 'POST' }
+  )
+  return response.mentor
+}
+
 export async function uploadModerationMentorPicture(
   mentorId: string,
   imageData: UploadProfilePictureRequest

@@ -22,6 +22,7 @@ export function AdminLayout({ title, children }: AdminLayoutProps): JSX.Element 
   if (session?.role === 'admin') {
     tabs.push({ href: '/admin/mentors/approved', label: 'Approved' })
     tabs.push({ href: '/admin/mentors/declined', label: 'Declined' })
+    tabs.push({ href: '/admin/mentors/deleted', label: 'Deleted' })
     tabs.push({ href: '/admin/requests', label: 'Requests' })
   }
 

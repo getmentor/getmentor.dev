@@ -1,6 +1,6 @@
 export type ModeratorRole = 'moderator' | 'admin'
 
-export type MentorModerationFilter = 'pending' | 'approved' | 'declined'
+export type MentorModerationFilter = 'pending' | 'approved' | 'declined' | 'deleted'
 
 export type MentorModerationStatus = 'pending' | 'active' | 'inactive' | 'declined'
 
@@ -24,6 +24,8 @@ export interface AdminMentorListItem {
   price: string
   status: MentorModerationStatus
   createdAt: string
+  /** Set when the mentor profile is soft-deleted */
+  deletedAt: string | null
 }
 
 export interface AdminMentorDetails {
@@ -47,6 +49,8 @@ export interface AdminMentorDetails {
   telegramChatId: number | null
   createdAt: string
   updatedAt: string
+  /** Set when the mentor profile is soft-deleted */
+  deletedAt: string | null
 }
 
 export interface AdminMentorsListResponse {
@@ -77,4 +81,9 @@ export interface AdminMentorProfileUpdateRequest {
 
 export interface AdminStatusUpdateRequest {
   status: 'active' | 'inactive'
+}
+
+/** Confirms a profile delete by repeating the mentor's current slug */
+export interface MentorDeleteRequest {
+  slug: string
 }
