@@ -23,7 +23,10 @@ import {
   getAdminRequests,
   deleteModerationMentor,
   restoreModerationMentor,
+  ApiError,
 } from '@/lib/admin-moderation-api'
+import { isAdminMentorEmailConflict } from '@/types/admin-moderation'
+import type { AdminMentorEmailConflict } from '@/types'
 import { imageLoader } from '@/lib/azure-image-loader'
 import { ConfirmModal } from '@/components'
 
@@ -90,6 +93,12 @@ function MentorModerationEditContent(): JSX.Element {
   const [requestsCount, setRequestsCount] = useState<number | null>(null)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false)
+  const [restoreConflict, setRestoreConflict] = useState<AdminMentorEmailConflict | null>(null)
+
+  // Opening another mentor (e.g. via the conflict link) starts with a clean state
+  useEffect(() => {
+    setRestoreConflict(null)
+  }, [mentorId])
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -246,7 +255,23 @@ function MentorModerationEditContent(): JSX.Element {
 
   const onRestore = async (): Promise<void> => {
     if (!mentor) return
-    const updated = await restoreModerationMentor(mentor.mentorId)
+    let updated: AdminMentorDetails
+    try {
+      updated = await restoreModerationMentor(mentor.mentorId)
+    } catch (err) {
+      // Another live profile already uses this email: show it instead of a generic error
+      if (
+        err instanceof ApiError &&
+        err.status === 409 &&
+        isAdminMentorEmailConflict(err.details)
+      ) {
+        setRestoreConflict(err.details)
+        setIsRestoreModalOpen(false)
+        return
+      }
+      throw err
+    }
+    setRestoreConflict(null)
     setMentor(updated)
     setFormData(buildFormData(updated, session?.role === 'admin'))
     setIsRestoreModalOpen(false)
@@ -381,6 +406,28 @@ function MentorModerationEditContent(): JSX.Element {
                 It is hidden from the site and the mentor can&apos;t log in. Editing is disabled
                 until the profile is restored.
               </p>
+            </div>
+          )}
+
+          {mentor.deletedAt && restoreConflict && (
+            <div
+              role="alert"
+              className="rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"
+            >
+              <p className="font-semibold">
+                Restore failed: this email is used by another profile.
+              </p>
+              <p className="mt-1">
+                {restoreConflict.name} ({restoreConflict.slug}, {restoreConflict.status}) was
+                created with the same email after this profile was deleted. Delete that profile or
+                change its email before restoring this one.
+              </p>
+              <Link
+                href={`/admin/mentors/${restoreConflict.mentorId}`}
+                className="mt-2 inline-block font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Open {restoreConflict.name}&apos;s profile →
+              </Link>
             </div>
           )}
 
@@ -725,6 +772,9 @@ function MentorModerationEditContent(): JSX.Element {
               Telegram message if the bot is connected.
             </p>
             <p>Declined requests stay declined.</p>
+            <p>
+              Restore is blocked if another profile that isn&apos;t deleted uses the same email.
+            </p>
           </ConfirmModal>
         </div>
       )}

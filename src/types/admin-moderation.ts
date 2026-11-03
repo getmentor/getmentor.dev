@@ -87,3 +87,18 @@ export interface AdminStatusUpdateRequest {
 export interface MentorDeleteRequest {
   slug: string
 }
+
+/** Details of the 409 returned when a restore is blocked by another profile with the same email */
+export interface AdminMentorEmailConflict {
+  code: 'email_conflict'
+  mentorId: string
+  name: string
+  slug: string
+  status: MentorModerationStatus
+}
+
+export function isAdminMentorEmailConflict(value: unknown): value is AdminMentorEmailConflict {
+  if (!value || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  return v.code === 'email_conflict' && typeof v.mentorId === 'string'
+}

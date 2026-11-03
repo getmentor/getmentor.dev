@@ -111,6 +111,7 @@ export type {
   AdminMentorProfileUpdateRequest,
   AdminStatusUpdateRequest,
   MentorDeleteRequest,
+  AdminMentorEmailConflict,
 } from './admin-moderation'
 
 // Admin client requests types
