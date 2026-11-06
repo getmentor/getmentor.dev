@@ -12,6 +12,7 @@ jest.mock('@/lib/logger', () => ({
 const mockMentorDelete = jest.fn()
 const mockAdminDelete = jest.fn()
 const mockAdminRestore = jest.fn()
+const mockAdminList = jest.fn()
 
 jest.mock('@/lib/go-api-client', () => {
   class HttpError extends Error {
@@ -25,6 +26,7 @@ jest.mock('@/lib/go-api-client', () => {
       mentorDeleteProfile: mockMentorDelete,
       adminDeleteMentor: mockAdminDelete,
       adminRestoreMentor: mockAdminRestore,
+      adminListMentors: mockAdminList,
     }),
   }
 })
@@ -32,6 +34,7 @@ jest.mock('@/lib/go-api-client', () => {
 import mentorDeleteHandler from '@/pages/api/mentor/profile/delete'
 import adminDeleteHandler from '@/pages/api/admin/mentors/[id]/delete'
 import adminRestoreHandler from '@/pages/api/admin/mentors/[id]/restore'
+import adminListHandler from '@/pages/api/admin/mentors'
 import { HttpError } from '@/lib/go-api-client'
 
 describe('api/mentor/profile/delete', () => {
@@ -134,5 +137,32 @@ describe('api/admin/mentors/[id]/delete and restore', () => {
     })
     await adminRestoreHandler(req, res)
     expect(res.statusCode).toBe(403)
+  })
+})
+
+describe('api/admin/mentors list filter', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('accepts the deleted filter and forwards it', async () => {
+    mockAdminList.mockResolvedValue({ mentors: [], total: 0 })
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+      method: 'GET',
+      headers: { cookie: 'admin_session=x' },
+      query: { status: 'deleted' },
+    })
+    await adminListHandler(req, res)
+    expect(res.statusCode).toBe(200)
+    expect(mockAdminList).toHaveBeenCalledWith('admin_session=x', 'deleted')
+  })
+
+  it('rejects unknown filters', async () => {
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+      method: 'GET',
+      headers: { cookie: 'admin_session=x' },
+      query: { status: 'bogus' },
+    })
+    await adminListHandler(req, res)
+    expect(res.statusCode).toBe(400)
+    expect(mockAdminList).not.toHaveBeenCalled()
   })
 })

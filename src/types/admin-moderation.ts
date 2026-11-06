@@ -1,6 +1,15 @@
 export type ModeratorRole = 'moderator' | 'admin'
 
-export type MentorModerationFilter = 'pending' | 'approved' | 'declined' | 'deleted'
+/** Admin mentor list tabs; the API route accepts exactly these */
+export const MENTOR_MODERATION_FILTERS = ['pending', 'approved', 'declined', 'deleted'] as const
+
+export type MentorModerationFilter = (typeof MENTOR_MODERATION_FILTERS)[number]
+
+export function isMentorModerationFilter(value: unknown): value is MentorModerationFilter {
+  return (
+    typeof value === 'string' && (MENTOR_MODERATION_FILTERS as readonly string[]).includes(value)
+  )
+}
 
 export type MentorModerationStatus = 'pending' | 'active' | 'inactive' | 'declined'
 

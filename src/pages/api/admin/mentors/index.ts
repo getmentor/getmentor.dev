@@ -2,9 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getGoApiClient, HttpError } from '@/lib/go-api-client'
 import { logError } from '@/lib/logger'
 import { withObservability } from '@/lib/with-observability'
-import type { MentorModerationFilter } from '@/types'
-
-const ALLOWED_STATUSES: MentorModerationFilter[] = ['pending', 'approved', 'declined']
+import { isMentorModerationFilter } from '@/types/admin-moderation'
 
 async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   if (req.method !== 'GET') {
@@ -19,14 +17,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
   }
 
   const status = (req.query.status as string) || 'pending'
-  if (!ALLOWED_STATUSES.includes(status as MentorModerationFilter)) {
+  if (!isMentorModerationFilter(status)) {
     res.status(400).json({ error: 'Invalid status filter' })
     return
   }
 
   try {
     const client = getGoApiClient()
-    const data = await client.adminListMentors(cookies, status as MentorModerationFilter)
+    const data = await client.adminListMentors(cookies, status)
     res.status(200).json(data)
   } catch (error) {
     if (error instanceof HttpError) {
