@@ -110,6 +110,8 @@ export type {
   AdminMentorResponse,
   AdminMentorProfileUpdateRequest,
   AdminStatusUpdateRequest,
+  MentorDeleteRequest,
+  AdminMentorEmailConflict,
 } from './admin-moderation'
 
 // Admin client requests types

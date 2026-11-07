@@ -287,3 +287,19 @@ export async function declineRequest(
   )
   return response
 }
+
+// ============================================
+// Profile API
+// ============================================
+
+/**
+ * Delete the mentor's own profile. The backend clears the session cookie.
+ * @param slug - the mentor's current slug, typed by the mentor to confirm
+ */
+export async function deleteMentorProfile(slug: string): Promise<void> {
+  await apiRequest<{ success: boolean }>('/api/mentor/profile/delete', {
+    method: 'POST',
+    body: JSON.stringify({ slug }),
+  })
+  cachedSession = null
+}

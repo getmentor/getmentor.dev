@@ -76,11 +76,16 @@ export function MentorModerationListPage({
 
   const filteredMentors = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
-    const sorted = [...mentors].sort((a, b) =>
-      status === 'pending'
-        ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
+    const sorted = [...mentors].sort((a, b) => {
+      if (status === 'pending') {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      }
+      if (status === 'deleted') {
+        // Most recently deleted first
+        return new Date(b.deletedAt ?? 0).getTime() - new Date(a.deletedAt ?? 0).getTime()
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
     if (!query) return sorted
 
     return sorted.filter((mentor) => {
@@ -89,7 +94,7 @@ export function MentorModerationListPage({
       const telegram = mentor.telegram.toLowerCase()
       return name.includes(query) || email.includes(query) || telegram.includes(query)
     })
-  }, [mentors, searchQuery])
+  }, [mentors, searchQuery, status])
 
   const totalPages = Math.max(1, Math.ceil(filteredMentors.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -155,13 +160,20 @@ export function MentorModerationListPage({
                   <p className="text-sm text-gray-600">{mentor.email}</p>
                   <p className="text-sm text-gray-500">@{mentor.telegram}</p>
                 </div>
-                <span
-                  className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusBadge(
-                    mentor.status
-                  )}`}
-                >
-                  {mentor.status}
-                </span>
+                <div className="flex items-center gap-2">
+                  {mentor.deletedAt && (
+                    <span className="inline-flex rounded-full bg-red-600 px-2.5 py-1 text-xs font-medium text-white">
+                      deleted {new Date(mentor.deletedAt).toLocaleDateString()}
+                    </span>
+                  )}
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusBadge(
+                      mentor.status
+                    )}`}
+                  >
+                    {mentor.status}
+                  </span>
+                </div>
               </div>
               <div className="mt-3 text-sm text-gray-700">
                 <p>

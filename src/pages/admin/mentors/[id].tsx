@@ -21,8 +21,14 @@ import {
   updateModerationMentorStatus,
   uploadModerationMentorPicture,
   getAdminRequests,
+  deleteModerationMentor,
+  restoreModerationMentor,
+  ApiError,
 } from '@/lib/admin-moderation-api'
+import { isAdminMentorEmailConflict } from '@/types/admin-moderation'
+import type { AdminMentorEmailConflict } from '@/types'
 import { imageLoader } from '@/lib/azure-image-loader'
+import { ConfirmModal } from '@/components'
 
 type SaveState = 'idle' | 'loading' | 'success' | 'error'
 type PictureState = 'idle' | 'loading' | 'success' | 'error'
@@ -34,7 +40,9 @@ function statusBadge(status: AdminMentorDetails['status']): string {
   return 'bg-yellow-100 text-yellow-800'
 }
 
-function getBackLink(status: AdminMentorDetails['status']): string {
+function getBackLink(mentor: AdminMentorDetails): string {
+  if (mentor.deletedAt) return '/admin/mentors/deleted'
+  const status = mentor.status
   if (status === 'pending') return '/admin/mentors/pending'
   if (status === 'declined') return '/admin/mentors/declined'
   return '/admin/mentors/approved'
@@ -83,6 +91,14 @@ function MentorModerationEditContent(): JSX.Element {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [requestsCount, setRequestsCount] = useState<number | null>(null)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false)
+  const [restoreConflict, setRestoreConflict] = useState<AdminMentorEmailConflict | null>(null)
+
+  // Opening another mentor (e.g. via the conflict link) starts with a clean state
+  useEffect(() => {
+    setRestoreConflict(null)
+  }, [mentorId])
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -104,7 +120,7 @@ function MentorModerationEditContent(): JSX.Element {
           return
         }
 
-        if (session.role === 'moderator' && data.status !== 'pending') {
+        if (session.role === 'moderator' && (data.status !== 'pending' || data.deletedAt)) {
           router.replace('/admin/mentors/pending')
           return
         }
@@ -227,6 +243,42 @@ function MentorModerationEditContent(): JSX.Element {
     }
   }
 
+  const onDelete = async (): Promise<void> => {
+    if (!mentor) return
+    const updated = await deleteModerationMentor(mentor.mentorId, mentor.slug)
+    setMentor(updated)
+    setFormData(buildFormData(updated, session?.role === 'admin'))
+    setIsDeleteModalOpen(false)
+    setSaveState('idle')
+    setActionError(null)
+  }
+
+  const onRestore = async (): Promise<void> => {
+    if (!mentor) return
+    let updated: AdminMentorDetails
+    try {
+      updated = await restoreModerationMentor(mentor.mentorId)
+    } catch (err) {
+      // Another live profile already uses this email: show it instead of a generic error
+      if (
+        err instanceof ApiError &&
+        err.status === 409 &&
+        isAdminMentorEmailConflict(err.details)
+      ) {
+        setRestoreConflict(err.details)
+        setIsRestoreModalOpen(false)
+        return
+      }
+      throw err
+    }
+    setRestoreConflict(null)
+    setMentor(updated)
+    setFormData(buildFormData(updated, session?.role === 'admin'))
+    setIsRestoreModalOpen(false)
+    setSaveState('idle')
+    setActionError(null)
+  }
+
   const handleImageSelect = (event: ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0]
     if (!file) return
@@ -311,7 +363,7 @@ function MentorModerationEditContent(): JSX.Element {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-4">
               <Link
-                href={getBackLink(mentor.status)}
+                href={getBackLink(mentor)}
                 className="text-sm text-indigo-600 hover:text-indigo-500"
               >
                 ← Back to list
@@ -345,41 +397,96 @@ function MentorModerationEditContent(): JSX.Element {
             </span>
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={onApprove}
-              className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
-            >
-              Approve
-            </button>
-            <button
-              type="button"
-              onClick={onDecline}
-              className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
-            >
-              Decline
-            </button>
+          {mentor.deletedAt && (
+            <div className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-800">
+              <p className="font-semibold">
+                This profile was deleted on {new Date(mentor.deletedAt).toLocaleString()}.
+              </p>
+              <p className="mt-1">
+                It is hidden from the site and the mentor can&apos;t log in. Editing is disabled
+                until the profile is restored.
+              </p>
+            </div>
+          )}
 
-            {session?.role === 'admin' && (
-              <>
+          {mentor.deletedAt && restoreConflict && (
+            <div
+              role="alert"
+              className="rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"
+            >
+              <p className="font-semibold">
+                Restore failed: this email is used by another profile.
+              </p>
+              <p className="mt-1">
+                {restoreConflict.name} ({restoreConflict.slug}, {restoreConflict.status}) was
+                created with the same email after this profile was deleted. Delete that profile or
+                change its email before restoring this one.
+              </p>
+              <Link
+                href={`/admin/mentors/${restoreConflict.mentorId}`}
+                className="mt-2 inline-block font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Open {restoreConflict.name}&apos;s profile →
+              </Link>
+            </div>
+          )}
+
+          {mentor.deletedAt ? (
+            session?.role === 'admin' && (
+              <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
-                  onClick={() => onToggleActive('active')}
-                  className="rounded-md border border-green-300 bg-green-50 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-100"
+                  onClick={() => setIsRestoreModalOpen(true)}
+                  className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
                 >
-                  Set active
+                  Restore
                 </button>
-                <button
-                  type="button"
-                  onClick={() => onToggleActive('inactive')}
-                  className="rounded-md border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200"
-                >
-                  Set inactive
-                </button>
-              </>
-            )}
-          </div>
+              </div>
+            )
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={onApprove}
+                className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
+              >
+                Approve
+              </button>
+              <button
+                type="button"
+                onClick={onDecline}
+                className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+              >
+                Decline
+              </button>
+
+              {session?.role === 'admin' && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => onToggleActive('active')}
+                    className="rounded-md border border-green-300 bg-green-50 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-100"
+                  >
+                    Set active
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onToggleActive('inactive')}
+                    className="rounded-md border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200"
+                  >
+                    Set inactive
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 sm:ml-auto"
+                  >
+                    Delete profile…
+                  </button>
+                </>
+              )}
+            </div>
+          )}
 
           {actionError && saveState !== 'error' && (
             <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
@@ -582,7 +689,7 @@ function MentorModerationEditContent(): JSX.Element {
               <button
                 type="button"
                 onClick={onUploadPicture}
-                disabled={pictureState === 'loading' || !selectedImage}
+                disabled={pictureState === 'loading' || !selectedImage || !!mentor.deletedAt}
                 className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {pictureState === 'loading' ? (
@@ -601,7 +708,7 @@ function MentorModerationEditContent(): JSX.Element {
             <button
               type="button"
               onClick={onSave}
-              disabled={saveState === 'loading'}
+              disabled={saveState === 'loading' || !!mentor.deletedAt}
               className="rounded-md bg-[#1A2238] px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {saveState === 'loading' ? (
@@ -622,6 +729,53 @@ function MentorModerationEditContent(): JSX.Element {
               </span>
             )}
           </div>
+
+          <ConfirmModal
+            isOpen={isDeleteModalOpen}
+            title="Delete mentor profile?"
+            confirmLabel="Confirm delete"
+            busyLabel="Deleting..."
+            cancelLabel="Cancel"
+            fallbackErrorMessage="Failed to delete mentor"
+            confirmationValue={mentor.slug}
+            confirmationLabel={
+              <>
+                Type the mentor slug to confirm:{' '}
+                <span className="font-mono font-semibold text-gray-900">{mentor.slug}</span>
+              </>
+            }
+            onConfirm={onDelete}
+            onClose={() => setIsDeleteModalOpen(false)}
+          >
+            <p className="font-medium text-red-700">This action is irreversible for the mentor.</p>
+            <p>
+              The profile disappears from the site, all of the mentor&apos;s sessions end and login
+              is blocked. All active requests are declined and mentees are notified. The mentor gets
+              an email and a Telegram message.
+            </p>
+          </ConfirmModal>
+
+          <ConfirmModal
+            isOpen={isRestoreModalOpen}
+            title="Restore mentor profile?"
+            confirmLabel="Restore"
+            busyLabel="Restoring..."
+            cancelLabel="Cancel"
+            variant="primary"
+            fallbackErrorMessage="Failed to restore mentor"
+            onConfirm={onRestore}
+            onClose={() => setIsRestoreModalOpen(false)}
+          >
+            <p>
+              The profile is restored with status <span className="font-semibold">inactive</span>.
+              The mentor can log in again and gets an email (with Telegram bot instructions) and a
+              Telegram message if the bot is connected.
+            </p>
+            <p>Declined requests stay declined.</p>
+            <p>
+              Restore is blocked if another profile that isn&apos;t deleted uses the same email.
+            </p>
+          </ConfirmModal>
         </div>
       )}
     </AdminLayout>

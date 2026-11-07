@@ -15,6 +15,7 @@ import type {
   AdminMentorResponse,
   AdminMentorProfileUpdateRequest,
   AdminStatusUpdateRequest,
+  MentorDeleteRequest,
   AdminRequestDetails,
   AdminRequestResponse,
   AdminRequestsListResponse,
@@ -445,6 +446,20 @@ class GoApiClient {
     return data
   }
 
+  /**
+   * Delete mentor's own profile (using session auth).
+   * Returns headers so the cleared session cookie can be forwarded.
+   */
+  async mentorDeleteProfile(
+    cookies: string,
+    payload: MentorDeleteRequest
+  ): Promise<{ data: { success: boolean }; headers: Headers }> {
+    return this.requestWithCookies<{ success: boolean }>('POST', '/api/v1/mentor/profile/delete', {
+      cookies,
+      body: payload as unknown as Record<string, unknown>,
+    })
+  }
+
   // ============================================
   // Admin Moderation API Methods
   // ============================================
@@ -553,6 +568,28 @@ class GoApiClient {
       'POST',
       `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}/status`,
       { cookies, body: payload as unknown as Record<string, unknown> }
+    )
+    return data.mentor
+  }
+
+  async adminDeleteMentor(
+    cookies: string,
+    mentorId: string,
+    payload: MentorDeleteRequest
+  ): Promise<AdminMentorDetails> {
+    const { data } = await this.requestWithCookies<AdminMentorResponse>(
+      'POST',
+      `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}/delete`,
+      { cookies, body: payload as unknown as Record<string, unknown> }
+    )
+    return data.mentor
+  }
+
+  async adminRestoreMentor(cookies: string, mentorId: string): Promise<AdminMentorDetails> {
+    const { data } = await this.requestWithCookies<AdminMentorResponse>(
+      'POST',
+      `/api/v1/admin/mentors/${encodeURIComponent(mentorId)}/restore`,
+      { cookies }
     )
     return data.mentor
   }
