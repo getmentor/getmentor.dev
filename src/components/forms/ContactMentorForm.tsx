@@ -177,7 +177,6 @@ export default function ContactMentorForm({
       <ReCAPTCHA
         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY || ''}
         onChange={handleCaptchaOnChange}
-        hl="ru"
       />
 
       {isError && (

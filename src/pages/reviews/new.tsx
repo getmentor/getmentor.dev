@@ -307,7 +307,6 @@ export default function NewReviewPage(): JSX.Element {
                   ref={recaptchaRef}
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY || ''}
                   onChange={handleCaptchaOnChange}
-                  hl="ru"
                 />
 
                 {/* Submit Error */}
