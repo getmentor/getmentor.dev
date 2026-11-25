@@ -4,7 +4,7 @@
  * Handles magic link verification and creates session.
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -13,6 +13,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { MentorAuthProvider, useMentorAuth } from '@/components/mentor-admin'
 import analytics from '@/lib/analytics'
+import { loginCallbackServerSideProps, MENTOR_LOGIN_TOKEN } from '@/lib/login-token-handoff'
+
+// Moves ?token= into an HttpOnly cookie server-side and redirects without it, so no browser
+// script (PostHog, Faro, GTM record the URL on load) ever sees the token.
+export const getServerSideProps = loginCallbackServerSideProps(MENTOR_LOGIN_TOKEN)
 
 type CallbackState = 'verifying' | 'success' | 'error'
 
@@ -21,11 +26,10 @@ function CallbackHandler(): JSX.Element {
   const { verifyLogin, isAuthenticated } = useMentorAuth()
   const [state, setState] = useState<CallbackState>('verifying')
   const [errorMessage, setErrorMessage] = useState<string>('')
+  const started = useRef(false)
 
   useEffect(() => {
-    const token = router.query.token as string | undefined
-
-    // If already authenticated, redirect to dashboard
+    // If already authenticated, redirect to the dashboard
     if (isAuthenticated) {
       router.replace('/mentor')
       return
@@ -34,19 +38,15 @@ function CallbackHandler(): JSX.Element {
     // Wait for router to be ready
     if (!router.isReady) return
 
-    // If no token, redirect to login with error
-    if (!token) {
-      analytics.event(analytics.events.MENTOR_AUTH_LOGIN_VERIFIED, {
-        outcome: 'invalid_token',
-      })
-      router.replace('/mentor/login?callback_error=invalid_token')
-      return
-    }
+    // Verify once: the verify route clears the pending token cookie, so a second
+    // call would fail and overwrite the result.
+    if (started.current) return
+    started.current = true
 
-    // Verify the token
+    // The token is in an HttpOnly cookie set by getServerSideProps; the verify route reads it.
     const verify = async (): Promise<void> => {
       try {
-        const result = await verifyLogin(token)
+        const result = await verifyLogin()
         if (result.success) {
           setState('success')
           analytics.event(analytics.events.MENTOR_AUTH_LOGIN_VERIFIED, {
@@ -75,7 +75,7 @@ function CallbackHandler(): JSX.Element {
     }
 
     verify()
-  }, [router, router.isReady, router.query.token, verifyLogin, isAuthenticated])
+  }, [router, router.isReady, verifyLogin, isAuthenticated])
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

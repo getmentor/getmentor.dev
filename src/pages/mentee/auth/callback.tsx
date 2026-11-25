@@ -9,7 +9,6 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
-import type { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -17,23 +16,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { MenteeAuthProvider, useMenteeAuth } from '@/components/mentee'
 import analytics from '@/lib/analytics'
-import {
-  isMenteeLoginToken,
-  MENTEE_CALLBACK_PATH,
-  setPendingLoginTokenCookie,
-} from '@/lib/mentee-login-token'
+import { loginCallbackServerSideProps, MENTEE_LOGIN_TOKEN } from '@/lib/login-token-handoff'
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
-  if (query.token !== undefined) {
-    if (isMenteeLoginToken(query.token)) {
-      setPendingLoginTokenCookie(req, res, query.token)
-    }
-    // Always drop the query string; a malformed token just fails verification below.
-    return { redirect: { destination: MENTEE_CALLBACK_PATH, permanent: false } }
-  }
-  res.setHeader('Cache-Control', 'private, no-store')
-  return { props: {} }
-}
+export const getServerSideProps = loginCallbackServerSideProps(MENTEE_LOGIN_TOKEN)
 
 function CallbackHandler(): JSX.Element {
   const router = useRouter()

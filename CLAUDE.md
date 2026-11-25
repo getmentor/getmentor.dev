@@ -260,6 +260,7 @@ PostHog session replay (posthog-js 1.359) records DOM text and attributes. Its d
 - Never put a request id (or other capability) in `id`, `htmlFor`, `data-*`, URLs or analytics properties. Use `useId()` for form element ids. Request ids authorize legacy review links (`/reviews/new?request_id=`).
 - Never log emails or names in API routes; log status codes and contexts only.
 - Analytics identity: `mentor:<id>` / `mentee:<id>` (row ids, never emails); call `analytics.reset()` on logout.
+- Magic-link tokens never reach a rendered page: PostHog and Faro record `location.href` at module load. Each login callback (`/mentor`, `/admin`, `/mentee` `.../auth/callback`) uses `loginCallbackServerSideProps` from `src/lib/login-token-handoff.ts` to move `?token=` into an HttpOnly cookie scoped to its verify route and redirect without it; the verify route reads the token only from that cookie. Use the same helper for any new magic-link flow.
 
 ## Misc
 

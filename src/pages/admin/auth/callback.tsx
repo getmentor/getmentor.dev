@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -7,6 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { AdminAuthProvider, useAdminAuth } from '@/components/admin-moderation'
 import analytics from '@/lib/analytics'
+import { loginCallbackServerSideProps, ADMIN_LOGIN_TOKEN } from '@/lib/login-token-handoff'
+
+// Moves ?token= into an HttpOnly cookie server-side and redirects without it, so no browser
+// script (PostHog, Faro, GTM record the URL on load) ever sees the token.
+export const getServerSideProps = loginCallbackServerSideProps(ADMIN_LOGIN_TOKEN)
 
 type CallbackState = 'verifying' | 'success' | 'error'
 
@@ -15,28 +20,27 @@ function CallbackHandler(): JSX.Element {
   const { verifyLogin, isAuthenticated } = useAdminAuth()
   const [state, setState] = useState<CallbackState>('verifying')
   const [errorMessage, setErrorMessage] = useState<string>('')
+  const started = useRef(false)
 
   useEffect(() => {
-    const token = router.query.token as string | undefined
-
+    // If already authenticated, redirect to the dashboard
     if (isAuthenticated) {
       router.replace('/admin/mentors/pending')
       return
     }
 
+    // Wait for router to be ready
     if (!router.isReady) return
 
-    if (!token) {
-      analytics.event(analytics.events.ADMIN_AUTH_LOGIN_VERIFIED, {
-        outcome: 'invalid_token',
-      })
-      router.replace('/admin/login?callback_error=invalid_token')
-      return
-    }
+    // Verify once: the verify route clears the pending token cookie, so a second
+    // call would fail and overwrite the result.
+    if (started.current) return
+    started.current = true
 
+    // The token is in an HttpOnly cookie set by getServerSideProps; the verify route reads it.
     const verify = async (): Promise<void> => {
       try {
-        const result = await verifyLogin(token)
+        const result = await verifyLogin()
         if (result.success) {
           setState('success')
           analytics.event(analytics.events.ADMIN_AUTH_LOGIN_VERIFIED, {
@@ -64,7 +68,7 @@ function CallbackHandler(): JSX.Element {
     }
 
     verify()
-  }, [router, router.isReady, router.query.token, verifyLogin, isAuthenticated])
+  }, [router, router.isReady, verifyLogin, isAuthenticated])
 
   return (
     <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">

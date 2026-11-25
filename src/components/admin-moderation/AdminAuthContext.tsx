@@ -15,7 +15,7 @@ interface AdminAuthContextValue {
   isLoading: boolean
   isAuthenticated: boolean
   requestLogin: (email: string) => Promise<{ success: boolean; message?: string }>
-  verifyLogin: (token: string) => Promise<{ success: boolean; message?: string }>
+  verifyLogin: () => Promise<{ success: boolean; message?: string }>
   logout: () => Promise<void>
   refreshSession: () => Promise<void>
 }
@@ -70,8 +70,8 @@ export function AdminAuthProvider({ children }: AdminAuthProviderProps): JSX.Ele
     return { success: response.success, message: response.message }
   }, [])
 
-  const verifyLogin = useCallback(async (token: string) => {
-    const response = await apiVerifyAdminLogin(token)
+  const verifyLogin = useCallback(async () => {
+    const response = await apiVerifyAdminLogin()
     if (response.success && response.session) {
       setSession(response.session)
     }

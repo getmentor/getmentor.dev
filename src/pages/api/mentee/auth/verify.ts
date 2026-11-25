@@ -1,7 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getGoApiClient } from '@/lib/go-api-client'
 import { sendMenteeProxyError } from '@/lib/mentee-api-proxy'
-import { clearPendingLoginTokenCookie, readPendingLoginToken } from '@/lib/mentee-login-token'
+import {
+  clearPendingLoginTokenCookie,
+  MENTEE_LOGIN_TOKEN,
+  readPendingLoginToken,
+} from '@/lib/login-token-handoff'
 import { withObservability } from '@/lib/with-observability'
 
 /**
@@ -17,8 +21,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
     return
   }
 
-  const clearPending = clearPendingLoginTokenCookie(req)
-  const token = readPendingLoginToken(req.cookies)
+  const clearPending = clearPendingLoginTokenCookie(MENTEE_LOGIN_TOKEN, req)
+  const token = readPendingLoginToken(MENTEE_LOGIN_TOKEN, req.cookies)
   if (!token) {
     res.setHeader('Set-Cookie', clearPending)
     res.status(401).json({ success: false, error: 'Invalid token' })

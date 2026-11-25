@@ -1,11 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getGoApiClient, HttpError } from '@/lib/go-api-client'
+import {
+  clearPendingLoginTokenCookie,
+  MENTOR_LOGIN_TOKEN,
+  readPendingLoginToken,
+} from '@/lib/login-token-handoff'
 import { logError } from '@/lib/logger'
 import { withObservability } from '@/lib/with-observability'
 
 /**
  * POST /api/mentor/auth/verify
- * Verify login token and create session (sets HttpOnly cookie)
+ * Exchange the one-time login token for a session cookie. The token comes only from the
+ * HttpOnly mentor_login_token cookie that /mentor/auth/callback set server-side, so it
+ * is never in a URL that browser scripts (telemetry included) can read. The pending
+ * cookie is cleared whatever the outcome.
  */
 async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   if (req.method !== 'POST') {
@@ -13,30 +21,25 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
     return
   }
 
-  const { token } = req.body
-
-  if (!token || typeof token !== 'string') {
-    res.status(400).json({ success: false, message: 'Token is required' })
+  const clearPending = clearPendingLoginTokenCookie(MENTOR_LOGIN_TOKEN, req)
+  const token = readPendingLoginToken(MENTOR_LOGIN_TOKEN, req.cookies)
+  if (!token) {
+    res.setHeader('Set-Cookie', clearPending)
+    res.status(401).json({ success: false, error: 'Invalid token' })
     return
   }
 
   try {
-    const client = getGoApiClient()
-    const { data, headers } = await client.mentorVerifyLogin(token)
-
-    // Forward Set-Cookie header from Go API to browser
-    const setCookie = headers.get('set-cookie')
-    if (setCookie) {
-      res.setHeader('Set-Cookie', setCookie)
-    }
-
+    const { data, headers } = await getGoApiClient().mentorVerifyLogin(token)
+    const sessionCookie = headers.get('set-cookie')
+    res.setHeader('Set-Cookie', sessionCookie ? [sessionCookie, clearPending] : [clearPending])
     res.status(200).json(data)
   } catch (error) {
+    res.setHeader('Set-Cookie', clearPending)
     if (error instanceof HttpError) {
       const status = error.statusCode >= 400 && error.statusCode < 600 ? error.statusCode : 500
       try {
-        const errorData = JSON.parse(error.body)
-        res.status(status).json(errorData)
+        res.status(status).json(JSON.parse(error.body))
       } catch {
         res.status(status).json({ success: false, message: error.message })
       }
@@ -44,7 +47,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
     }
 
     if (error instanceof Error) {
-      logError(error, { context: 'mentor-verify-login', method: req.method, url: req.url })
+      logError(error, { context: 'mentor-verify-login', method: req.method })
     }
     res.status(500).json({ success: false, message: 'Internal server error' })
   }
