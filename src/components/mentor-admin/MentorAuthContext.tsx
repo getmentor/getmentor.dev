@@ -22,7 +22,7 @@ interface MentorAuthContextValue {
   isLoading: boolean
   isAuthenticated: boolean
   requestLogin: (email: string) => Promise<{ success: boolean; message?: string }>
-  verifyLogin: (token: string) => Promise<{ success: boolean; message?: string }>
+  verifyLogin: () => Promise<{ success: boolean; message?: string }>
   logout: () => Promise<void>
   refreshSession: () => Promise<void>
 }
@@ -80,8 +80,8 @@ export function MentorAuthProvider({ children }: MentorAuthProviderProps): JSX.E
     return { success: response.success, message: response.message }
   }, [])
 
-  const verifyLogin = useCallback(async (token: string) => {
-    const response = await apiVerifyLogin(token)
+  const verifyLogin = useCallback(async () => {
+    const response = await apiVerifyLogin()
     if (response.success && response.session) {
       setSession(response.session)
     }

@@ -165,7 +165,8 @@ export async function requestLogin(email: string): Promise<AuthResponse> {
  * Verify login token and create session
  * Backend sets HttpOnly cookie on success
  */
-export async function verifyLogin(token: string): Promise<AuthResponse> {
+/** The token travels in the HttpOnly mentor_login_token cookie set by the callback page. */
+export async function verifyLogin(): Promise<AuthResponse> {
   try {
     const response = await apiRequest<{
       success: boolean
@@ -173,7 +174,7 @@ export async function verifyLogin(token: string): Promise<AuthResponse> {
       error?: string
     }>('/api/mentor/auth/verify', {
       method: 'POST',
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({}),
     })
 
     if (response.success && response.session) {

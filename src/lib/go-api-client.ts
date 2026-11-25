@@ -5,6 +5,7 @@
 
 import { context, propagation } from '@opentelemetry/api'
 import { buildAdminRequestsQueryString } from '@/types/admin-requests'
+import type { MenteeRequestsResponse, MenteeReviewPayload, MenteeSession } from '@/types/mentee'
 import type {
   MentorBase,
   MentorWithSecureFields,
@@ -640,6 +641,68 @@ class GoApiClient {
       { cookies, body: payload as unknown as Record<string, unknown> }
     )
     return data.request
+  }
+
+  // ============================================
+  // Mentee dashboard (separate mentee_session realm)
+  // ============================================
+
+  async menteeRequestLogin(email: string): Promise<{ success: boolean; message?: string }> {
+    const { data } = await this.requestWithCookies<{ success: boolean; message?: string }>(
+      'POST',
+      '/api/v1/auth/mentee/request-login',
+      { body: { email } }
+    )
+    return data
+  }
+
+  async menteeVerifyLogin(token: string): Promise<{
+    data: { success: boolean; session?: MenteeSession }
+    headers: Headers
+  }> {
+    return this.requestWithCookies<{ success: boolean; session?: MenteeSession }>(
+      'POST',
+      '/api/v1/auth/mentee/verify',
+      { body: { token } }
+    )
+  }
+
+  async menteeLogout(cookies?: string): Promise<{ data: { success: boolean }; headers: Headers }> {
+    return this.requestWithCookies<{ success: boolean }>('POST', '/api/v1/auth/mentee/logout', {
+      cookies,
+    })
+  }
+
+  async menteeGetSession(
+    cookies: string
+  ): Promise<{ data: { success: boolean; session?: MenteeSession }; headers: Headers }> {
+    return this.requestWithCookies<{ success: boolean; session?: MenteeSession }>(
+      'GET',
+      '/api/v1/auth/mentee/session',
+      { cookies }
+    )
+  }
+
+  async menteeGetRequests(cookies: string): Promise<MenteeRequestsResponse> {
+    const { data } = await this.requestWithCookies<MenteeRequestsResponse>(
+      'GET',
+      '/api/v1/mentee/requests',
+      { cookies }
+    )
+    return data
+  }
+
+  /** The request id goes in the body: it is a capability and must stay out of URLs. */
+  async menteeSubmitReview(
+    cookies: string,
+    payload: MenteeReviewPayload & { requestId: string }
+  ): Promise<{ success: boolean; reviewId?: string }> {
+    const { data } = await this.requestWithCookies<{ success: boolean; reviewId?: string }>(
+      'POST',
+      '/api/v1/mentee/reviews',
+      { cookies, body: payload as unknown as Record<string, unknown> }
+    )
+    return data
   }
 }
 

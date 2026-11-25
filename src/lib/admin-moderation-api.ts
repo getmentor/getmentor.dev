@@ -106,15 +106,18 @@ export async function requestAdminLogin(
   }
 }
 
-export async function verifyAdminLogin(
-  token: string
-): Promise<{ success: boolean; session?: AdminSession; message?: string }> {
+/** The token travels in the HttpOnly admin_login_token cookie set by the callback page. */
+export async function verifyAdminLogin(): Promise<{
+  success: boolean
+  session?: AdminSession
+  message?: string
+}> {
   try {
     const response = await apiRequest<{ success: boolean; session?: AdminSession; error?: string }>(
       '/api/admin/auth/verify',
       {
         method: 'POST',
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({}),
       }
     )
 
