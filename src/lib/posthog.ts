@@ -1,4 +1,15 @@
 import posthog from 'posthog-js'
+import type { CaptureResult } from 'posthog-js'
+import { redactSecretUrlParamsInProperties } from '@/lib/url-redaction'
+
+/** Never send magic-link tokens or review-link request ids in captured URLs. */
+export function redactPostHogEvent(event: CaptureResult | null): CaptureResult | null {
+  if (!event) return event
+  event.properties = redactSecretUrlParamsInProperties(event.properties) ?? event.properties
+  if (event.$set) event.$set = redactSecretUrlParamsInProperties(event.$set)
+  if (event.$set_once) event.$set_once = redactSecretUrlParamsInProperties(event.$set_once)
+  return event
+}
 
 let initialized = false
 
@@ -32,6 +43,8 @@ export function initializePostHog(): typeof posthog | null {
 
     // heatmaps
     enable_heatmaps: true,
+
+    before_send: redactPostHogEvent,
   })
 
   initialized = true

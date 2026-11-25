@@ -61,12 +61,12 @@ describe('MenteeAuthProvider', () => {
     expect(screen.getByRole('button')).toBeDisabled()
   })
 
-  it('still resets analytics when the logout call fails', async () => {
+  it('keeps the session and analytics identity when the logout call fails', async () => {
     mockGetSession.mockResolvedValue({ mentee_id: 'mentee-1', exp: 9e9, iat: 1 })
     mockLogout.mockRejectedValue(new Error('network'))
-    let ctxLogout: () => Promise<void> = async () => undefined
+    const ctx = {} as { current: ReturnType<typeof useMenteeAuth> }
     function Grab(): null {
-      ctxLogout = useMenteeAuth().logout
+      ctx.current = useMenteeAuth()
       return null
     }
     render(
@@ -75,10 +75,15 @@ describe('MenteeAuthProvider', () => {
       </MenteeAuthProvider>
     )
     await waitFor(() => expect(mockIdentify).toHaveBeenCalled())
+    let thrown: unknown = null
     await act(async () => {
-      await ctxLogout().catch(() => undefined)
+      await ctx.current.logout().catch((e: unknown) => {
+        thrown = e
+      })
     })
-    expect(mockReset).toHaveBeenCalledTimes(1)
+    expect(thrown).toBeInstanceOf(Error)
+    expect(mockReset).not.toHaveBeenCalled()
+    expect(ctx.current.isAuthenticated).toBe(true)
   })
 })
 

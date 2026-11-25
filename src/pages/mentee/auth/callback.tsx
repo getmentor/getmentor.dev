@@ -1,8 +1,15 @@
 /**
  * Mentee magic-link callback: exchanges the one-time token for a session.
+ *
+ * The emailed link carries ?token=. getServerSideProps moves it into a short-lived
+ * HttpOnly cookie (sent only to the verify route) and redirects to this page without
+ * the query string, so no browser script, including telemetry that records the URL on
+ * load, ever sees the token. The token is consumed only by the POST below, never by
+ * the GET, so email link scanners can't use it up.
  */
 
 import { useEffect, useRef, useState } from 'react'
+import type { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -10,6 +17,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { MenteeAuthProvider, useMenteeAuth } from '@/components/mentee'
 import analytics from '@/lib/analytics'
+import {
+  isMenteeLoginToken,
+  MENTEE_CALLBACK_PATH,
+  setPendingLoginTokenCookie,
+} from '@/lib/mentee-login-token'
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
+  if (query.token !== undefined) {
+    if (isMenteeLoginToken(query.token)) {
+      setPendingLoginTokenCookie(req, res, query.token)
+    }
+    // Always drop the query string; a malformed token just fails verification below.
+    return { redirect: { destination: MENTEE_CALLBACK_PATH, permanent: false } }
+  }
+  res.setHeader('Cache-Control', 'private, no-store')
+  return { props: {} }
+}
 
 function CallbackHandler(): JSX.Element {
   const router = useRouter()
@@ -20,17 +44,9 @@ function CallbackHandler(): JSX.Element {
   useEffect(() => {
     if (!router.isReady || started.current) return
     started.current = true
-    const token = typeof router.query.token === 'string' ? router.query.token : ''
-    // Drop the token from the address bar (and from anything that records the URL later).
-    router.replace('/mentee/auth/callback', undefined, { shallow: true })
 
-    if (!token) {
-      analytics.event(analytics.events.MENTEE_AUTH_LOGIN_VERIFIED, { outcome: 'invalid_token' })
-      router.replace('/mentee/login?callback_error=invalid_token')
-      return
-    }
-
-    verifyLogin(token).then((ok) => {
+    // The token is in an HttpOnly cookie set by getServerSideProps; the verify route reads it.
+    verifyLogin().then((ok) => {
       analytics.event(analytics.events.MENTEE_AUTH_LOGIN_VERIFIED, {
         outcome: ok ? 'success' : 'invalid_token',
       })

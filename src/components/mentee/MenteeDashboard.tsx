@@ -24,6 +24,7 @@ export default function MenteeDashboard(): JSX.Element {
   const [requests, setRequests] = useState<MenteeDashboardRequest[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [logoutError, setLogoutError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -90,11 +91,16 @@ export default function MenteeDashboard(): JSX.Element {
 
   const handleLogout = async (): Promise<void> => {
     setIsLoggingOut(true)
+    setLogoutError(null)
     try {
       await logout()
-    } finally {
-      router.replace('/mentee/login')
+    } catch {
+      // The session may still be valid: stay here and let the user retry.
+      setLogoutError('Не удалось выйти. Проверьте соединение и попробуйте ещё раз.')
+      setIsLoggingOut(false)
+      return
     }
+    router.replace('/mentee/login')
   }
 
   if (isLoading || !isAuthenticated) {
@@ -131,6 +137,15 @@ export default function MenteeDashboard(): JSX.Element {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+        {logoutError && (
+          <div
+            role="alert"
+            className="mb-6 p-4 rounded-md bg-red-50 border border-red-200 text-sm text-red-700"
+          >
+            {logoutError}
+          </div>
+        )}
+
         <h1 className="text-2xl font-semibold text-gray-900">Мои заявки</h1>
         <p className="mt-1 text-sm text-gray-600">
           Все заявки, которые вы отправляли менторам с этого email.

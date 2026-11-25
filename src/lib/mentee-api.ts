@@ -68,11 +68,12 @@ export async function requestMenteeLogin(
   }
 }
 
-export async function verifyMenteeLogin(token: string): Promise<MenteeSession | null> {
+/** The token travels in the HttpOnly mentee_login_token cookie set by the callback page. */
+export async function verifyMenteeLogin(): Promise<MenteeSession | null> {
   try {
     const data = await call<{ success: boolean; session?: MenteeSession }>(
       '/api/mentee/auth/verify',
-      { method: 'POST', body: JSON.stringify({ token }) }
+      { method: 'POST', body: JSON.stringify({}) }
     )
     return data.success && data.session ? data.session : null
   } catch {

@@ -20,7 +20,7 @@ interface MenteeAuthContextValue {
   isLoading: boolean
   isAuthenticated: boolean
   requestLogin: (email: string) => Promise<{ success: boolean; message?: string }>
-  verifyLogin: (token: string) => Promise<boolean>
+  verifyLogin: () => Promise<boolean>
   logout: () => Promise<void>
 }
 
@@ -41,20 +41,27 @@ export function MenteeAuthProvider({ children }: { children: ReactNode }): JSX.E
     }
   }, [])
 
-  const verifyLogin = useCallback(async (token: string) => {
-    const s = await verifyMenteeLogin(token)
+  const verifyLogin = useCallback(async () => {
+    const s = await verifyMenteeLogin()
     setSession(s)
     return s !== null
   }, [])
 
+  /**
+   * Revokes the session server-side. On failure the HttpOnly cookie may still be valid,
+   * so the session and analytics identity are kept and the error is rethrown for the
+   * caller to show; nothing pretends the user is logged out.
+   */
   const logout = useCallback(async () => {
     analytics.event(analytics.events.MENTEE_AUTH_LOGOUT, { outcome: 'submitted' })
     try {
       await logoutMentee()
-    } finally {
-      setSession(null)
-      analytics.reset()
+    } catch (error) {
+      analytics.event(analytics.events.MENTEE_AUTH_LOGOUT, { outcome: 'error' })
+      throw error
     }
+    setSession(null)
+    analytics.reset()
   }, [])
 
   useEffect(() => {

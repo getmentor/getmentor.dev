@@ -106,30 +106,43 @@ describe('api/mentee/auth/request-login', () => {
 
 describe('api/mentee/auth/verify', () => {
   beforeEach(() => jest.clearAllMocks())
+  const TOKEN = `mntk_${'a'.repeat(64)}`
 
-  it('forwards the session cookie', async () => {
+  it('reads the token from the pending cookie, forwards the session and clears the pending cookie', async () => {
     mockVerify.mockResolvedValueOnce({
       data: { success: true, session: { mentee_id: 'm', exp: 1, iat: 1 } },
       headers: new Headers({ 'set-cookie': 'mentee_session=abc; HttpOnly' }),
     })
     const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'POST',
-      body: { token: `mntk_${'a'.repeat(64)}` },
+      cookies: { mentee_login_token: TOKEN },
+      body: {},
     })
     await verifyHandler(req, res)
     expect(res._getStatusCode()).toBe(200)
-    expect(res.getHeader('Set-Cookie')).toContain('mentee_session=abc')
+    expect(mockVerify).toHaveBeenCalledWith(TOKEN)
+    const cookies = res.getHeader('Set-Cookie') as string[]
+    expect(cookies[0]).toContain('mentee_session=abc')
+    expect(cookies[1]).toMatch(/^mentee_login_token=; Path=\/api\/mentee\/auth\/verify; Max-Age=0/)
   })
 
-  it('passes an invalid token through as 401', async () => {
+  it('ignores a token in the body: only the HttpOnly cookie is accepted', async () => {
+    const res = await call(verifyHandler, { method: 'POST', body: { token: TOKEN } })
+    expect(res.status).toBe(401)
+    expect(mockVerify).not.toHaveBeenCalled()
+  })
+
+  it('passes an invalid token through as 401 and still clears the pending cookie', async () => {
     mockVerify.mockRejectedValueOnce(
       new HttpError(401, 'Unauthorized', '{"error":"Invalid token"}')
     )
-    const res = await call(verifyHandler, {
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'POST',
-      body: { token: `mntk_${'b'.repeat(64)}` },
+      cookies: { mentee_login_token: TOKEN },
     })
-    expect(res.status).toBe(401)
+    await verifyHandler(req, res)
+    expect(res._getStatusCode()).toBe(401)
+    expect(String(res.getHeader('Set-Cookie'))).toContain('mentee_login_token=;')
   })
 })
 
