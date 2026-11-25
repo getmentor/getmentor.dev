@@ -87,3 +87,22 @@
 .desktop li a:hover {
   opacity: 1
 }
+
+.loginButton {
+  font-size: 1rem;
+  opacity: .7;
+  margin: 0 1em;
+  transition: all .175s ease-in-out;
+}
+
+.loginButton:hover {
+  opacity: 1
+}
+
+.desktop .loginMenu a {
+  display: block;
+  margin: 0;
+  padding: .5rem 1rem;
+  font-size: .875rem;
+  opacity: 1;
+}

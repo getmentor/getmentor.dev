@@ -147,6 +147,7 @@ All routes proxy to Go API:
 - `/api/upload-profile-picture` - Profile picture upload (requires auth headers)
 - `/api/healthcheck` - Health check endpoint
 - `/api/metrics` - Prometheus metrics (secured with bearer token)
+- `/api/mentee/*` - Mentee dashboard: magic-link login (`auth/request-login`, `auth/verify`, `auth/logout`, `auth/session`), `requests` (GET) and `reviews` (POST). Separate `mentee_session` cookie realm
 
 ## Common Patterns
 
@@ -251,6 +252,14 @@ yarn build          # Verify build works
 ### Node Version
 - **Required**: Node 22.x (specified in package.json engines)
 - Docker uses `node:22.21.1-alpine3.22`
+
+## Privacy in the UI (session replay)
+
+PostHog session replay (posthog-js 1.359) records DOM text and attributes. Its defaults: inputs are masked, text inside `ph-mask` is masked, elements with `ph-no-capture` are not recorded.
+- Wrap free text people wrote (request text, decline comments, reviews) and echoed emails in an element with class `ph-mask`.
+- Never put a request id (or other capability) in `id`, `htmlFor`, `data-*`, URLs or analytics properties. Use `useId()` for form element ids. Request ids authorize legacy review links (`/reviews/new?request_id=`).
+- Never log emails or names in API routes; log status codes and contexts only.
+- Analytics identity: `mentor:<id>` / `mentee:<id>` (row ids, never emails); call `analytics.reset()` on logout.
 
 ## Misc
 

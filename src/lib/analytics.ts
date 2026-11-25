@@ -54,6 +54,12 @@ export const analyticsEvents = {
   ADMIN_AUTH_LOGIN_REQUESTED: 'admin_auth_login_requested',
   ADMIN_AUTH_LOGIN_VERIFIED: 'admin_auth_login_verified',
   ADMIN_AUTH_LOGOUT: 'admin_auth_logout',
+  MENTEE_AUTH_LOGIN_REQUESTED: 'mentee_auth_login_requested',
+  MENTEE_AUTH_LOGIN_VERIFIED: 'mentee_auth_login_verified',
+  MENTEE_AUTH_LOGOUT: 'mentee_auth_logout',
+  MENTEE_DASHBOARD_VIEWED: 'mentee_dashboard_viewed',
+  MENTEE_REVIEW_SUBMITTED: 'mentee_review_submitted',
+  NAV_LOGIN_MENU_CLICKED: 'nav_login_menu_clicked',
 } as const
 
 export type AnalyticsEventName = (typeof analyticsEvents)[keyof typeof analyticsEvents]

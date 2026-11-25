@@ -132,3 +132,21 @@ export {
   ADMIN_REQUESTS_QUERY_KEYS,
   buildAdminRequestsQueryString,
 } from './admin-requests'
+
+// Mentee dashboard types
+export type {
+  MenteeRequestGroup,
+  MenteeRequestStatus,
+  MenteeSession,
+  MenteeDashboardMentor,
+  MenteeDashboardReview,
+  MenteeDashboardRequest,
+  MenteeRequestsResponse,
+  MenteeReviewPayload,
+} from './mentee'
+export {
+  MENTEE_GROUP_ORDER,
+  MENTEE_GROUP_LABELS,
+  MENTEE_STATUS_LABELS,
+  MENTEE_DECLINE_REASON_LABELS,
+} from './mentee'
